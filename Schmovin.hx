@@ -2,7 +2,7 @@
  * @ Author: 4mbr0s3 2
  * @ Create Time: 2021-06-22 11:55:58
  * @ Modified by: 4mbr0s3 2
- * @ Modified time: 2021-10-16 15:22:28
+ * @ Modified time: 2021-11-04 23:10:07
  */
 
 package schmovin;
@@ -29,6 +29,11 @@ class Schmovin extends Mod
 	private var instance:SchmovinInstance;
 
 	public static var holdNoteSubdivisions:Int = 4;
+
+	override function GetCredits():String
+	{
+		return '4mbr0s3 2';
+	}
 
 	override function Initialize()
 	{
