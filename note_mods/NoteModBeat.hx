@@ -1,0 +1,38 @@
+/**
+ * @ Author: 4mbr0s3 2
+ * @ Create Time: 2021-07-15 17:59:30
+ * @ Modified by: 4mbr0s3 2
+ * @ Modified time: 2021-08-29 15:08:34
+ */
+
+package schmovin.note_mods;
+
+import flixel.tweens.FlxEase;
+import lime.math.Vector4;
+
+using schmovin.SchmovinUtil;
+
+class NoteModBeat extends NoteModBase
+{
+	function GetAmplitude(currentBeat:Float)
+	{
+		var beat = currentBeat % 1;
+		var amp:Float = 0;
+		if (beat <= 0.3)
+			amp = FlxEase.quadIn((0.3 - beat) / 0.3) * 0.3;
+		else if (beat >= 0.7)
+			amp = -FlxEase.quadOut((beat - 0.7) / 0.3) * 0.3;
+		var neg = 1;
+		if (currentBeat % 2 >= 1)
+			neg = -1;
+		return amp / 0.3 * neg;
+	}
+
+	override function ExecutePath(currentBeat:Float, strumTimeDiff:Float, column:Int, player:Int, pos:Vector4):Vector4
+	{
+		var newPos = pos.clone();
+		var amp = GetAmplitude(currentBeat) * Math.cos(GetRelativeTime(strumTimeDiff) / 45);
+		var offsetX = amp * Note.swagWidth / 2 * GetPercent(player);
+		return newPos.add(new Vector4(offsetX));
+	}
+}
