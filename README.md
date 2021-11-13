@@ -16,7 +16,7 @@ To load in a modchart, pass an instance of a subclass of `SchmovinClient` into `
 ### "Porting" to Other Engines
 Since Groovin' Mod Framework decouples mod code into separate submodules (like this whole repository), you can easily use it in other engines by instantiating the base class as a singleton (in this case, `Schmovin`) and calling its methods in the base game's code. This requires a bit more work than just using Groovin' since it also involves removing  Groovin' dependencies, but if you're looking at this repository instead of the Groovin' repository, you probably know what you're doing anyway.  
 
-### Plugging in the modchart (client)
+### Plugging in the Modchart (client)
 In `SchmovinInstance`, you'll see a method that sends a "cross mod call" to all other loaded Groovin' mods.
 The mod that actually implements the modchart calls the `SetClient(cli:SchmovinClient)` method in the `SchmovinInstance` parameter.
 
@@ -45,7 +45,7 @@ override function ReceiveCrossModCall(command:String, sender:Mod, args:Array<Dyn
 
 If you're *not* using Groovin' and are using a version of Schmovin' in another engine, you can just pass the client in after `SchmovinInstance` is instantiated... They'll probably have their own way of doing that.
 
-### Making the modchart
+### Making the Modchart
 In your `SchmovinClient` subclass, override `Initialize()` and define every event there.
 Add events to the `SchmovinTimeline` by using the ease, set, function, and tween methods defined in the superclass.
 For the ease functions, use `FlxEase`.
@@ -53,7 +53,7 @@ For the ease functions, use `FlxEase`.
 You can also make some cooler custom-defined stuff by overriding the `Update()` class.
 For the list of note mods at your disposal, look in the `Registry` class.
 
-### Making a really cool looking note mod (WIP)
+### Making a Really Cool-Looking Note Mod (WIP)
 i'll probably make a video for this but if you're starting out, basically
 1. look at the code for each note mod in `/note_mods` (except `NoteModReverse` which defines the original game layout)
 2. copy paste them to a new class that subclasses `NoteModBase` and do some math to the passed note position that uses `strumTime` and `Conductor.songPosition`
