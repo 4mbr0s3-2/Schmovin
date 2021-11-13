@@ -2,12 +2,11 @@
  * @ Author: 4mbr0s3 2
  * @ Create Time: 2021-07-15 16:29:16
  * @ Modified by: 4mbr0s3 2
- * @ Modified time: 2021-08-29 15:08:32
+ * @ Modified time: 2021-11-13 13:26:28
  */
 
 package schmovin.note_mods;
 
-import groovin_input.GroovinInput;
 import lime.math.Vector4;
 import schmovin.SchmovinEvent.ISchmovinEvent;
 
@@ -20,6 +19,10 @@ class NoteModBase implements ISchmovinNoteMod
 	var _modList:SchmovinNoteModList;
 	var _state:PlayState;
 	var _currentEvent:ISchmovinEvent;
+
+	public function Deactivate(receptors:Array<Receptor>, notes:Array<Note>) {}
+
+	public function Activate(receptors:Array<Receptor>, notes:Array<Note>) {}
 
 	public function MustExecute()
 	{
@@ -49,6 +52,10 @@ class NoteModBase implements ISchmovinNoteMod
 			for (p in 0..._percents.length)
 				_percents[p] = f;
 		}
+		if (f != 0 && _percents[player] == 0)
+			Activate(SchmovinUtil.GetReceptors(player, _state), SchmovinUtil.GetNotes(player, _state));
+		else if (f == 0 && _percents[player] != 0)
+			Deactivate(SchmovinUtil.GetReceptors(player, _state), SchmovinUtil.GetNotes(player, _state));
 		_percents[player] = f;
 	}
 
@@ -58,7 +65,7 @@ class NoteModBase implements ISchmovinNoteMod
 	 */
 	public function GetRelativeTime(strumTimeDiff:Float)
 	{
-		return strumTimeDiff * GroovinInput.GrabScrollSpeed(PlayState.SONG) * 0.45;
+		return strumTimeDiff * SchmovinAdapter.GetInstance().GrabScrollSpeed() * 0.45;
 	}
 
 	public function GetPercent(player:Int)

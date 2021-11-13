@@ -2,13 +2,12 @@
  * @ Author: 4mbr0s3 2
  * @ Create Time: 2021-06-22 12:04:54
  * @ Modified by: 4mbr0s3 2
- * @ Modified time: 2021-09-11 11:46:55
+ * @ Modified time: 2021-11-13 13:19:28
  */
 
 package schmovin;
 
 import flixel.FlxSprite;
-import groovin_input.GroovinInput;
 import lime.math.Vector4;
 import schmovin.Registry;
 import schmovin.SchmovinTimeline;
@@ -121,7 +120,7 @@ class SchmovinNoteModList
 			if (Std.is(sprite, Note))
 			{
 				var note:Note = cast sprite;
-				var strumTimeDiff = Conductor.songPosition - note.strumTime - GroovinInput.GrabGlobalVisualOffset();
+				var strumTimeDiff = SchmovinAdapter.GetInstance().GetSongPosition() - note.strumTime - SchmovinAdapter.GetInstance().GrabGlobalVisualOffset();
 				pos = notemod.ExecutePath(currentBeat, strumTimeDiff, note.GetTotalColumn(), player, pos);
 				notemod.ExecuteNote(currentBeat, cast sprite, player, pos);
 				if (note.isSustainNote)

@@ -2,7 +2,7 @@
  * @ Author: 4mbr0s3 2
  * @ Create Time: 2021-07-15 16:28:51
  * @ Modified by: 4mbr0s3 2
- * @ Modified time: 2021-08-29 15:08:30
+ * @ Modified time: 2021-11-13 12:24:00
  */
 
 package schmovin.note_mods;
@@ -29,4 +29,6 @@ interface ISchmovinNoteMod
 	public function ExecutePath(currentBeat:Float, strumTime:Float, column:Int, player:Int, pos:Vector4):Vector4;
 	public function Update(currentBeat:Float):Void;
 	public function ShouldDoUpdate():Bool;
+	public function Activate(receptors:Array<Receptor>, notes:Array<Note>):Void;
+	public function Deactivate(receptors:Array<Receptor>, notes:Array<Note>):Void;
 }

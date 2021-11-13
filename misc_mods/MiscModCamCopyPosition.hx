@@ -2,17 +2,18 @@
  * @ Author: 4mbr0s3 2
  * @ Create Time: 2021-07-21 18:18:16
  * @ Modified by: 4mbr0s3 2
- * @ Modified time: 2021-09-06 16:54:40
+ * @ Modified time: 2021-11-13 10:39:19
  */
 
 package schmovin.misc_mods;
 
-import groovin.util.FlxCameraCopy;
 import schmovin.misc_mods.MiscModBase;
+import schmovin.util.FlxCameraCopy;
 
 class MiscModCamCopyPosition extends MiscModBase
 {
 	var _cam:FlxCameraCopy;
+
 	var _player:Int;
 	var _prefix:String;
 

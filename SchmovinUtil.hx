@@ -2,7 +2,7 @@
  * @ Author: 4mbr0s3 2
  * @ Create Time: 2021-06-22 16:25:26
  * @ Modified by: 4mbr0s3 2
- * @ Modified time: 2021-08-29 15:09:46
+ * @ Modified time: 2021-11-13 12:35:53
  */
 
 package schmovin;
@@ -118,5 +118,31 @@ class SchmovinUtil
 	public static inline function GetPlayer(note:Note)
 	{
 		return note.mustPress ? 1 : 0;
+	}
+
+	public static inline function GetReceptors(player:Int, state:PlayState):Array<Receptor>
+	{
+		var receptors = [];
+		for (index in 0...state.strumLineNotes.members.length)
+		{
+			if (GetPlayerOfTotalColumn(index) == player)
+			{
+				var receptor = state.strumLineNotes.members[index];
+				receptors.push(new Receptor(receptor, index));
+			}
+		}
+		return receptors;
+	}
+
+	public static inline function GetNotes(player:Int, state:PlayState):Array<Note>
+	{
+		var notes = [];
+		for (index in 0...state.notes.members.length)
+		{
+			var note = state.notes.members[index];
+			if (GetPlayer(note) == player)
+				notes.push(note);
+		}
+		return notes;
 	}
 }

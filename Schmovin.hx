@@ -2,7 +2,7 @@
  * @ Author: 4mbr0s3 2
  * @ Create Time: 2021-06-22 11:55:58
  * @ Modified by: 4mbr0s3 2
- * @ Modified time: 2021-11-04 23:15:33
+ * @ Modified time: 2021-11-13 12:46:01
  */
 
 package schmovin;
@@ -38,7 +38,7 @@ class Schmovin extends Mod
 	override function Initialize()
 	{
 		Hook(ModHooks.HookAfterCameras);
-		Hook(ModHooks.HookPostUpdate);
+		Hook(ModHooks.HookUpdate);
 		Hook(ModHooks.HookPostNotePosition);
 		Hook(ModHooks.HookPreDraw);
 		Hook(ModHooks.HookPostDraw);
@@ -60,8 +60,15 @@ class Schmovin extends Mod
 		instance.Destroy();
 	}
 
+	function InitializeGroovinSchmovinAdapter()
+	{
+		SchmovinAdapter.SetInstance(new GroovinSchmovinAdapter());
+	}
+
 	override function AfterCameras(camGame:FlxCamera, camHUD:FlxCamera)
 	{
+		InitializeGroovinSchmovinAdapter();
+
 		instance = SchmovinInstance.Create();
 		instance.state = cast FlxG.state;
 
@@ -124,7 +131,7 @@ class Schmovin extends Mod
 		instance.InitializeFakeExplosionReceptors();
 	}
 
-	override function PostUpdate(state:PlayState, elapsed:Float)
+	override function Update(elapsed:Float)
 	{
 		instance.Update(elapsed);
 		UpdateReceptors();

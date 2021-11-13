@@ -2,7 +2,7 @@
  * @ Author: 4mbr0s3 2
  * @ Create Time: 2021-08-22 19:49:42
  * @ Modified by: 4mbr0s3 2
- * @ Modified time: 2021-10-04 19:13:06
+ * @ Modified time: 2021-11-13 11:04:50
  */
 
 package schmovin;
@@ -13,15 +13,14 @@ import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.util.FlxColor;
-import groovin.debug.GroovinLogger;
-import groovin.mod.ModHooks;
-import groovin.shaders.GroovinShaders.PlaneRaymarcher;
-import groovin.util.FlxCameraCopy;
-import groovin_input.GroovinInput;
 import openfl.filters.ShaderFilter;
 import schmovin.SchmovinRenderers.ISchmovinRenderer;
 import schmovin.SchmovinRenderers.SchmovinHoldNoteRenderer;
 import schmovin.SchmovinRenderers.SchmovinNotePathRenderer;
+import schmovin.shaders.PlaneRaymarcher;
+import schmovin.util.FlxCameraCopy;
+
+using StringTools;
 
 class SchmovinInstance
 {
@@ -60,12 +59,17 @@ class SchmovinInstance
 
 	private function new() {}
 
+	public static function IsPixelStage()
+	{
+		return PlayState.curStage.startsWith('school');
+	}
+
 	public function InitializeFakeExplosionReceptors()
 	{
 		fakeExplosionReceptors = new FlxTypedGroup<FlxSprite>();
-		GroovinLogger.Log('Initialized fake explosion receptors');
+		SchmovinAdapter.GetInstance().Log('Initialized fake explosion receptors');
 		fakeExplosionReceptors.cameras = [camNotes];
-		if (GroovinInput.IsPixelStage())
+		if (IsPixelStage())
 			CreatePixelExplosionReceptors();
 		else
 			CreateNormalExplosionReceptors();
@@ -180,10 +184,7 @@ class SchmovinInstance
 	function SwitchClient()
 	{
 		_client = new SchmovinClientNull(this, timeline, state);
-		ModHooks.ForEveryMod((mod) ->
-		{
-			mod.ReceiveCrossModCall('SchmovinSetClient', null, [this, timeline, state]);
-		});
+		SchmovinAdapter.GetInstance().ForEveryMod([this, timeline, state]);
 	}
 
 	public function InitializeRenderers()

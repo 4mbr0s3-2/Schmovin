@@ -2,7 +2,7 @@
  * @ Author: 4mbr0s3 2
  * @ Create Time: 2021-07-07 13:26:53
  * @ Modified by: 4mbr0s3 2
- * @ Modified time: 2021-10-23 19:07:29
+ * @ Modified time: 2021-11-13 11:28:36
  */
 
 package schmovin;
@@ -10,8 +10,6 @@ package schmovin;
 import flixel.FlxCamera;
 import flixel.FlxG;
 import flixel.math.FlxMath;
-import groovin.util.GroovinConductor;
-import groovin_input.GroovinInput;
 import lime.math.Vector2;
 import lime.math.Vector4;
 import openfl.Vector;
@@ -238,7 +236,7 @@ class SchmovinHoldNoteRenderer extends SchmovinRenderer
 			var holdEnd = false;
 			if (hold.animation.name.contains('end'))
 				holdEnd = true;
-			var crotchet = GroovinConductor.GetCrotchetStepAtTime(hold.strumTime);
+			var crotchet = SchmovinAdapter.GetInstance().GetCrotchetAtTime(hold.strumTime) / 4;
 			for (sub in 0...subdivisions)
 			{
 				if (hold.scale == null)
@@ -246,10 +244,10 @@ class SchmovinHoldNoteRenderer extends SchmovinRenderer
 
 				var strumLineSub = crotchet / subdivisions;
 				var strumLineOffset = strumLineSub * sub;
-				var strumTimeDiff = Conductor.songPosition - hold.strumTime - GroovinInput.GrabGlobalVisualOffset();
+				var strumTimeDiff = SchmovinAdapter.GetInstance().GetSongPosition() - hold.strumTime - SchmovinAdapter.GetInstance().GrabGlobalVisualOffset();
 
 				// This scaling will be our "clipping rectangle"
-				if (strumTimeDiff > -crotchet - GroovinInput.GrabGlobalVisualOffset() && strumTimeDiff <= 0)
+				if (strumTimeDiff > -crotchet - SchmovinAdapter.GetInstance().GrabGlobalVisualOffset() && strumTimeDiff <= 0)
 				{
 					var scale = 1 - (strumTimeDiff + crotchet) / crotchet;
 					strumLineSub *= scale;

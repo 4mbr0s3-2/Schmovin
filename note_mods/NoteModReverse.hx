@@ -2,7 +2,7 @@
  * @ Author: 4mbr0s3 2
  * @ Create Time: 2021-07-15 16:29:37
  * @ Modified by: 4mbr0s3 2
- * @ Modified time: 2021-10-03 00:14:07
+ * @ Modified time: 2021-11-13 11:09:32
  */
 
 package schmovin.note_mods;
@@ -10,7 +10,6 @@ package schmovin.note_mods;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.math.FlxMath;
-import groovin_input.GroovinInput;
 import lime.math.Vector4;
 
 using StringTools;
@@ -42,7 +41,7 @@ class NoteModReverse extends NoteModBase
 		{
 			percentReverse = 2 - percentReverse;
 		}
-		var reverse = GroovinInput.GrabReverse();
+		var reverse = SchmovinAdapter.GetInstance().GrabReverse();
 		if (reverse)
 		{
 			percentReverse = 1 - percentReverse;
@@ -115,7 +114,7 @@ class NoteModReverse extends NoteModBase
 		// 	GroovinInput.ClipRect(note, strumLine);
 		// }
 
-		GroovinInput.ClipRect(note, strumLine);
+		// GroovinInput.ClipRect(note, strumLine);
 	}
 
 	override function ExecutePath(currentBeat:Float, strumTimeDiff:Float, column:Int, player:Int, pos:Vector4):Vector4
@@ -129,7 +128,7 @@ class NoteModReverse extends NoteModBase
 		var xmod = GetOtherPercent('xmod', player) + GetOtherPercent('xmod${playerColumn}', player) + 1;
 		var forced = GetOtherPercent('forcexmod', player) + GetOtherPercent('forcexmod${playerColumn}', player);
 
-		var scrollSpeed = FlxMath.lerp(GroovinInput.GrabScrollSpeed(PlayState.SONG) * xmod, xmod, forced);
+		var scrollSpeed = FlxMath.lerp(SchmovinAdapter.GetInstance().GrabScrollSpeed() * xmod, xmod, forced);
 		var upscrollY = SchmovinUtil.NoteWidthHalf() + strumLineY - 0.45 * strumTimeDiff * scrollSpeed;
 		var downscrollY = SchmovinUtil.NoteWidthHalf() + strumLineY + 0.45 * strumTimeDiff * scrollSpeed;
 		var outY = FlxMath.lerp(upscrollY, downscrollY, reverse);
@@ -139,7 +138,7 @@ class NoteModReverse extends NoteModBase
 
 	function SetDefaultScale(s:FlxSprite)
 	{
-		if (GroovinInput.IsPixel(s))
+		if (SchmovinInstance.IsPixelStage())
 			s.scale.set(PlayState.daPixelZoom, PlayState.daPixelZoom);
 		else
 			s.scale.set(0.7, 0.7);
@@ -166,7 +165,7 @@ class NoteModReverse extends NoteModBase
 		if (note.isSustainNote)
 		{
 			note.visible = false;
-			var time = note.strumTime - Conductor.songPosition;
+			var time = note.strumTime - SchmovinAdapter.GetInstance().GetSongPosition();
 			note.alpha = FlxMath.bound((1400 - time) / 100, 0, 0.6);
 		}
 

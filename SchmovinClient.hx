@@ -2,7 +2,7 @@
  * @ Author: 4mbr0s3 2
  * @ Create Time: 2021-06-22 12:05:21
  * @ Modified by: 4mbr0s3 2
- * @ Modified time: 2021-09-26 17:12:27
+ * @ Modified time: 2021-11-13 10:42:20
  */
 
 package schmovin;
@@ -10,9 +10,6 @@ package schmovin;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween.FlxTweenManager;
 import flixel.tweens.FlxTween.TweenCallback;
-import flixel.tweens.FlxTween.TweenOptions;
-import groovin.debug.GroovinLogger;
-import groovin.util.GroovinConductor;
 import hscript.Interp;
 import hscript.Parser;
 import schmovin.SchmovinTimeline;
@@ -46,7 +43,7 @@ class SchmovinClient
 		interp.variables.set('Func', Func);
 
 		var res = interp.execute(ast);
-		GroovinLogger.Log('Executed hscript: ${res}');
+		SchmovinAdapter.GetInstance().Log('Executed hscript: ${res}');
 		return res;
 	}
 
@@ -54,7 +51,7 @@ class SchmovinClient
 
 	function GetElapsedInBeats(elapsed:Float)
 	{
-		return elapsed * 1000 / GroovinConductor.GetCrotchetNow();
+		return elapsed * 1000 / SchmovinAdapter.GetInstance().GetCrotchetNow();
 	}
 
 	public function Update(elapsed:Float)

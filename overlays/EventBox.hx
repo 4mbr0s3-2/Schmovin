@@ -2,7 +2,7 @@
  * @ Author: 4mbr0s3 2
  * @ Create Time: 2021-08-14 23:42:43
  * @ Modified by: 4mbr0s3 2
- * @ Modified time: 2021-08-29 15:08:19
+ * @ Modified time: 2021-11-13 11:09:37
  */
 
 package schmovin.overlays;
@@ -31,7 +31,7 @@ class EventBox extends Shape implements IUpdateable
 	{
 		var zoomX = args[0];
 		var zoomY = args[1];
-		var currentBeat = Conductor.songPosition / Conductor.crochet;
+		var currentBeat = SchmovinAdapter.GetInstance().GetSongPosition() / Conductor.crochet;
 		x = zoomX * (_event.GetBeat() - currentBeat);
 		y = zoomY * _row + _marginTop;
 		width = zoomX * _event.GetBeatLength();

@@ -2,7 +2,7 @@
  * @ Author: 4mbr0s3 2
  * @ Create Time: 2021-08-13 22:26:14
  * @ Modified by: 4mbr0s3 2
- * @ Modified time: 2021-10-17 14:36:27
+ * @ Modified time: 2021-11-13 10:57:27
  */
 
 package schmovin.overlays;
@@ -13,7 +13,6 @@ import flixel.math.FlxMath;
 import flixel.text.FlxText;
 import flixel.ui.FlxBar;
 import flixel.util.FlxColor;
-import groovin.debug.GroovinLogger;
 import openfl.desktop.Clipboard;
 import openfl.display.DisplayObject;
 import openfl.display.Sprite;
@@ -144,13 +143,13 @@ class SchmovinDebugger extends Sprite
 
 	public function ParseHScript(script:String)
 	{
-		GroovinLogger.Log('Script: ${script}');
+		SchmovinAdapter.GetInstance().Log('Script: ${script}');
 		return _client.ParseHScript(script);
 	}
 
 	public function AddSlider(modName:String, player:Int = -1, min:Float = -1.0, max:Float = 1.0)
 	{
-		GroovinLogger.Log('Added slider ${modName} for player ${player}');
+		SchmovinAdapter.GetInstance().Log('Added slider ${modName} for player ${player}');
 		_sliders.add(new ModSlider(_sliders.length, player, _timeline._mods.GetNoteModByName(modName), min, max));
 	}
 
