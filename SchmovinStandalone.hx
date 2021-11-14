@@ -2,7 +2,7 @@
  * @ Author: 4mbr0s3 2
  * @ Create Time: 2021-06-22 11:55:58
  * @ Modified by: 4mbr0s3 2
- * @ Modified time: 2021-11-13 13:32:39
+ * @ Modified time: 2021-11-14 10:08:55
  */
 
 package schmovin;
@@ -26,6 +26,8 @@ using SchmovinUtil.SchmovinUtil;
  */
 class SchmovinStandalone
 {
+	public function new() {}
+
 	private var instance:SchmovinInstance;
 
 	public static var holdNoteSubdivisions:Int = 4;
