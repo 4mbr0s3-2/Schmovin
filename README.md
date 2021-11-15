@@ -1,4 +1,4 @@
-# Schmovin' (Groovin' Mod Framework Internal Module)
+# Schmovin' (Groovin' Mod Framework Modchart Engine)
 This repository is meant to be a Git submodule for Groovin' Mod Framework, but it can also be used in other engines! (Just make sure to credit.)
 
 ### Credits
