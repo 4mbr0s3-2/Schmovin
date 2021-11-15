@@ -2,7 +2,7 @@
  * @ Author: 4mbr0s3 2
  * @ Create Time: 2021-07-07 13:26:53
  * @ Modified by: 4mbr0s3 2
- * @ Modified time: 2021-11-14 10:31:57
+ * @ Modified time: 2021-11-14 18:35:43
  */
 
 package schmovin;
@@ -146,7 +146,7 @@ class SchmovinHoldNoteRenderer extends SchmovinRenderer
 
 	static function get_HOLD_SUBDIVISIONS()
 	{
-		return Schmovin.holdNoteSubdivisions;
+		return SchmovinAdapter.GetInstance().GetHoldNoteSubdivisions();
 	}
 
 	static inline var SEAMLESS_EXTENSION = 2;

@@ -66,4 +66,9 @@ class SchmovinAdapter
 	{
 		return GetSongPosition() / GetCrotchetNow();
 	}
+
+	public function GetHoldNoteSubdivisions()
+	{
+		return 4;
+	}
 }

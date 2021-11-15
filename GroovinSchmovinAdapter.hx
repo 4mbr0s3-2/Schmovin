@@ -49,4 +49,9 @@ class GroovinSchmovinAdapter extends SchmovinAdapter
 	{
 		return GroovinConductor.GetTotalBeatsToTime(GetSongPosition());
 	}
+
+	override function GetHoldNoteSubdivisions():Int
+	{
+		return Schmovin.holdNoteSubdivisions;
+	}
 }
