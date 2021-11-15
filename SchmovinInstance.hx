@@ -2,7 +2,7 @@
  * @ Author: 4mbr0s3 2
  * @ Create Time: 2021-08-22 19:49:42
  * @ Modified by: 4mbr0s3 2
- * @ Modified time: 2021-11-13 11:04:50
+ * @ Modified time: 2021-11-14 10:30:11
  */
 
 package schmovin;
@@ -206,6 +206,6 @@ class SchmovinInstance
 	public function Update(elapsed:Float)
 	{
 		_client.Update(elapsed);
-		timeline.Update(Schmovin.GetCurrentBeat());
+		timeline.Update(SchmovinAdapter.GetInstance().GetCurrentBeat());
 	}
 }

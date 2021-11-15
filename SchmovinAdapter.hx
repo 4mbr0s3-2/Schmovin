@@ -61,4 +61,9 @@ class SchmovinAdapter
 	{
 		return 2.0;
 	}
+
+	public function GetCurrentBeat()
+	{
+		return GetSongPosition() / GetCrotchetNow();
+	}
 }

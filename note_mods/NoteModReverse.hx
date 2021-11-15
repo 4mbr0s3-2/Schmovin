@@ -2,7 +2,7 @@
  * @ Author: 4mbr0s3 2
  * @ Create Time: 2021-07-15 16:29:37
  * @ Modified by: 4mbr0s3 2
- * @ Modified time: 2021-11-13 11:09:32
+ * @ Modified time: 2021-11-14 10:35:42
  */
 
 package schmovin.note_mods;
@@ -54,43 +54,9 @@ class NoteModReverse extends NoteModBase
 		return true;
 	}
 
-	function FixDownscroll(note:Note)
-	{
-		if (note.isSustainNote)
-		{
-			note.flipY = true;
-			// Calculate offset
-			if (IsSustainEnd(note))
-			{
-				if (note.prevNote.exists)
-				{
-					note.extraData["downscrollFix"] = (note.prevNote.y - note.height) - note.y;
-				}
-				note.y += note.extraData["downscrollFix"];
-			}
-		}
-	}
-
 	function IsSustainEnd(note:Note)
 	{
 		return note.animation.name.contains("end");
-	}
-
-	function FixUpscroll(note:Note)
-	{
-		if (note.isSustainNote)
-		{
-			note.flipY = false;
-			// Calculate offset
-			if (IsSustainEnd(note))
-			{
-				if (note.prevNote.exists)
-				{
-					note.extraData["upscrollFix"] = (note.prevNote.y + note.prevNote.height) - note.y;
-				}
-				note.y += note.extraData["upscrollFix"];
-			}
-		}
 	}
 
 	function PolishNote(reverse:Float, note:Note, strumLine:Float)

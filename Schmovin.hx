@@ -2,7 +2,7 @@
  * @ Author: 4mbr0s3 2
  * @ Create Time: 2021-06-22 11:55:58
  * @ Modified by: 4mbr0s3 2
- * @ Modified time: 2021-11-13 12:46:01
+ * @ Modified time: 2021-11-14 10:33:21
  */
 
 package schmovin;
@@ -155,7 +155,7 @@ class Schmovin extends Mod
 
 	public static function GetCurrentBeat()
 	{
-		return GroovinConductor.GetTotalBeatsToTime(Conductor.songPosition);
+		return SchmovinAdapter.GetInstance().GetCurrentBeat();
 	}
 
 	override function RegisterModOptions():Array<GroovinModOption<Dynamic>>

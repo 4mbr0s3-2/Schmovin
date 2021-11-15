@@ -2,7 +2,7 @@
  * @ Author: 4mbr0s3 2
  * @ Create Time: 2021-07-07 13:26:53
  * @ Modified by: 4mbr0s3 2
- * @ Modified time: 2021-11-13 11:28:36
+ * @ Modified time: 2021-11-14 10:31:57
  */
 
 package schmovin;
@@ -58,6 +58,7 @@ class SchmovinNotePathRenderer extends SchmovinRenderer
 
 	override function PreDraw()
 	{
+		var currentBeat = SchmovinAdapter.GetInstance().GetCurrentBeat();
 		var bitmap = new Shape();
 		var length = -2000.0;
 		var subdivisions = 80;
@@ -71,14 +72,14 @@ class SchmovinNotePathRenderer extends SchmovinRenderer
 			if (alpha <= 0)
 				continue;
 			var size = _timeline.GetNoteMod('arrowpathsize${column % 4}').GetPercent(player) + _timeline.GetNoteMod('arrowpathsize').GetPercent(player);
-			var path1 = _timeline.GetPath(Schmovin.GetCurrentBeat(), 0, column, player);
+			var path1 = _timeline.GetPath(currentBeat, 0, column, player);
 			bitmap.graphics.lineStyle(1 + size, 0xFFFFFF, 1);
 			commands.push(GraphicsPathCommand.MOVE_TO);
 			data.push(path1.x);
 			data.push(path1.y);
 			for (i in 0...subdivisions)
 			{
-				var path2 = _timeline.GetPath(Schmovin.GetCurrentBeat(), length / subdivisions * (i + 1), column, player);
+				var path2 = _timeline.GetPath(currentBeat, length / subdivisions * (i + 1), column, player);
 				if (FlxMath.inBounds(path2.x, -boundary, FlxG.width + boundary)
 					&& FlxMath.inBounds(path2.y, -boundary, FlxG.height + boundary))
 				{
@@ -195,11 +196,13 @@ class SchmovinHoldNoteRenderer extends SchmovinRenderer
 
 	function CalculatePointsAlongPathNormal(width:Float, strumTime:Float, column:Int, player:Int)
 	{
+		var currentBeat = SchmovinAdapter.GetInstance().GetCurrentBeat();
+
 		// We do a lil' calculus
 		var infinitesimal = 1;
 
-		var path1 = _timeline.GetPath(Schmovin.GetCurrentBeat(), strumTime, column, player);
-		var path2 = _timeline.GetPath(Schmovin.GetCurrentBeat(), strumTime + infinitesimal, column, player);
+		var path1 = _timeline.GetPath(currentBeat, strumTime, column, player);
+		var path2 = _timeline.GetPath(currentBeat, strumTime + infinitesimal, column, player);
 
 		var unit = path2.subtract(path1);
 		unit.normalize();

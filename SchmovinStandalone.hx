@@ -2,7 +2,6 @@
  * @ Author: 4mbr0s3 2
  * @ Create Time: 2021-06-22 11:55:58
  * @ Modified by: 4mbr0s3 2
- * @ Modified time: 2021-11-14 10:08:55
  */
 
 package schmovin;
@@ -185,30 +184,7 @@ class SchmovinStandalone
 	// Taken from GroovinConductor
 	public static function GetCurrentBeat()
 	{
-		var targetTime = SchmovinAdapter.GetInstance().GetSongPosition();
-		if (!HasBPMChanges())
-			return SchmovinAdapter.GetInstance().GetSongPosition() / Conductor.crochet;
-
-		var beats = 0.0;
-		var bpmChanges = GetSortedBPMChanges();
-
-		for (i in 0...bpmChanges.length - 1)
-		{
-			var curChange = bpmChanges[i];
-			var nextChange;
-			if (i >= bpmChanges.length - 1)
-				nextChange = {songTime: Math.POSITIVE_INFINITY, stepTime: 0, bpm: 0.0};
-			else
-				nextChange = bpmChanges[i + 1];
-			if (curChange.songTime < targetTime)
-			{
-				var endTimeWithinChange = FlxMath.bound(targetTime, curChange.songTime, nextChange.songTime);
-				var beatsInChange = (endTimeWithinChange - curChange.songTime) / GetCrotchetFromBPM(curChange.bpm);
-				beats += beatsInChange;
-			}
-		}
-
-		return beats;
+		return SchmovinAdapter.GetInstance().GetCurrentBeat();
 	}
 
 	// Taken from GroovinConductor

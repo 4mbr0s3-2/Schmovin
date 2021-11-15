@@ -44,4 +44,9 @@ class GroovinSchmovinAdapter extends SchmovinAdapter
 	{
 		return GroovinInput.GrabGlobalVisualOffset();
 	}
+
+	override function GetCurrentBeat():Float
+	{
+		return GroovinConductor.GetTotalBeatsToTime(GetSongPosition());
+	}
 }
