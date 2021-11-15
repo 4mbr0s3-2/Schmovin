@@ -1,3 +1,5 @@
+![alt text](https://github.com/4mbr0s3-2/Schmovin/blob/main/Schmovin Logo.png?raw=true)
+
 # Schmovin' (Groovin' Mod Framework Modchart Engine)
 This repository is meant to be a Git submodule for Groovin' Mod Framework, but it can also be used in other engines! (Just make sure to credit.)
 
