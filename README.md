@@ -20,9 +20,9 @@ There's a class called `SchmovinClient`. Subclasses of it should contain all the
 To load in a modchart, pass an instance of a subclass of `SchmovinClient` into `SchmovinInstance` with `SetClient(cli:SchmovinClient)`.
 
 ### "Porting" to Other Engines
-Since Groovin' Mod Framework decouples mod code into separate submodules (like this whole repository), you can easily use it in other engines by instantiating the base class as a singleton (in this case, `Schmovin`) and calling its methods in the base game's code. This requires a bit more work than just using Groovin' since it also involves removing  Groovin' dependencies, but if you're looking at this repository instead of the Groovin' repository, you probably know what you're doing anyway.  
+Since Groovin' Mod Framework decouples mod code into separate submodules (like this whole repository), you can easily use it in other engines by instantiating the base class as a singleton (in this case, `Schmovin`) and calling its methods in the base game's code.
 
-### Plugging in the Modchart (client)
+### Plugging in the Modchart (In Groovin')
 In `SchmovinInstance`, you'll see a method that sends a "cross mod call" to all other loaded Groovin' mods.
 The mod that actually implements the modchart calls the `SetClient(cli:SchmovinClient)` method in the `SchmovinInstance` parameter.
 
@@ -49,10 +49,12 @@ override function ReceiveCrossModCall(command:String, sender:Mod, args:Array<Dyn
 }
 ```
 
-If you're *not* using Groovin' and are using a version of Schmovin' in another engine, you can just pass the client in after `SchmovinInstance` is instantiated... They'll probably have their own way of doing that.
+### Plugging in the Modchart (In a Standalone / Other Engine)
+
+If you're *not* using Groovin' and are using the standalone version of Schmovin' in another engine, you can just pass the client in after `SchmovinInstance` is instantiated... somewhere. Each engine will probably have their own way of doing that.
 
 ### Making the Modchart
-In your `SchmovinClient` subclass, override `Initialize()` and define every event there.
+In your `SchmovinClient` subclass, override `Initialize()` and define every timeline event there.
 Add events to the `SchmovinTimeline` by using the ease, set, function, and tween methods defined in the superclass.
 For the ease functions, use `FlxEase`.
 
