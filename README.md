@@ -2,7 +2,7 @@
   <img src="https://github.com/4mbr0s3-2/Schmovin/blob/main/SchmovinLogo.png?raw=true" alt="Schmovin' Logo"/>
 </p>
 
-# Schmovin' (Groovin' Mod Framework Modchart Engine)
+# Schmovin' (Friday Night Funkin' Modchart Engine)
 This repository is meant to be a Git submodule for Groovin' Mod Framework, but it can also be used in other engines! (Just make sure to credit.)
 
 ### Credits
