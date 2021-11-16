@@ -7,6 +7,8 @@ This repository is meant to be a Git submodule for Groovin' Mod Framework, but i
 
 ### Credits
 
+[4mbr0s3 2](https://www.youtube.com/channel/UCez-Erpr0oqmC71vnDrM9yA) - Made the code and did the note modifier math
+
 [TaroNuke](https://twitter.com/TaroNuke) - Inspiration; really cool rhythm game developer who made [NotITG](https://notitg.heysora.net/)
 
 Roxor Games, Inc. - In the Groove 2 creators who introduced more [arrow modifiers](http://manual.pocitac.com/en/modifiers.html) and mines to Dance Dance Revolution
