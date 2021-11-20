@@ -3,6 +3,8 @@
 </p>
 
 # Schmovin' (Friday Night Funkin' Modchart Engine)
+## Note: Keep the code private until the documentation is done and the tutorial video is ready!
+
 This repository is meant to be a Git submodule for Groovin' Mod Framework, but it can also be used in other engines! (Just make sure to credit.)
 
 ### Credits
