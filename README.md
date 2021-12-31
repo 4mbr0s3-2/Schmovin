@@ -8,15 +8,15 @@
 ## Note: Keep the code private until the documentation is done and the tutorial video is ready!
 
 Schmovin' is basically an attempt at recreating (not porting) some features of NotITG in Friday Night Funkin'.
-This project was just meant to be a way to learn HaxeFlixel and OpenFL... but it kind of grew out of proportion.
+This project was just meant to be a way to learn HaxeFlixel and OpenFL.
 
 This repository is also meant to be a Git submodule for Groovin' Mod Framework, but it can also be used in other engines! (Just make sure to credit.)
 
 ### Credits
 
-[4mbr0s3 2](https://www.youtube.com/channel/UCez-Erpr0oqmC71vnDrM9yA) - Did the code and the note mod math
+[4mbr0s3 2](https://www.youtube.com/channel/UCez-Erpr0oqmC71vnDrM9yA) - Did the project thing
 
-[XeroOl](https://www.youtube.com/c/XeroOl) - Created [Mirin Template](https://xerool.github.io/notitg-mirin/), which this engine is mostly based on
+[XeroOl](https://www.youtube.com/c/XeroOl) - Created [Mirin Template](https://xerool.github.io/notitg-mirin/), which this thing is loosely based on
 
 [TaroNuke](https://twitter.com/TaroNuke) - Inspiration; really cool rhythm game developer who pioneered [NotITG](https://notitg.heysora.net/)
 
@@ -33,6 +33,8 @@ Roxor Games, Inc. - In the Groove 2 creators who introduced more [arrow modifier
 [haya3218](https://github.com/haya3218) - Did a more proper Psych Engine implementation of Schmovin'
 
 [Shadowfi1385](https://twitter.com/Shadowfi1385) - Very epic
+
+[KadeDeveloper](https://twitter.com/kade0912) - Very epic
 
 ### Q&A
 Q: Why recreate NotITG in FNF? Wouldn't it be better to just use NotITG due to its better performance and features?
