@@ -2,7 +2,7 @@
  * @ Author: 4mbr0s3 2
  * @ Create Time: 2021-06-22 13:03:47
  * @ Modified by: 4mbr0s3 2
- * @ Modified time: 2021-11-13 10:12:08
+ * @ Modified time: 2021-12-01 00:09:19
  */
 
 package schmovin;
@@ -16,6 +16,7 @@ interface ISchmovinEvent
 	public function TimelineUpdate(currentBeat:Float):Void;
 	public function GetModName():String;
 	public function GetPlayer():Int;
+	public function GetPlayfield():SchmovinPlayfield;
 	public function GetTargetPercent(player:Int):Float;
 	public function SetTimeline(t:SchmovinTimeline):Void;
 	public function GetIndex():Int;
@@ -53,6 +54,11 @@ class SchmovinEventNull implements ISchmovinEvent
 		return 0;
 	}
 
+	public function GetPlayfield()
+	{
+		return new SchmovinPlayfield();
+	}
+
 	public function GetBeat()
 	{
 		return 0;
@@ -82,6 +88,12 @@ class SchmovinEventEase implements ISchmovinEvent
 	var _done = false;
 	var _timeline:SchmovinTimeline;
 	var _index = -1;
+	var _playfield:SchmovinPlayfield;
+
+	public function GetPlayfield()
+	{
+		return _playfield;
+	}
 
 	public function GetBeat()
 	{
@@ -118,7 +130,7 @@ class SchmovinEventEase implements ISchmovinEvent
 		return _player;
 	}
 
-	public function new(beat:Float, length:Float, easeFunc:Float->Float, targetPercent:Float, mod:ISchmovinNoteMod, player:Int)
+	public function new(beat:Float, length:Float, easeFunc:Float->Float, targetPercent:Float, mod:ISchmovinNoteMod, player:Int, playfield:SchmovinPlayfield)
 	{
 		_beat = beat;
 		_length = length;
@@ -126,6 +138,7 @@ class SchmovinEventEase implements ISchmovinEvent
 		_targetPercent = targetPercent;
 		_mod = mod;
 		_player = player;
+		_playfield = playfield;
 	}
 
 	public function GetModName()
@@ -151,12 +164,12 @@ class SchmovinEventEase implements ISchmovinEvent
 			_done = false;
 			var progress = (currentBeat - _beat) / _length;
 			var percent = FlxMath.lerp(lastPercent, _targetPercent, _easeFunction(progress));
-			_mod.SetPercent(percent, _player);
+			_mod.SetPercent(percent, _playfield);
 		}
 		else if (!_done && currentBeat > endBeat) // Reached the end
 		{
 			_done = true;
-			_mod.SetPercent(_targetPercent, _player);
+			_mod.SetPercent(_targetPercent, _playfield);
 		}
 	}
 }
@@ -170,6 +183,12 @@ class SchmovinEventSet implements ISchmovinEvent
 	var _player:Int = 0;
 	var _done = false;
 	var _index = -1;
+	var _playfield:SchmovinPlayfield;
+
+	public function GetPlayfield()
+	{
+		return _playfield;
+	}
 
 	public function GetBeat()
 	{
@@ -211,12 +230,13 @@ class SchmovinEventSet implements ISchmovinEvent
 		_timeline = t;
 	}
 
-	public function new(beat:Float, targetPercent:Float, mod:ISchmovinNoteMod, player:Int)
+	public function new(beat:Float, targetPercent:Float, mod:ISchmovinNoteMod, player:Int, playfield:SchmovinPlayfield)
 	{
 		_beat = beat;
 		_targetPercent = targetPercent;
 		_mod = mod;
 		_player = player;
+		_playfield = playfield;
 	}
 
 	public function GetTargetPercent(player:Int)
@@ -236,7 +256,7 @@ class SchmovinEventSet implements ISchmovinEvent
 		}
 		else if (!_done)
 		{
-			_mod.SetPercent(_targetPercent, _player);
+			_mod.SetPercent(_targetPercent, _playfield);
 			_done = true;
 		}
 	}
@@ -245,6 +265,14 @@ class SchmovinEventSet implements ISchmovinEvent
 class SchmovinEventFunction implements ISchmovinEvent
 {
 	var _timeline:SchmovinTimeline;
+	var _callback:Void->Void;
+	var _done = false;
+	var _beat:Float;
+
+	public function GetPlayfield()
+	{
+		return new SchmovinPlayfield();
+	}
 
 	public function GetBeat()
 	{
@@ -277,10 +305,6 @@ class SchmovinEventFunction implements ISchmovinEvent
 	{
 		return -1;
 	}
-
-	var _callback:Void->Void;
-	var _done = false;
-	var _beat:Float;
 
 	public function new(beat:Float, callback:Void->Void)
 	{

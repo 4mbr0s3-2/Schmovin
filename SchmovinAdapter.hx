@@ -16,6 +16,11 @@ class SchmovinAdapter
 		return _adapterInstance;
 	}
 
+	public function GetDefaultNoteX(column:Int, player:Int)
+	{
+		return 0.0;
+	}
+
 	public static function SetInstance(a:SchmovinAdapter)
 	{
 		_adapterInstance = a;
@@ -25,6 +30,12 @@ class SchmovinAdapter
 	{
 		// return Conductor.songPosition;
 		return 0.0;
+	}
+
+	// This accounts for custom notes with custom textures
+	public function ShouldCacheNoteBitmap(note:Note)
+	{
+		return true;
 	}
 
 	public function GrabScrollSpeed()
@@ -70,5 +81,10 @@ class SchmovinAdapter
 	public function GetHoldNoteSubdivisions()
 	{
 		return 4;
+	}
+
+	public function GetArrowPathSubdivisions()
+	{
+		return 80;
 	}
 }

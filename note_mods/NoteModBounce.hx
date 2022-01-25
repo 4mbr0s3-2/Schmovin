@@ -13,10 +13,10 @@ using schmovin.SchmovinUtil;
 
 class NoteModBounce extends NoteModBase
 {
-	override function ExecutePath(currentBeat:Float, strumTimeDiff:Float, column:Int, player:Int, pos:Vector4):Vector4
+	override function ExecutePath(currentBeat:Float, strumTime:Float, column:Int, player:Int, pos:Vector4, playfield:SchmovinPlayfield):Vector4
 	{
 		var outPos = pos.clone();
 
-		return outPos.add(new Vector4(outRelative * Note.swagWidth / 2 * GetPercent(player)));
+		return outPos.add(new Vector4(outRelative * Note.swagWidth / 2 * GetPercent(playfield)));
 	}
 }

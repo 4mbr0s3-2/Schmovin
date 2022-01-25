@@ -1,5 +1,6 @@
 package schmovin;
 
+import flixel.FlxG;
 import groovin.mod.ModHooks;
 import groovin.util.GroovinConductor;
 import groovin_input.GroovinInput;
@@ -45,6 +46,11 @@ class GroovinSchmovinAdapter extends SchmovinAdapter
 		return GroovinInput.GrabGlobalVisualOffset();
 	}
 
+	override function ShouldCacheNoteBitmap(note:Note):Bool
+	{
+		return !note.extraData.exists('forceBitmap');
+	}
+
 	override function GetCurrentBeat():Float
 	{
 		return GroovinConductor.GetTotalBeatsToTime(GetSongPosition());
@@ -53,5 +59,16 @@ class GroovinSchmovinAdapter extends SchmovinAdapter
 	override function GetHoldNoteSubdivisions():Int
 	{
 		return Schmovin.holdNoteSubdivisions;
+	}
+
+	override function GetArrowPathSubdivisions():Int
+	{
+		return Schmovin.arrowPathSubdivisions;
+	}
+
+	override function GetDefaultNoteX(column:Int, player:Int)
+	{
+		var playerColumn = column % 4;
+		return SchmovinUtil.NoteWidthHalf() + 50 + playerColumn * Note.swagWidth + FlxG.width / 2 * player;
 	}
 }

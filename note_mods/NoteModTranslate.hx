@@ -2,7 +2,7 @@
  * @ Author: 4mbr0s3 2
  * @ Create Time: 2021-07-21 20:23:56
  * @ Modified by: 4mbr0s3 2
- * @ Modified time: 2021-08-29 21:16:23
+ * @ Modified time: 2021-12-01 00:15:24
  */
 
 package schmovin.note_mods;
@@ -16,10 +16,10 @@ class NoteModTranslate extends NoteModBase
 		return true;
 	}
 
-	override function ExecutePath(currentBeat:Float, strumTimeDiff:Float, column:Int, player:Int, pos:Vector4):Vector4
+	override function ExecutePath(currentBeat:Float, strumTime:Float, column:Int, player:Int, pos:Vector4, playfield:SchmovinPlayfield):Vector4
 	{
 		var newPos = pos.clone();
-		var extraOffset = new Vector4(GetOtherPercent('xoffset', player), GetOtherPercent('yoffset', player), GetOtherPercent('zoffset', player));
-		return newPos.add(new Vector4(GetPercent(player), GetOtherPercent('y', player), GetOtherPercent('z', player)).add(extraOffset));
+		var extraOffset = new Vector4(GetOtherPercent('xoffset', playfield), GetOtherPercent('yoffset', playfield), GetOtherPercent('zoffset', playfield));
+		return newPos.add(new Vector4(GetPercent(playfield), GetOtherPercent('y', playfield), GetOtherPercent('z', playfield)).add(extraOffset));
 	}
 }

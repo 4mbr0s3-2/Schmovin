@@ -2,7 +2,7 @@
  * @ Author: 4mbr0s3 2
  * @ Create Time: 2021-07-16 13:18:59
  * @ Modified by: 4mbr0s3 2
- * @ Modified time: 2021-08-29 15:08:57
+ * @ Modified time: 2022-01-17 23:29:48
  */
 
 package schmovin.note_mods;
@@ -19,30 +19,31 @@ class NoteModTiny extends NoteModBase
 		return true;
 	}
 
-	function GetScale(column:Int, player:Int)
+	function GetScale(column:Int, playfield:SchmovinPlayfield)
 	{
 		var playerColumn = column % 4;
 		var scale = new FlxPoint(1, 1);
-		scale.scale(1 - GetPercent(player) * 0.5);
-		scale.scale(1 - GetOtherPercent('tiny${playerColumn}', player) * 0.5);
-		scale.x *= 1 - GetOtherPercent('tinyx${playerColumn}', player) * 0.5;
-		scale.y *= 1 - GetOtherPercent('tinyy${playerColumn}', player) * 0.5;
-		scale.x *= 1 - GetOtherPercent('tinyx', player) * 0.5;
-		scale.y *= 1 - GetOtherPercent('tinyy', player) * 0.5;
+		scale.scale(1 - GetPercent(playfield) * 0.5);
+		scale.scale(1 - GetOtherPercent('tiny${playerColumn}', playfield) * 0.5);
+		scale.x *= 1 - GetOtherPercent('tinyx${playerColumn}', playfield) * 0.5;
+		scale.y *= 1 - GetOtherPercent('tinyy${playerColumn}', playfield) * 0.5;
+		scale.x *= 1 - GetOtherPercent('tinyx', playfield) * 0.5;
+		scale.y *= 1 - GetOtherPercent('tinyy', playfield) * 0.5;
 		return scale;
 	}
 
-	override function ExecuteNote(currentBeat:Float, note:Note, player:Int, pos:Vector4)
+	override function IsVertexModifier():Bool
 	{
-		var scale = GetScale(note.noteData, player);
-		note.scale.x *= scale.x;
-		note.scale.y *= scale.y;
+		return true;
 	}
 
-	override function ExecuteReceptor(currentBeat:Float, receptor:Receptor, player:Int, pos:Vector4)
+	override function ExecuteNoteVertex(currentBeat:Float, strumTime:Float, column:Int, player:Int, vert:Vector4, vertIndex:Int, pos:Vector4,
+			playfield:SchmovinPlayfield):Vector4
 	{
-		var scale = GetScale(receptor.column, player);
-		receptor.scale.x *= scale.x;
-		receptor.scale.y *= scale.y;
+		var scale = GetScale(column, playfield);
+		var outVert = vert.clone();
+		outVert.x *= scale.x;
+		outVert.y *= scale.y;
+		return outVert;
 	}
 }

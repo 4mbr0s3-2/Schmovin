@@ -2,7 +2,7 @@
  * @ Author: 4mbr0s3 2
  * @ Create Time: 2021-08-15 01:00:48
  * @ Modified by: 4mbr0s3 2
- * @ Modified time: 2021-08-29 15:08:24
+ * @ Modified time: 2021-12-01 00:08:54
  */
 
 package schmovin.overlays;
@@ -25,7 +25,7 @@ class ModLabel extends TextField implements IUpdateable
 	{
 		if (_noteMod == null)
 			return;
-		text = '${_mod}: ${_noteMod.GetPercent(0)}, ${_noteMod.GetPercent(1)}';
+		text = '${_mod}: ${_noteMod.GetLegacyPercent(0)}, ${_noteMod.GetLegacyPercent(1)}';
 		x = _margin;
 		y = row * args[1];
 	}

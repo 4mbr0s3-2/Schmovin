@@ -116,9 +116,7 @@ class SchmovinStandalone
 	 */
 	public function PreDraw(state:PlayState)
 	{
-		if (instance.camPath == null)
-			return;
-		instance.notePathRenderer.PreDraw();
+		instance.PreDraw();
 	}
 
 	/**
@@ -127,9 +125,7 @@ class SchmovinStandalone
 	 */
 	public function PostDraw(state:PlayState)
 	{
-		if (instance.camPath == null)
-			return;
-		instance.holdNoteRenderer.PreDraw();
+		instance.PostDraw();
 	}
 
 	/**

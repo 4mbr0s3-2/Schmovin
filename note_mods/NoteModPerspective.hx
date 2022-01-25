@@ -2,7 +2,7 @@
  * @ Author: 4mbr0s3 2
  * @ Create Time: 2021-07-19 13:51:43
  * @ Modified by: 4mbr0s3 2
- * @ Modified time: 2021-08-29 15:08:49
+ * @ Modified time: 2022-01-17 23:30:39
  */
 
 package schmovin.note_mods;
@@ -25,8 +25,7 @@ class NoteModPerspective extends NoteModBase
 		return true;
 	}
 
-	// https://www.youtube.com/watch?v=dul0mui292Q Quick mafs
-	override function ExecutePath(currentBeat:Float, strumTimeDiff:Float, column:Int, player:Int, pos:Vector4):Vector4
+	function Perspective(pos:Vector4)
 	{
 		var outPos = pos.clone();
 
@@ -38,7 +37,7 @@ class NoteModPerspective extends NoteModBase
 		var near = 0;
 		var far = 2;
 
-		var perspectiveZ = outPos.z - 1;
+		var perspectiveZ = outPos.z / FlxG.height - 1;
 		if (perspectiveZ > 0)
 			perspectiveZ = 0; // To prevent coordinate overflow :/
 
@@ -49,17 +48,36 @@ class NoteModPerspective extends NoteModBase
 		var b = 2 * near * far / (near - far);
 		var z = a * perspectiveZ + b;
 
-		return new Vector4(x / z, y / z, z, outPos.w).add(halfScreenOffset);
+		return new Vector4(x / z, y / z, outPos.z, outPos.w).add(halfScreenOffset);
 	}
 
-	override function ExecuteNote(currentBeat:Float, note:Note, player:Int, pos:Vector4)
+	// https://www.youtube.com/watch?v=dul0mui292Q Quick mafs
+	override function ExecutePath(currentBeat:Float, strumTime:Float, column:Int, player:Int, pos:Vector4, playfield:SchmovinPlayfield):Vector4
 	{
-		note.scale.scale(1 / pos.z);
+		return Perspective(pos);
 	}
 
-	override function ExecuteReceptor(currentBeat:Float, receptor:Receptor, player:Int, pos:Vector4)
+	override function ExecuteNote(currentBeat:Float, note:Note, player:Int, pos:Vector4, playfield:SchmovinPlayfield)
+	{
+		// if (note.isSustainNote)
+		// 	note.scale.scale(1 / pos.z);
+	}
+
+	override function ExecuteReceptor(currentBeat:Float, receptor:Receptor, player:Int, pos:Vector4, playfield:SchmovinPlayfield)
 	{
 		// receptor.scale.scale(2 - path.w); // Guys how do I make the scale consistent??
-		receptor.scale.scale(1 / pos.z); // NVM figured it out
+		// receptor.scale.scale(1 / pos.z); // NVM figured it out
+	}
+
+	override function IsVertexModifier():Bool
+	{
+		return true;
+	}
+
+	override function ExecuteNoteVertex(currentBeat:Float, strumTime:Float, column:Int, player:Int, vert:Vector4, vertIndex:Int, pos:Vector4,
+			playfield:SchmovinPlayfield):Vector4
+	{
+		var coords = Perspective(vert.add(pos)).subtract(pos);
+		return coords;
 	}
 }

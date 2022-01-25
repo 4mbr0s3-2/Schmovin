@@ -2,7 +2,7 @@
  * @ Author: 4mbr0s3 2
  * @ Create Time: 2021-06-22 11:55:58
  * @ Modified by: 4mbr0s3 2
- * @ Modified time: 2021-11-14 10:33:21
+ * @ Modified time: 2022-01-24 21:21:56
  */
 
 package schmovin;
@@ -20,7 +20,6 @@ import groovin.mod.ModHooks;
 import groovin.mod_options.GroovinModOptionsClasses.GroovinModOption;
 import groovin.mod_options.GroovinModOptionsClasses.GroovinModOptionSectionTitle;
 import groovin.mod_options.GroovinModOptionsClasses.GroovinModOptionSlider;
-import groovin.util.GroovinConductor;
 
 using SchmovinUtil.SchmovinUtil;
 
@@ -29,6 +28,7 @@ class Schmovin extends Mod
 	private var instance:SchmovinInstance;
 
 	public static var holdNoteSubdivisions:Int = 4;
+	public static var arrowPathSubdivisions:Int = 80;
 
 	override function GetCredits():String
 	{
@@ -114,16 +114,12 @@ class Schmovin extends Mod
 
 	override function PreDraw(state:PlayState)
 	{
-		if (instance.camPath == null)
-			return;
-		instance.notePathRenderer.PreDraw();
+		instance.PreDraw();
 	}
 
 	override function PostDraw(state:PlayState)
 	{
-		if (instance.camPath == null)
-			return;
-		instance.holdNoteRenderer.PreDraw();
+		instance.PostDraw();
 	}
 
 	override function OnCountdown(state:PlayState)
@@ -139,11 +135,12 @@ class Schmovin extends Mod
 
 	function UpdateReceptors()
 	{
-		var currentBeat = GetCurrentBeat();
 		for (receptorIndex in 0...instance.state.strumLineNotes.length)
 		{
+			// Note positioning moved to SchmovinRenderers for multiple playfield support
+			// This is for updating receptor positions...
 			var receptor = instance.state.strumLineNotes.members[receptorIndex];
-			instance.timeline.UpdateNotes(currentBeat, receptor, SchmovinUtil.GetPlayerOfTotalColumn(receptorIndex), receptorIndex);
+			receptor.visible = false;
 		}
 		instance.UpdateFakeExplosionReceptors();
 	}
@@ -166,13 +163,23 @@ class Schmovin extends Mod
 			{
 				holdNoteSubdivisions = cast v;
 			}, 1, 4, '', true),
+			new GroovinModOptionSlider(this, 'maxArrowPathSubdivisions', 'Maximum Arrow Path Subdivisions', 80, 10, 100, (v) ->
+			{
+				arrowPathSubdivisions = cast v;
+			}, 1, 80, '', true),
 		];
 	}
 
 	override function PostNotePosition(state:PlayState, strumLine:FlxSprite, daNote:Note, SONG:SwagSong):Bool
 	{
-		if (daNote.alive && daNote.visible)
-			instance.timeline.UpdateNotes(GetCurrentBeat(), daNote, daNote.GetPlayer());
+		// Note positioning moved to SchmovinRenderers for multiple playfield support
+
+		if (daNote.alive)
+		{
+			daNote.visible = false;
+			daNote.cameras = [];
+		}
+
 		return true;
 	}
 }

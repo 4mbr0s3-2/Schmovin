@@ -2,7 +2,7 @@
  * @ Author: 4mbr0s3 2
  * @ Create Time: 2021-06-22 16:25:26
  * @ Modified by: 4mbr0s3 2
- * @ Modified time: 2021-11-13 12:35:53
+ * @ Modified time: 2021-11-30 22:33:55
  */
 
 package schmovin;
@@ -20,6 +20,7 @@ class Receptor
 	public var y(get, set):Float;
 	public var angle(get, set):Float;
 	public var scale(get, set):FlxPoint;
+	public var visible(get, set):Bool;
 
 	function get_x()
 	{
@@ -49,6 +50,16 @@ class Receptor
 	function set_angle(v:Float)
 	{
 		return wrappee.angle = v;
+	}
+
+	function set_visible(v:Bool)
+	{
+		return wrappee.visible = v;
+	}
+
+	function get_visible()
+	{
+		return wrappee.visible;
 	}
 
 	function get_scale()

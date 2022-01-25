@@ -2,12 +2,14 @@
  * @ Author: 4mbr0s3 2
  * @ Create Time: 2021-06-22 11:55:58
  * @ Modified by: 4mbr0s3 2
- * @ Modified time: 2021-09-26 16:06:07
+ * @ Modified time: 2022-01-17 23:34:07
  */
 
 package schmovin;
 
 import flixel.FlxSprite;
+import haxe.Exception;
+import lime.math.Vector4;
 import schmovin.SchmovinEvent;
 import schmovin.SchmovinInstance;
 
@@ -48,14 +50,14 @@ class SchmovinTimeline
 	{
 		var timeline = new SchmovinTimeline();
 		timeline._instance = instance;
-		timeline._mods = new SchmovinNoteModList(state, timeline);
+		timeline._mods = new SchmovinNoteModList(state, timeline, instance.playfields);
 		timeline.InitializeLists();
 		return timeline;
 	}
 
-	public function GetPath(currentBeat:Float, strumTime:Float, column:Int, player:Int)
+	public function GetPath(currentBeat:Float, strumTime:Float, column:Int, player:Int, playfield:SchmovinPlayfield, exclude:Array<String> = null)
 	{
-		return _mods.GetPath(currentBeat, strumTime, column, player);
+		return _mods.GetPath(currentBeat, strumTime, column, player, playfield, exclude);
 	}
 
 	public function GetPreviousEvent(event:ISchmovinEvent):ISchmovinEvent
@@ -96,9 +98,20 @@ class SchmovinTimeline
 		_mods.UpdateMiscMods(currentBeat);
 	}
 
-	public function UpdateNotes(currentBeat:Float, obj:FlxSprite, plr:Int, column:Int = 0)
+	public function UpdatePath(playfield:SchmovinPlayfield, currentBeat:Float, obj:FlxSprite, plr:Int, column:Int = 0)
 	{
-		_mods.Update(currentBeat, obj, plr, column);
+		return _mods.UpdatePath(playfield, currentBeat, obj, plr, column);
+	}
+
+	public function UpdateNote(playfield:SchmovinPlayfield, currentBeat:Float, obj:FlxSprite, pos:Vector4, plr:Int, column:Int = 0)
+	{
+		return _mods.UpdateNote(playfield, currentBeat, obj, pos, plr, column);
+	}
+
+	public function UpdateNoteVertex(playfield:SchmovinPlayfield, currentBeat:Float, obj:FlxSprite, vertex:Vector4, vertexIndex:Int, pos:Vector4,
+			player:Int = 0, column:Int = 0, exclude:Array<String> = null)
+	{
+		return _mods.UpdateNoteVertex(currentBeat, obj, vertex, vertexIndex, pos, playfield, player, column, exclude);
 	}
 
 	public function AddEvent(modName:String, event:ISchmovinEvent)
@@ -118,15 +131,20 @@ class SchmovinTimeline
 			mod.remove(event);
 	}
 
+	function GetDefaultPlayfieldFromPlayer(p:Int)
+	{
+		return _instance.playfields.GetPlayfieldAtIndex(p);
+	}
+
 	public function Ease(beat:Float, length:Float, easeFunc:Float->Float, target:Float, mod:String, player:Int = -1)
 	{
 		if (player == -1)
 		{
 			for (p in 0...2)
-				AddEvent(mod, new SchmovinEventEase(beat, length, easeFunc, target, GetNoteMod(mod), p));
+				AddEvent(mod, new SchmovinEventEase(beat, length, easeFunc, target, GetNoteMod(mod), p, GetDefaultPlayfieldFromPlayer(p)));
 			return;
 		}
-		AddEvent(mod, new SchmovinEventEase(beat, length, easeFunc, target, GetNoteMod(mod), player));
+		AddEvent(mod, new SchmovinEventEase(beat, length, easeFunc, target, GetNoteMod(mod), player, GetDefaultPlayfieldFromPlayer(player)));
 	}
 
 	public function Set(beat:Float, target:Float, mod:String, player:Int = -1)
@@ -134,9 +152,9 @@ class SchmovinTimeline
 		if (player == -1)
 		{
 			for (p in 0...2)
-				AddEvent(mod, new SchmovinEventSet(beat, target, GetNoteMod(mod), p));
+				AddEvent(mod, new SchmovinEventSet(beat, target, GetNoteMod(mod), p, GetDefaultPlayfieldFromPlayer(p)));
 		}
-		AddEvent(mod, new SchmovinEventSet(beat, target, GetNoteMod(mod), player));
+		AddEvent(mod, new SchmovinEventSet(beat, target, GetNoteMod(mod), player, GetDefaultPlayfieldFromPlayer(player)));
 	}
 
 	public function Func(beat:Float, callback:Void->Void)

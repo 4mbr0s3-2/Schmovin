@@ -2,12 +2,13 @@
  * @ Author: 4mbr0s3 2
  * @ Create Time: 2021-07-23 17:48:21
  * @ Modified by: 4mbr0s3 2
- * @ Modified time: 2021-08-29 15:08:53
+ * @ Modified time: 2022-01-17 23:29:56
  */
 
 package schmovin.note_mods;
 
 import flixel.FlxG;
+import flixel.math.FlxMath;
 import lime.math.Vector4;
 
 class NoteModRotate extends NoteModBase
@@ -20,18 +21,31 @@ class NoteModRotate extends NoteModBase
 		return true;
 	}
 
-	override public function new(state:PlayState, modList:SchmovinNoteModList, primary:Bool = true, modPrefix:String = '', origin:Vector4 = null)
+	override public function new(modPrefix:String = '', origin:Vector4 = null)
 	{
 		_modPrefix = modPrefix;
 		_origin = origin;
-		super(state, modList, primary);
+		super();
+	}
+
+	override function IsVertexModifier():Bool
+	{
+		return true;
+	}
+
+	override function ExecuteNoteVertex(currentBeat:Float, strumTime:Float, column:Int, player:Int, vert:Vector4, vertIndex:Int, pos:Vector4,
+			playfield:SchmovinPlayfield):Vector4
+	{
+		var out = RotateVector4(vert, GetOtherPercent('${_modPrefix}rotatex', playfield), GetOtherPercent('${_modPrefix}rotatey', playfield),
+			GetPercent(playfield));
+		return out;
 	}
 
 	static function Rotate(x:Float, y:Float, angle:Float)
 	{
 		return [
-			x * Math.cos(angle) - y * Math.sin(angle),
-			x * Math.sin(angle) + y * Math.cos(angle)
+			x * FlxMath.fastCos(angle) - y * FlxMath.fastSin(angle),
+			x * FlxMath.fastSin(angle) + y * FlxMath.fastCos(angle)
 		];
 	}
 
@@ -49,17 +63,15 @@ class NoteModRotate extends NoteModBase
 		return offY;
 	}
 
-	override function ExecutePath(currentBeat:Float, strumTime:Float, column:Int, player:Int, pos:Vector4):Vector4
+	override function ExecutePath(currentBeat:Float, strumTime:Float, column:Int, player:Int, pos:Vector4, playfield:SchmovinPlayfield):Vector4
 	{
 		var origin:Vector4 = new Vector4(50 + FlxG.width / 2 * player + 2 * Note.swagWidth, FlxG.height / 2);
 		if (_origin != null)
 			origin = _origin;
 		var diff = pos.subtract(origin);
-		var zScale = FlxG.height;
-		diff.z *= zScale;
 
-		var out = RotateVector4(diff, GetOtherPercent('${_modPrefix}rotatex', player), GetOtherPercent('${_modPrefix}rotatey', player), GetPercent(player));
-		out.z /= zScale;
+		var out = RotateVector4(diff, GetOtherPercent('${_modPrefix}rotatex', playfield), GetOtherPercent('${_modPrefix}rotatey', playfield),
+			GetPercent(playfield));
 
 		return origin.add(out);
 	}

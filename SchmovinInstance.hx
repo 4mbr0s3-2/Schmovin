@@ -2,7 +2,7 @@
  * @ Author: 4mbr0s3 2
  * @ Create Time: 2021-08-22 19:49:42
  * @ Modified by: 4mbr0s3 2
- * @ Modified time: 2021-11-14 10:30:11
+ * @ Modified time: 2022-01-03 18:42:52
  */
 
 package schmovin;
@@ -17,6 +17,7 @@ import openfl.filters.ShaderFilter;
 import schmovin.SchmovinRenderers.ISchmovinRenderer;
 import schmovin.SchmovinRenderers.SchmovinHoldNoteRenderer;
 import schmovin.SchmovinRenderers.SchmovinNotePathRenderer;
+import schmovin.SchmovinRenderers.SchmovinTapNoteRenderer;
 import schmovin.shaders.PlaneRaymarcher;
 import schmovin.util.FlxCameraCopy;
 
@@ -37,9 +38,11 @@ class SchmovinInstance
 	public var planeRaymarcherFilter:ShaderFilter;
 
 	public var timeline:SchmovinTimeline;
+	public var playfields:SchmovinPlayfieldManager;
 
 	private var _client:SchmovinClient;
 
+	public var tapNoteRenderer:ISchmovinRenderer;
 	public var holdNoteRenderer:ISchmovinRenderer;
 	public var notePathRenderer:ISchmovinRenderer;
 
@@ -48,6 +51,8 @@ class SchmovinInstance
 	public var layerBelowGame:FlxTypedGroup<FlxBasic>;
 	public var layerAboveGame:FlxTypedGroup<FlxBasic>;
 	public var layerAboveHUD:FlxTypedGroup<FlxBasic>;
+
+	private var _destroyed:Bool = false;
 
 	public var fakeExplosionReceptors:FlxTypedGroup<FlxSprite>;
 
@@ -113,6 +118,13 @@ class SchmovinInstance
 		}
 	}
 
+	function InitializePlayfields()
+	{
+		playfields = new SchmovinPlayfieldManager();
+		playfields.AddPlayfield(new SchmovinPlayfield('dad', 0));
+		playfields.AddPlayfield(new SchmovinPlayfield('bf', 1));
+	}
+
 	public function UpdateFakeExplosionReceptors()
 	{
 		if (fakeExplosionReceptors == null)
@@ -121,8 +133,13 @@ class SchmovinInstance
 		{
 			var explosion = fakeExplosionReceptors.members[index];
 			var target = state.strumLineNotes.members[index];
-			target.visible = target.animation.name != 'confirm';
-			explosion.visible = !target.visible;
+			// target.alpha = target.animation.name != 'confirm' ? 1 : 0;
+			// explosion.visible = target.alpha != 1;
+			explosion.visible = false;
+
+			// Obsolete due to tap note and receptor rendering
+			// Keeping this code just in case the rendering's too laggy...
+
 			if (!explosion.visible)
 				continue;
 
@@ -171,6 +188,7 @@ class SchmovinInstance
 
 	public function InitializeSchmovin()
 	{
+		InitializePlayfields();
 		timeline = SchmovinTimeline.Create(state, this);
 		SwitchClient();
 		InitializeRenderers();
@@ -190,7 +208,23 @@ class SchmovinInstance
 	public function InitializeRenderers()
 	{
 		holdNoteRenderer = new SchmovinHoldNoteRenderer(state, [camNotes], timeline, this);
+		tapNoteRenderer = new SchmovinTapNoteRenderer(state, [camNotes], timeline, this);
 		notePathRenderer = new SchmovinNotePathRenderer(state, [camPath], timeline, this);
+	}
+
+	public function PreDraw()
+	{
+		if (camPath == null)
+			return;
+		notePathRenderer.PreDraw();
+	}
+
+	public function PostDraw()
+	{
+		if (_destroyed)
+			return;
+		holdNoteRenderer.PreDraw();
+		tapNoteRenderer.PreDraw();
 	}
 
 	public static function Create()
@@ -200,7 +234,11 @@ class SchmovinInstance
 
 	public function Destroy()
 	{
+		_destroyed = true;
 		_client.Destroy();
+		tapNoteRenderer.Destroy();
+		holdNoteRenderer.Destroy();
+		notePathRenderer.Destroy();
 	}
 
 	public function Update(elapsed:Float)

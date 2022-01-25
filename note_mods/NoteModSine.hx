@@ -14,12 +14,12 @@ using schmovin.SchmovinUtil;
 
 class NoteModSine extends NoteModBase
 {
-	override function ExecutePath(currentBeat:Float, strumTimeDiff:Float, column:Int, player:Int, pos:Vector4):Vector4
+	override function ExecutePath(currentBeat:Float, strumTime:Float, column:Int, player:Int, pos:Vector4, playfield:SchmovinPlayfield):Vector4
 	{
 		var outPos = pos.clone();
 		var offsetFromCenter = outPos.subtract(new Vector4(FlxG.width / 2.0, FlxG.height / 2.0));
 		// Apply a wavy sine wave effect based on the position from the center.
-		outPos.y += offsetFromCenter.length * Math.sin(offsetFromCenter.length / 100.0 + currentBeat * 2.0 * Math.PI) * GetPercent(player);
+		outPos.y += offsetFromCenter.length * Math.sin(offsetFromCenter.length / 100.0 + currentBeat * 2.0 * Math.PI) * GetPercent(playfield);
 		// Zamn, Copilot's good
 		return outPos;
 	}

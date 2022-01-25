@@ -13,24 +13,24 @@ using schmovin.SchmovinUtil;
 
 class NoteModInvert extends NoteModBase
 {
-	override function ExecutePath(currentBeat:Float, strumTime:Float, column:Int, player:Int, pos:Vector4):Vector4
+	override function ExecutePath(currentBeat:Float, strumTime:Float, column:Int, player:Int, pos:Vector4, playfield:SchmovinPlayfield):Vector4
 	{
 		var playerColumn = column % 4;
 		var outPos = pos.clone();
 		var neg = (playerColumn % 2 - 0.5) / 0.5;
-		outPos.x += Note.swagWidth * GetPercent(player) * -neg;
+		outPos.x += Note.swagWidth * GetPercent(playfield) * -neg;
 		return outPos;
 	}
 }
 
 class NoteModFlip extends NoteModBase
 {
-	override function ExecutePath(currentBeat:Float, strumTime:Float, column:Int, player:Int, pos:Vector4):Vector4
+	override function ExecutePath(currentBeat:Float, strumTime:Float, column:Int, player:Int, pos:Vector4, playfield:SchmovinPlayfield):Vector4
 	{
 		var playerColumn = column % 4;
 		var outPos = pos.clone();
 		var off = playerColumn - 1.5;
-		outPos.x -= Note.swagWidth * off * GetPercent(player) * 2;
+		outPos.x -= Note.swagWidth * off * GetPercent(playfield) * 2;
 		return outPos;
 	}
 }

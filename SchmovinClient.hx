@@ -2,7 +2,7 @@
  * @ Author: 4mbr0s3 2
  * @ Create Time: 2021-06-22 12:05:21
  * @ Modified by: 4mbr0s3 2
- * @ Modified time: 2021-11-13 10:42:20
+ * @ Modified time: 2022-01-06 22:59:04
  */
 
 package schmovin;
@@ -13,6 +13,8 @@ import flixel.tweens.FlxTween.TweenCallback;
 import hscript.Interp;
 import hscript.Parser;
 import schmovin.SchmovinTimeline;
+import schmovin.note_mods.ISchmovinNoteMod;
+import schmovin.note_mods.NoteModBase;
 
 using schmovin.SchmovinUtil;
 
@@ -22,6 +24,18 @@ class SchmovinClient
 	var _state:PlayState;
 	var _instance:SchmovinInstance;
 	var _tween:FlxTweenManager = new FlxTweenManager();
+
+	function AddPlayfield(name:String, playerToCopy:Int)
+	{
+		var p = new SchmovinPlayfield(name, playerToCopy);
+		_instance.playfields.AddPlayfield(p);
+		return p;
+	}
+
+	function RemovePlayfield(p:SchmovinPlayfield)
+	{
+		_instance.playfields.RemovePlayfield(p);
+	}
 
 	public function Initialize() {}
 
@@ -114,5 +128,23 @@ class SchmovinClient
 	inline function BarStepToBeats(bar:Float, step:Float)
 	{
 		return (bar - 1) * 4 + (step - 1) / 4.0;
+	}
+
+	function AddNoteMod(modName:String, mod:ISchmovinNoteMod, putInOrderedList:Bool = false)
+	{
+		var modList = _timeline.GetModList();
+		mod.Initialize(_state, modList, modList._playfields);
+		modList.AddNoteMod(modName, mod, putInOrderedList);
+	}
+
+	function AddNoteSubMod(modName:String)
+	{
+		AddNoteMod(modName, new NoteModBase());
+	}
+
+	function RemoveNoteModByName(modName:String)
+	{
+		var modList = _timeline.GetModList();
+		modList.RemoveNoteModByName(modName);
 	}
 }

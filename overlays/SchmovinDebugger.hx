@@ -2,7 +2,7 @@
  * @ Author: 4mbr0s3 2
  * @ Create Time: 2021-08-13 22:26:14
  * @ Modified by: 4mbr0s3 2
- * @ Modified time: 2021-11-13 10:57:27
+ * @ Modified time: 2022-01-24 22:30:27
  */
 
 package schmovin.overlays;
@@ -20,6 +20,9 @@ import openfl.events.Event;
 import schmovin.SchmovinTimeline;
 import schmovin.note_mods.ISchmovinNoteMod;
 
+/**
+ * inb4 someone compares this to Thread of Fate Manipulator (midi would be cool tho)
+ */
 class ModSlider extends FlxBar
 {
 	static inline var WIDTH = 200;
@@ -33,21 +36,22 @@ class ModSlider extends FlxBar
 	private var _max:Float = 1.0;
 	private var _percent:Float = 0;
 
+	private var _debugger:SchmovinDebugger;
+
 	public var noteModName:String;
 	public var player:Int;
 
 	public var displayName:FlxText;
 
-	public function new(index:Int, player:Int, noteMod:ISchmovinNoteMod, min:Float, max:Float)
+	public function new(debugger:SchmovinDebugger, index:Int, player:Int, noteModName:String, min:Float, max:Float)
 	{
-		noteModName = noteMod.GetName();
-
-		_noteMod = noteMod;
+		this.noteModName = noteModName;
+		this.player = player;
 		_index = index;
 		_min = min;
 		_max = max;
 
-		this.player = player;
+		_debugger = debugger;
 		super(MARGIN, FlxG.height - HEIGHT * (index + 1) - MARGIN, LEFT_TO_RIGHT, WIDTH, HEIGHT, this, '', 0, 100);
 		scrollFactor.set();
 		createFilledBar(0xFFFF0000, 0xFF66FF33, true, FlxColor.BLACK);
@@ -89,7 +93,13 @@ class ModSlider extends FlxBar
 			var mousePercent = (FlxG.mouse.cursorContainer.x - this.x - this.frameWidth / 2) / this.frameWidth * 2;
 			_percent = mousePercent;
 			var outPercent = FlxMath.lerp(_min, _max, (mousePercent + 1.0) / 2.0);
-			_noteMod.SetPercent(outPercent, player);
+			if (player < 0)
+			{
+				for (p in 0...2)
+					_debugger.SetPercentPlayfield(noteModName, outPercent, p);
+				return;
+			}
+			_debugger.SetPercentPlayfield(noteModName, outPercent, player);
 		}
 	}
 }
@@ -115,6 +125,11 @@ class SchmovinDebugger extends Sprite
 		InitializeSprites();
 		AddToDebugger();
 		InitializeSliders();
+	}
+
+	public function ITGApplyModifiers(stringOptions:String, player:Int)
+	{
+		_timeline._mods.ITGApplyModifiers(stringOptions, player);
 	}
 
 	public function AddAllTheSliders(player:Int)
@@ -150,13 +165,20 @@ class SchmovinDebugger extends Sprite
 	public function AddSlider(modName:String, player:Int = -1, min:Float = -1.0, max:Float = 1.0)
 	{
 		SchmovinAdapter.GetInstance().Log('Added slider ${modName} for player ${player}');
-		_sliders.add(new ModSlider(_sliders.length, player, _timeline._mods.GetNoteModByName(modName), min, max));
+		_sliders.add(new ModSlider(this, _sliders.length, player, modName, min, max));
 	}
 
 	public function AddSliders(modNames:Array<String>, player:Int = -1, min:Float = -1.0, max:Float = 1.0)
 	{
 		for (name in modNames)
 			AddSlider(name, player, min, max);
+	}
+
+	public function GetExecutingMods()
+	{
+		@:privateAccess
+		for (mod in _timeline._mods._modExecuteList)
+			FlxG.log.add(mod.GetName());
 	}
 
 	public function RemoveSlider(modName:String, player:Int)
@@ -178,6 +200,11 @@ class SchmovinDebugger extends Sprite
 		FlxG.state.add(_sliders);
 	}
 
+	public function SetPercentPlayfield(modName:String, percent:Float, index:Int)
+	{
+		_timeline._mods.SetPercentPlayfieldIndex(modName, percent, index);
+	}
+
 	public function SetPercent(modName:String, percent:Float, player:Int)
 	{
 		_timeline._mods.SetPercent(modName, percent, player);
@@ -192,7 +219,7 @@ class SchmovinDebugger extends Sprite
 	{
 		function NoPercent(mod:ISchmovinNoteMod)
 		{
-			return mod.GetPercent(0) == 0 && mod.GetPercent(1) == 0;
+			return mod.GetLegacyPercent(0) == 0 && mod.GetLegacyPercent(1) == 0;
 		}
 		var iterator = _timeline._events.keyValueIterator();
 		var row = 0;

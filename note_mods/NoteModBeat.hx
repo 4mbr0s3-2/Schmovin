@@ -2,7 +2,7 @@
  * @ Author: 4mbr0s3 2
  * @ Create Time: 2021-07-15 17:59:30
  * @ Modified by: 4mbr0s3 2
- * @ Modified time: 2021-08-29 15:08:34
+ * @ Modified time: 2022-01-04 21:47:30
  */
 
 package schmovin.note_mods;
@@ -28,11 +28,11 @@ class NoteModBeat extends NoteModBase
 		return amp / 0.3 * neg;
 	}
 
-	override function ExecutePath(currentBeat:Float, strumTimeDiff:Float, column:Int, player:Int, pos:Vector4):Vector4
+	override function ExecutePath(currentBeat:Float, strumTimeDiff:Float, column:Int, player:Int, pos:Vector4, playfield:SchmovinPlayfield):Vector4
 	{
 		var newPos = pos.clone();
 		var amp = GetAmplitude(currentBeat) * Math.cos(GetRelativeTime(strumTimeDiff) / 45);
-		var offsetX = amp * Note.swagWidth / 2 * GetPercent(player);
+		var offsetX = amp * Note.swagWidth / 2 * GetPercent(playfield);
 		return newPos.add(new Vector4(offsetX));
 	}
 }
