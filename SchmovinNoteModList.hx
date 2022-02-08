@@ -2,7 +2,7 @@
  * @ Author: 4mbr0s3 2
  * @ Create Time: 2021-06-22 12:04:54
  * @ Modified by: 4mbr0s3 2
- * @ Modified time: 2022-01-24 23:06:50
+ * @ Modified time: 2022-02-07 22:27:10
  */
 
 package schmovin;
@@ -34,6 +34,8 @@ class SchmovinNoteModList
 	 */
 	var _modExecuteList:Array<ISchmovinNoteMod>;
 
+	var _vertexModExecuteList:Array<ISchmovinNoteMod>;
+
 	var _timeline:SchmovinTimeline;
 
 	public function IsInActiveModList(name:String)
@@ -52,12 +54,20 @@ class SchmovinNoteModList
 	{
 		if (!_modExecuteList.contains(i))
 			_modExecuteList.push(i);
-		SortActiveModList();
+		SortModList(_modExecuteList);
 	}
 
-	function SortActiveModList()
+	@:allow(schmovin.note_mods.ISchmovinNoteMod)
+	function AddToActiveVertexModList(i:ISchmovinNoteMod)
 	{
-		_modExecuteList.sort((m1, m2) ->
+		if (!_vertexModExecuteList.contains(i))
+			_vertexModExecuteList.push(i);
+		SortModList(_vertexModExecuteList);
+	}
+
+	function SortModList(list:Array<ISchmovinNoteMod>)
+	{
+		list.sort((m1, m2) ->
 		{
 			return m1.GetOrder() > m2.GetOrder() ? 1 : -1;
 		});
@@ -67,7 +77,9 @@ class SchmovinNoteModList
 	function RemoveFromActiveModList(i:ISchmovinNoteMod)
 	{
 		var out = _modExecuteList.remove(i);
-		SortActiveModList();
+		if (i.IsVertexModifier())
+			_vertexModExecuteList.remove(i);
+		SortModList(_modExecuteList);
 		return out;
 	}
 
@@ -77,6 +89,7 @@ class SchmovinNoteModList
 		_state = state;
 		_mods = new Map<String, ISchmovinNoteMod>();
 		_modExecuteList = [];
+		_vertexModExecuteList = [];
 		_playfields = playfields;
 		InitializeNoteMods();
 	}
@@ -106,7 +119,11 @@ class SchmovinNoteModList
 		_currentModOrderIndex++;
 		_mods.set(modName, mod);
 		if (putInExecutionList || mod.MustExecute() || mod.IsMiscMod())
+		{
 			_modExecuteList.push(mod);
+			if (mod.IsVertexModifier())
+				_vertexModExecuteList.push(mod);
+		}
 	}
 
 	public function AddNoteModBefore(beforeModName:String, modName:String, mod:ISchmovinNoteMod, putInExecutionList:Bool = true)
@@ -114,7 +131,9 @@ class SchmovinNoteModList
 		mod.SetName(modName);
 		_mods.set(modName, mod);
 		if (putInExecutionList || mod.MustExecute() || mod.IsMiscMod())
+		{
 			_modExecuteList.insert(_modExecuteList.indexOf(GetNoteModByName(beforeModName)), mod);
+		}
 	}
 
 	public function GetNoteModByName(modName:String)
@@ -244,9 +263,9 @@ class SchmovinNoteModList
 			player:Int = 0, column:Int = 0, exclude:Array<String> = null)
 	{
 		var outVertex = vertex.clone();
-		for (notemod in _modExecuteList)
+		for (notemod in _vertexModExecuteList)
 		{
-			if (!notemod.IsVertexModifier() || (exclude != null && exclude.contains(notemod.GetName())))
+			if (exclude != null && exclude.contains(notemod.GetName()))
 				continue;
 			// Concrete dependencies :P
 			if (Std.is(sprite, Note))
@@ -256,9 +275,7 @@ class SchmovinNoteModList
 				outVertex = notemod.ExecuteNoteVertex(currentBeat, strumTimeDiff, note.GetTotalColumn(), player, outVertex, vertexIndex, pos, playfield);
 			}
 			else
-			{
 				outVertex = notemod.ExecuteNoteVertex(currentBeat, 0, column, player, outVertex, vertexIndex, pos, playfield);
-			}
 		}
 		return outVertex;
 	}

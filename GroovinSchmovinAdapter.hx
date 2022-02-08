@@ -71,4 +71,9 @@ class GroovinSchmovinAdapter extends SchmovinAdapter
 		var playerColumn = column % 4;
 		return SchmovinUtil.NoteWidthHalf() + 50 + playerColumn * Note.swagWidth + FlxG.width / 2 * player;
 	}
+
+	override function GetOptimizeHoldNotes():Bool
+	{
+		return Schmovin.optimizeHoldNotes;
+	}
 }

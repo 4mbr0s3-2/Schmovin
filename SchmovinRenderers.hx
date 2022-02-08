@@ -2,7 +2,7 @@
  * @ Author: 4mbr0s3 2
  * @ Create Time: 2021-07-07 13:26:53
  * @ Modified by: 4mbr0s3 2
- * @ Modified time: 2022-01-24 23:06:10
+ * @ Modified time: 2022-02-07 22:31:39
  */
 
 package schmovin;
@@ -83,6 +83,8 @@ class SchmovinNotePathRenderer extends SchmovinRenderer
 		var subdivisions:Int = cast ARROW_PATH_SUBDIVISIONS / _instance.playfields.list.length;
 		var boundary = 300;
 		var bitmap = new Shape();
+
+		// This gets REALLY laggy because of those GetPath() calls, but I have no idea how else to optimize it...
 
 		for (playfield in _instance.playfields.list)
 		{
@@ -212,7 +214,7 @@ class SchmovinTapNoteRenderer extends SchmovinRenderer
 		return _cachedReceptorGraphics[column][snapAlpha];
 	}
 
-	function GetQuadAlongPath(strumTime:Float, pos:Vector4, playfield:SchmovinPlayfield, obj:FlxSprite, column:Int, player:Int, targetWidth:Float,
+	inline function GetQuadAlongPath(strumTime:Float, pos:Vector4, playfield:SchmovinPlayfield, obj:FlxSprite, column:Int, player:Int, targetWidth:Float,
 			targetHeight:Float)
 	{
 		var texWidth = targetWidth;
@@ -370,7 +372,7 @@ class SchmovinHoldNoteRenderer extends SchmovinRenderer
 	 * updateFramePixels() grabs the bitmap of the hold note with the alpha channel but is quite costly.
 	 * The solution is to cache a few alpha variants of the bitmap for each column and then use them when needed.
 	 * 
-	 * hours_wasted = 27
+	 * hours_wasted = 37
 	 */
 	var _cachedHoldGraphics:Map<Int, Map<Int, FlxGraphic>> = new Map<Int, Map<Int, FlxGraphic>>();
 
@@ -444,14 +446,22 @@ class SchmovinHoldNoteRenderer extends SchmovinRenderer
 		var path1 = _timeline.GetPath(currentBeat, strumTime, column, player, playfield);
 		var pathPerspective = path1.clone();
 		path1.z = 0;
-		var path2 = _timeline.GetPath(currentBeat, strumTime + infinitesimal, column, player, playfield);
-		path2.z = 0;
 
 		var texWidth = targetWidth;
 
 		var halfWidth = texWidth / 2;
 
 		var relativeVerts = [new Vector4(-halfWidth, 0), new Vector4(halfWidth, 0)];
+
+		if (SchmovinAdapter.GetInstance().GetOptimizeHoldNotes())
+		{
+			var perp1 = path1.add(relativeVerts[0]);
+			var perp2 = path1.add(relativeVerts[1]);
+			return [perp1, perp2];
+		}
+
+		var path2 = _timeline.GetPath(currentBeat, strumTime + infinitesimal, column, player, playfield);
+		path2.z = 0;
 
 		// var outVerts = [];
 
@@ -487,7 +497,15 @@ class SchmovinHoldNoteRenderer extends SchmovinRenderer
 	{
 		function GetHoldNotes(playfield:SchmovinPlayfield)
 		{
-			return _playState.notes.members;
+			return _playState.notes.members.filter((hold) ->
+			{
+				var dist = hold.strumTime - Conductor.songPosition;
+				return SchmovinUtil.GetPlayer(hold) == playfield.player
+					&& hold.isSustainNote
+					&& hold.alive
+					&& dist < 1500 + _timeline.GetNoteMod('drawdistance').GetPercent(playfield)
+					&& dist >= 0;
+			});
 		}
 		for (camera in _cameras)
 		{
@@ -498,12 +516,6 @@ class SchmovinHoldNoteRenderer extends SchmovinRenderer
 				var lastFrame = null;
 				for (hold in GetHoldNotes(playfield))
 				{
-					if (SchmovinUtil.GetPlayer(hold) != playfield.player
-						|| !hold.isSustainNote
-						|| !hold.alive
-						|| Conductor.songPosition >= hold.strumTime)
-						continue;
-
 					var verticesArray = [];
 					var uvArray = [];
 
@@ -511,8 +523,8 @@ class SchmovinHoldNoteRenderer extends SchmovinRenderer
 					var holdEnd = false;
 					if (hold.animation.name.contains('end'))
 						holdEnd = true;
-					var crotchet = SchmovinAdapter.GetInstance().GetCrotchetAtTime(hold.strumTime) / 4;
 					var lastBottom = null;
+					var crotchet = SchmovinAdapter.GetInstance().GetCrotchetAtTime(hold.strumTime) / 4;
 					var strumTimeDiff = SchmovinAdapter.GetInstance().GetSongPosition() - hold.strumTime
 						- SchmovinAdapter.GetInstance().GrabGlobalVisualOffset();
 

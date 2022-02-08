@@ -2,7 +2,7 @@
  * @ Author: 4mbr0s3 2
  * @ Create Time: 2021-07-15 16:25:02
  * @ Modified by: 4mbr0s3 2
- * @ Modified time: 2022-01-24 19:11:11
+ * @ Modified time: 2022-02-07 18:31:21
  */
 
 package schmovin;
@@ -159,5 +159,7 @@ class Registry
 		AddNoteMod('sine', new NoteModSine());
 
 		AddNoteMod('perspective', new NoteModPerspective());
+
+		AddNoteMod('drawdistance', new NoteModBase());
 	}
 }

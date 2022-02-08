@@ -2,7 +2,7 @@
  * @ Author: 4mbr0s3 2
  * @ Create Time: 2021-07-15 16:29:16
  * @ Modified by: 4mbr0s3 2
- * @ Modified time: 2022-01-24 23:00:12
+ * @ Modified time: 2022-02-07 22:17:16
  */
 
 package schmovin.note_mods;
@@ -40,6 +40,8 @@ class NoteModBase implements ISchmovinNoteMod
 	{
 		_active = true;
 		_modList.AddToActiveModList(this);
+		if (IsVertexModifier())
+			_modList.AddToActiveVertexModList(this);
 	}
 
 	public function IsActive()

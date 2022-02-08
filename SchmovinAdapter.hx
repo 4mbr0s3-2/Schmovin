@@ -87,4 +87,13 @@ class SchmovinAdapter
 	{
 		return 80;
 	}
+
+	public function GetOptimizeHoldNotes()
+	{
+		#if desktop
+		return true;
+		#else
+		return false;
+		#end
+	}
 }

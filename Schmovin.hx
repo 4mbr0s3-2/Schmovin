@@ -2,7 +2,7 @@
  * @ Author: 4mbr0s3 2
  * @ Create Time: 2021-06-22 11:55:58
  * @ Modified by: 4mbr0s3 2
- * @ Modified time: 2022-01-24 21:21:56
+ * @ Modified time: 2022-01-27 17:31:58
  */
 
 package schmovin;
@@ -18,6 +18,7 @@ import flixel.util.FlxColor;
 import groovin.mod.Mod;
 import groovin.mod.ModHooks;
 import groovin.mod_options.GroovinModOptionsClasses.GroovinModOption;
+import groovin.mod_options.GroovinModOptionsClasses.GroovinModOptionCheckbox;
 import groovin.mod_options.GroovinModOptionsClasses.GroovinModOptionSectionTitle;
 import groovin.mod_options.GroovinModOptionsClasses.GroovinModOptionSlider;
 
@@ -29,6 +30,7 @@ class Schmovin extends Mod
 
 	public static var holdNoteSubdivisions:Int = 4;
 	public static var arrowPathSubdivisions:Int = 80;
+	public static var optimizeHoldNotes:Bool = #if desktop true #else false #end;
 
 	override function GetCredits():String
 	{
@@ -166,7 +168,13 @@ class Schmovin extends Mod
 			new GroovinModOptionSlider(this, 'maxArrowPathSubdivisions', 'Maximum Arrow Path Subdivisions', 80, 10, 100, (v) ->
 			{
 				arrowPathSubdivisions = cast v;
-			}, 1, 80, '', true),
+			}, 1, 80, '',
+				true),
+			new GroovinModOptionCheckbox(this, 'optimizeSustainNotes', 'Optimize Sustain Notes', #if desktop true #else false #end, (v) ->
+			{
+				optimizeHoldNotes = cast v;
+			}, false,
+				'Reduces the number of times paths are calculated for sustain (hold) notes by 1. Boosts framerate by about 10 FPS.')
 		];
 	}
 
