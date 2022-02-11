@@ -2,7 +2,7 @@
  * @ Author: 4mbr0s3 2
  * @ Create Time: 2021-06-22 13:03:47
  * @ Modified by: 4mbr0s3 2
- * @ Modified time: 2021-12-01 00:09:19
+ * @ Modified time: 2022-02-10 19:27:40
  */
 
 package schmovin;
@@ -164,12 +164,12 @@ class SchmovinEventEase implements ISchmovinEvent
 			_done = false;
 			var progress = (currentBeat - _beat) / _length;
 			var percent = FlxMath.lerp(lastPercent, _targetPercent, _easeFunction(progress));
-			_mod.SetPercent(percent, _playfield);
+			_playfield.SetPercent(_mod.GetName(), percent);
 		}
 		else if (!_done && currentBeat > endBeat) // Reached the end
 		{
 			_done = true;
-			_mod.SetPercent(_targetPercent, _playfield);
+			_playfield.SetPercent(_mod.GetName(), _targetPercent);
 		}
 	}
 }
@@ -256,7 +256,7 @@ class SchmovinEventSet implements ISchmovinEvent
 		}
 		else if (!_done)
 		{
-			_mod.SetPercent(_targetPercent, _playfield);
+			_playfield.SetPercent(_mod.GetName(), _targetPercent);
 			_done = true;
 		}
 	}

@@ -2,7 +2,7 @@
  * @ Author: 4mbr0s3 2
  * @ Create Time: 2021-07-15 16:29:16
  * @ Modified by: 4mbr0s3 2
- * @ Modified time: 2022-02-07 22:17:16
+ * @ Modified time: 2022-02-10 22:27:28
  */
 
 package schmovin.note_mods;
@@ -23,25 +23,21 @@ class NoteModBase implements ISchmovinNoteMod
 	var _currentEvent:ISchmovinEvent;
 	var _active = false;
 	var _playfields:SchmovinPlayfieldManager;
-	var _otherModCache:Map<String, ISchmovinNoteMod> = new Map<String, ISchmovinNoteMod>();
 
 	public function Deactivate(receptors:Array<Receptor>, notes:Array<Note>)
 	{
 		// Only check activity after deactivation
-		var o = false;
-		for (percent in _percents.iterator())
-			o = o || percent != 0;
-		_active = o;
-		if (!_active)
-			_modList.RemoveFromActiveModList(this);
+		// var o = false;
+		// for (percent in _percents.iterator())
+		// 	o = o || percent != 0;
+		// _active = o;
+		// if (!_active)
+		// 	_modList.RemoveFromActiveModList(this);
 	}
 
 	public function Activate(receptors:Array<Receptor>, notes:Array<Note>)
 	{
 		_active = true;
-		_modList.AddToActiveModList(this);
-		if (IsVertexModifier())
-			_modList.AddToActiveVertexModList(this);
 	}
 
 	public function IsActive()
@@ -82,7 +78,8 @@ class NoteModBase implements ISchmovinNoteMod
 			Activate(SchmovinUtil.GetReceptors(player, _state), SchmovinUtil.GetNotes(player, _state));
 		else if (f == 0 && GetPercent(playfield) != 0)
 			Deactivate(SchmovinUtil.GetReceptors(player, _state), SchmovinUtil.GetNotes(player, _state));
-		_percents.set(playfield, f);
+		// _percents.set(playfield, f);
+		playfield.SetPercent(this.GetName(), f);
 	}
 
 	/**
@@ -114,28 +111,19 @@ class NoteModBase implements ISchmovinNoteMod
 				sum += GetPercent(GetDefaultPlayfieldFromPlayer(i));
 			return sum;
 		}
+		if (_playfields == null)
+			return 0.0;
 		return GetPercent(GetDefaultPlayfieldFromPlayer(p));
 	}
 
 	public function GetPercent(playfield:SchmovinPlayfield)
 	{
-		var o = _percents.get(playfield);
-		if (o == null)
-			return 0.0;
-		return o;
+		return playfield.GetPercent(this.GetName());
 	}
 
 	public function GetOtherPercent(modName:String, playfield:SchmovinPlayfield)
 	{
-		var mod = _otherModCache.get(modName);
-		if (mod == null)
-		{
-			mod = _modList.GetNoteModByName(modName);
-			if (mod == null)
-				return 0.0;
-			_otherModCache.set(modName, mod);
-		}
-		return _otherModCache.get(modName).GetPercent(playfield);
+		return playfield.GetPercent(modName);
 	}
 
 	public function GetOtherLegacyPercent(modName:String, player:Int)
@@ -148,6 +136,7 @@ class NoteModBase implements ISchmovinNoteMod
 		_modList.SetPercent(modName, f, player);
 	}
 
+	@:deprecated
 	var _percents:Map<SchmovinPlayfield, Float> = new Map<SchmovinPlayfield, Float>();
 
 	public function new() {}

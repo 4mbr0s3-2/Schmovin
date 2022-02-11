@@ -2,7 +2,7 @@
  * @ Author: 4mbr0s3 2
  * @ Create Time: 2021-07-07 13:26:53
  * @ Modified by: 4mbr0s3 2
- * @ Modified time: 2022-02-07 22:31:39
+ * @ Modified time: 2022-02-10 22:12:17
  */
 
 package schmovin;
@@ -89,13 +89,11 @@ class SchmovinNotePathRenderer extends SchmovinRenderer
 		for (playfield in _instance.playfields.list)
 		{
 			@:privateAccess
-			if (!_timeline.GetModList().IsInActiveModList('arrowpath'))
-				return;
-			if (_timeline.GetNoteMod('arrowpath').GetPercent(playfield) == 0)
-				return;
+			if (playfield.GetPercent('arrowpath') == 0)
+				continue;
 			for (column in 0...4)
 			{
-				var alpha = _timeline.GetNoteMod('arrowpath${column}').GetPercent(playfield) + _timeline.GetNoteMod('arrowpath').GetPercent(playfield);
+				var alpha = playfield.GetPercent('arrowpath${column}') + playfield.GetPercent('arrowpath');
 
 				var commands = new Vector<Int>();
 				var data = new Vector<Float>();
@@ -278,8 +276,8 @@ class SchmovinTapNoteRenderer extends SchmovinRenderer
 		}
 	}
 
-	// This is really laggy with OpenGL, but WebGL runs fine
-	// TODO: Figure out how to profile this??
+	// This is really laggy with OpenGL, but WebGL runs like it's nothing
+	// TODO: Figure out how to profile this on desktop??
 
 	function Render(camera:FlxCamera, sprite:FlxSprite, frame:BitmapData, alpha:Float, strumTime:Float, column:Int, player:Int)
 	{

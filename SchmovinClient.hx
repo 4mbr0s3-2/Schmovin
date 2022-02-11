@@ -2,7 +2,7 @@
  * @ Author: 4mbr0s3 2
  * @ Create Time: 2021-06-22 12:05:21
  * @ Modified by: 4mbr0s3 2
- * @ Modified time: 2022-01-06 22:59:04
+ * @ Modified time: 2022-02-10 22:54:43
  */
 
 package schmovin;
@@ -130,14 +130,13 @@ class SchmovinClient
 		return (bar - 1) * 4 + (step - 1) / 4.0;
 	}
 
-	function AddNoteMod(modName:String, mod:ISchmovinNoteMod, putInOrderedList:Bool = false)
+	function AddNoteMod(modName:String, mod:ISchmovinNoteMod, aux:Bool = false)
 	{
 		var modList = _timeline.GetModList();
-		mod.Initialize(_state, modList, modList._playfields);
-		modList.AddNoteMod(modName, mod, putInOrderedList);
+		modList.AddNoteMod(modName, mod, aux);
 	}
 
-	function AddNoteSubMod(modName:String)
+	function AddNoteAuxMod(modName:String)
 	{
 		AddNoteMod(modName, new NoteModBase());
 	}

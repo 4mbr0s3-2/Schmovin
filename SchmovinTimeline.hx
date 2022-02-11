@@ -2,7 +2,7 @@
  * @ Author: 4mbr0s3 2
  * @ Create Time: 2021-06-22 11:55:58
  * @ Modified by: 4mbr0s3 2
- * @ Modified time: 2022-02-07 22:08:27
+ * @ Modified time: 2022-02-10 22:46:06
  */
 
 package schmovin;
@@ -27,7 +27,7 @@ class SchmovinTimeline
 
 	public function GetNoteMod(name:String)
 	{
-		return _mods.GetNoteModByName(name);
+		return _mods.GetModByName(name);
 	}
 
 	@:allow(schmovin.SchmovinClient, schmovin.overlays.SchmovinDebugger)
@@ -79,9 +79,9 @@ class SchmovinTimeline
 	public function InitializeLists()
 	{
 		_events = new Map<String, Array<ISchmovinEvent>>();
-		for (notemod in _mods.GetNoteModsMap().keys())
+		for (notemod in _mods.GetNoteModsMap())
 		{
-			_events.set(notemod, new Array<ISchmovinEvent>());
+			_events.set(notemod.GetName(), new Array<ISchmovinEvent>());
 		}
 		_events.set('events', new Array<ISchmovinEvent>());
 	}
@@ -90,6 +90,10 @@ class SchmovinTimeline
 	{
 		for (eventList in _events)
 		{
+			// TODO!!!
+			// This is O(N); too many events will make the whole thing lag ;-;
+			// Do a performance test with 1000 events... check if it's necessary to fix this
+			// FIX: Pop finished events and use first event of array?
 			for (event in eventList)
 			{
 				event.TimelineUpdate(currentBeat);

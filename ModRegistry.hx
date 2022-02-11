@@ -2,7 +2,7 @@
  * @ Author: 4mbr0s3 2
  * @ Create Time: 2021-07-15 16:25:02
  * @ Modified by: 4mbr0s3 2
- * @ Modified time: 2022-02-07 18:31:21
+ * @ Modified time: 2022-02-10 21:58:28
  */
 
 package schmovin;
@@ -29,7 +29,7 @@ import schmovin.note_mods.NoteModTornado;
 import schmovin.note_mods.NoteModTranslate;
 import schmovin.note_mods.NoteModZigzag;
 
-class Registry
+class ModRegistry
 {
 	var _modList:SchmovinNoteModList;
 	var _state:PlayState;
@@ -40,30 +40,29 @@ class Registry
 		_state = state;
 	}
 
-	function AddNoteMod(modName:String, mod:ISchmovinNoteMod, putInOrderedList:Bool = false)
+	function AddNoteMod(modName:String, mod:ISchmovinNoteMod, aux:Bool = false)
 	{
-		mod.Initialize(_state, _modList, _modList._playfields);
-		_modList.AddNoteMod(modName, mod, putInOrderedList);
+		_modList.AddNoteMod(modName, mod, aux);
 	}
 
-	function AddNoteSubMod(modName:String)
+	function AddNoteAuxMod(modName:String)
 	{
-		AddNoteMod(modName, new NoteModBase());
+		AddNoteMod(modName, new NoteModBase(), true);
 	}
 
 	public function Register()
 	{
-		AddNoteSubMod('xmod');
-		AddNoteSubMod('forcexmod');
+		AddNoteAuxMod('xmod');
+		AddNoteAuxMod('forcexmod');
 		for (i in 0...4)
 		{
-			AddNoteSubMod('xmod${i}');
-			AddNoteSubMod('forcexmod${i}');
+			AddNoteAuxMod('xmod${i}');
+			AddNoteAuxMod('forcexmod${i}');
 		}
-		AddNoteSubMod('split');
-		AddNoteSubMod('cross');
+		AddNoteAuxMod('split');
+		AddNoteAuxMod('cross');
 		for (i in 0...4)
-			AddNoteSubMod('reverse${i}');
+			AddNoteAuxMod('reverse${i}');
 		AddNoteMod('reverse', new NoteModReverse());
 
 		AddNoteMod('invert', new NoteModInvert());
@@ -77,47 +76,47 @@ class Registry
 
 		AddNoteMod('beat', new NoteModBeat());
 
-		AddNoteSubMod('arrowpath');
+		AddNoteAuxMod('arrowpath');
 		for (i in 0...4)
-			AddNoteSubMod('arrowpath${i}');
-		AddNoteSubMod('arrowpathsize');
+			AddNoteAuxMod('arrowpath${i}');
+		AddNoteAuxMod('arrowpathsize');
 		for (i in 0...4)
-			AddNoteSubMod('arrowpathsize${i}');
+			AddNoteAuxMod('arrowpathsize${i}');
 
 		for (axis in ['x', 'y', 'z'])
 		{
-			AddNoteSubMod('confusion${axis}offset');
+			AddNoteAuxMod('confusion${axis}offset');
 			for (i in 0...4)
-				AddNoteSubMod('confusion${axis}offset${i}');
+				AddNoteAuxMod('confusion${axis}offset${i}');
 		}
 
 		AddNoteMod('confusion', new NoteModConfusion());
 
 		for (i in 0...4)
 		{
-			AddNoteSubMod('tiny${i}');
-			AddNoteSubMod('tinyx${i}');
-			AddNoteSubMod('tinyy${i}');
+			AddNoteAuxMod('tiny${i}');
+			AddNoteAuxMod('tinyx${i}');
+			AddNoteAuxMod('tinyy${i}');
 		}
-		AddNoteSubMod('tinyx');
-		AddNoteSubMod('tinyy');
+		AddNoteAuxMod('tinyx');
+		AddNoteAuxMod('tinyy');
 		AddNoteMod('tiny', new NoteModTiny());
 
 		AddNoteMod('bumpy', new NoteModBumpy());
 
-		AddNoteSubMod('rotatex');
-		AddNoteSubMod('rotatey');
+		AddNoteAuxMod('rotatex');
+		AddNoteAuxMod('rotatey');
 		AddNoteMod('rotatez', new NoteModRotate());
 
-		AddNoteSubMod('centerrotatex');
-		AddNoteSubMod('centerrotatey');
+		AddNoteAuxMod('centerrotatex');
+		AddNoteAuxMod('centerrotatey');
 		AddNoteMod('centerrotatez', new NoteModRotate('centerrotate', new lime.math.Vector4(FlxG.width / 2, FlxG.height / 2)));
 
-		AddNoteSubMod('xoffset');
-		AddNoteSubMod('yoffset');
-		AddNoteSubMod('zoffset');
-		AddNoteSubMod('y');
-		AddNoteSubMod('z');
+		AddNoteAuxMod('xoffset');
+		AddNoteAuxMod('yoffset');
+		AddNoteAuxMod('zoffset');
+		AddNoteAuxMod('y');
+		AddNoteAuxMod('z');
 		AddNoteMod('x', new NoteModTranslate());
 
 		AddNoteMod('zigzag', new NoteModZigzag());
@@ -125,35 +124,35 @@ class Registry
 
 		AddNoteMod('gantzgraf', new NoteModGantzGraf());
 
-		AddNoteSubMod('camgameoverride');
-		AddNoteSubMod('camgameoverridex');
-		AddNoteSubMod('camgameoverridey');
-		AddNoteSubMod('camgamezoom');
-		AddNoteSubMod('camgameangle');
-		AddNoteSubMod('camgamey');
+		AddNoteAuxMod('camgameoverride');
+		AddNoteAuxMod('camgameoverridex');
+		AddNoteAuxMod('camgameoverridey');
+		AddNoteAuxMod('camgamezoom');
+		AddNoteAuxMod('camgameangle');
+		AddNoteAuxMod('camgamey');
 		AddNoteMod('camgamex', new MiscModCamCopyPosition(_modList.GetSchmovinInstance().camGameCopy, 0, 'camgame'));
 
 		// Modifying the note camera directly is discouraged (since the scrollFactor for notes and receptors default to 0)
 		// Instead, use the note mod transformations.
 
-		AddNoteSubMod('camnotesrmpitch');
-		AddNoteSubMod('camnotesrmyaw');
-		AddNoteSubMod('camnotesrmx');
-		AddNoteSubMod('camnotesrmy');
-		AddNoteSubMod('camnotesrmz');
-		AddNoteSubMod('camnotesrmlookatx');
-		AddNoteSubMod('camnotesrmlookaty');
-		AddNoteSubMod('camnotesrmlookatz');
+		AddNoteAuxMod('camnotesrmpitch');
+		AddNoteAuxMod('camnotesrmyaw');
+		AddNoteAuxMod('camnotesrmx');
+		AddNoteAuxMod('camnotesrmy');
+		AddNoteAuxMod('camnotesrmz');
+		AddNoteAuxMod('camnotesrmlookatx');
+		AddNoteAuxMod('camnotesrmlookaty');
+		AddNoteAuxMod('camnotesrmlookatz');
 		AddNoteMod('camnotesrm', new MiscModCamRaymarch(_modList.GetSchmovinInstance().camNotes, 0));
 
-		AddNoteSubMod('camgamermpitch');
-		AddNoteSubMod('camgamermyaw');
-		AddNoteSubMod('camgamermx');
-		AddNoteSubMod('camgamermy');
-		AddNoteSubMod('camgamermz');
-		AddNoteSubMod('camgamermlookatx');
-		AddNoteSubMod('camgamermlookaty');
-		AddNoteSubMod('camgamermlookatz');
+		AddNoteAuxMod('camgamermpitch');
+		AddNoteAuxMod('camgamermyaw');
+		AddNoteAuxMod('camgamermx');
+		AddNoteAuxMod('camgamermy');
+		AddNoteAuxMod('camgamermz');
+		AddNoteAuxMod('camgamermlookatx');
+		AddNoteAuxMod('camgamermlookaty');
+		AddNoteAuxMod('camgamermlookatz');
 		AddNoteMod('camgamerm', new MiscModCamRaymarch(_modList.GetSchmovinInstance().camGameCopy, 0, 'camgamerm'));
 
 		AddNoteMod('sine', new NoteModSine());

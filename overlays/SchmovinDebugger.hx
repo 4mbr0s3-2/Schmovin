@@ -2,7 +2,7 @@
  * @ Author: 4mbr0s3 2
  * @ Create Time: 2021-08-13 22:26:14
  * @ Modified by: 4mbr0s3 2
- * @ Modified time: 2022-01-24 22:30:27
+ * @ Modified time: 2022-02-10 22:13:50
  */
 
 package schmovin.overlays;
@@ -174,11 +174,25 @@ class SchmovinDebugger extends Sprite
 			AddSlider(name, player, min, max);
 	}
 
-	public function GetExecutingMods()
+	public function GetNoteMods()
 	{
 		@:privateAccess
-		for (mod in _timeline._mods._modExecuteList)
-			FlxG.log.add(mod.GetName());
+		for (mod in _timeline._mods._modsOrder)
+			FlxG.log.add(mod);
+	}
+
+	public function GetMiscMods()
+	{
+		@:privateAccess
+		for (mod in _timeline._mods._miscModsOrder)
+			FlxG.log.add(mod);
+	}
+
+	public function GetAuxMods()
+	{
+		@:privateAccess
+		for (mod in _timeline._mods._auxModsOrder)
+			FlxG.log.add(mod);
 	}
 
 	public function RemoveSlider(modName:String, player:Int)
