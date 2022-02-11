@@ -2,7 +2,7 @@
  * @ Author: 4mbr0s3 2
  * @ Create Time: 2021-07-23 17:48:21
  * @ Modified by: 4mbr0s3 2
- * @ Modified time: 2022-01-17 23:29:56
+ * @ Modified time: 2022-02-10 23:50:10
  */
 
 package schmovin.note_mods;
@@ -41,7 +41,7 @@ class NoteModRotate extends NoteModBase
 		return out;
 	}
 
-	static function Rotate(x:Float, y:Float, angle:Float)
+	static inline function Rotate(x:Float, y:Float, angle:Float)
 	{
 		return [
 			x * FlxMath.fastCos(angle) - y * FlxMath.fastSin(angle),
@@ -49,7 +49,7 @@ class NoteModRotate extends NoteModBase
 		];
 	}
 
-	public static function RotateVector4(vec:Vector4, angleX:Float, angleY:Float, angleZ:Float)
+	public static inline function RotateVector4(vec:Vector4, angleX:Float, angleY:Float, angleZ:Float)
 	{
 		var rotateZ = Rotate(vec.x, vec.y, angleZ);
 		var offZ = new Vector4(rotateZ[0], rotateZ[1], vec.z);

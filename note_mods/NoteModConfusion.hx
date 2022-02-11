@@ -2,7 +2,7 @@
  * @ Author: 4mbr0s3 2
  * @ Create Time: 2021-07-15 19:47:00
  * @ Modified by: 4mbr0s3 2
- * @ Modified time: 2022-01-17 23:30:01
+ * @ Modified time: 2022-02-10 23:38:11
  */
 
 package schmovin.note_mods;
@@ -20,7 +20,7 @@ class NoteModConfusion extends NoteModBase
 		return true;
 	}
 
-	function GetTotalConfusion(currentBeat:Float, playfield:SchmovinPlayfield, column:Int, axis:String = 'x')
+	inline function GetTotalConfusion(currentBeat:Float, playfield:SchmovinPlayfield, column:Int, axis:String = 'x')
 	{
 		var playerColumn = column % 4;
 		var offsetConfusion = currentBeat * 45 * GetPercent(playfield);
@@ -54,9 +54,9 @@ class NoteModConfusion extends NoteModBase
 	override function ExecuteNoteVertex(currentBeat:Float, strumTime:Float, column:Int, player:Int, vert:Vector4, vertIndex:Int, pos:Vector4,
 			playfield:SchmovinPlayfield):Vector4
 	{
+		var angleZ = GetTotalConfusion(currentBeat, playfield, column, 'z');
 		var angleX = GetTotalConfusion(currentBeat, playfield, column, 'x');
 		var angleY = GetTotalConfusion(currentBeat, playfield, column, 'y');
-		var angleZ = GetTotalConfusion(currentBeat, playfield, column, 'z');
 		var out = vert.clone();
 		out = RotateVector4(out, angleX, angleY, angleZ);
 		return out;

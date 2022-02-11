@@ -2,7 +2,7 @@
  * @ Author: 4mbr0s3 2
  * @ Create Time: 2021-07-07 13:26:53
  * @ Modified by: 4mbr0s3 2
- * @ Modified time: 2022-02-10 22:12:17
+ * @ Modified time: 2022-02-10 23:44:59
  */
 
 package schmovin;
@@ -236,7 +236,7 @@ class SchmovinTapNoteRenderer extends SchmovinRenderer
 		for (vertIndex in 0...relativeVerts.length)
 		{
 			var vert = relativeVerts[vertIndex];
-			vert = _timeline.UpdateNoteVertex(playfield, SchmovinAdapter.GetInstance().GetCurrentBeat(), obj, vert, vertIndex, pos, player, column);
+			// vert = _timeline.UpdateNoteVertex(playfield, SchmovinAdapter.GetInstance().GetCurrentBeat(), obj, vert, vertIndex, pos, player, column);
 			outVerts.push(vert.add(pos));
 		}
 
@@ -291,7 +291,8 @@ class SchmovinTapNoteRenderer extends SchmovinRenderer
 
 			var pos = _timeline.GetPath(currentBeat, strumTime, column, player, playfield, ['perspective']);
 
-			_timeline.UpdateNote(_instance.playfields.GetPlayfieldAtIndex(player), currentBeat, sprite, pos, player, column);
+			// TODO: Move to main update loop
+			// _timeline.UpdateNote(_instance.playfields.GetPlayfieldAtIndex(player), currentBeat, sprite, pos, player, column);
 
 			var quad = GetQuadAlongPath(strumTime, pos, playfield, sprite, column, player, sprite.frameWidth * sprite.scale.x,
 				sprite.frameHeight * sprite.scale.y);

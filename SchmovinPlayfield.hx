@@ -7,12 +7,24 @@ class SchmovinPlayfield
 	public var name:String;
 	public var player:Int;
 	public var mods:Map<String, Float>;
+	public var activeMods:Array<String> = [];
+
+	public function CheckActiveMod(modName:String)
+	{
+		return activeMods.contains(modName);
+	}
 
 	public function GetPercent(modName:String):Float
 	{
-		var v = mods.get(modName);
-		if (v != null)
+		try
+		{
+			var v = mods[modName];
 			return v;
+		}
+		catch (e)
+		{
+			return 0.0;
+		}
 		return 0.0;
 	}
 
@@ -21,6 +33,10 @@ class SchmovinPlayfield
 		try
 		{
 			mods[modName] = f;
+			if (f != 0 && !activeMods.contains(modName))
+				activeMods.push(modName);
+			else if (f == 0)
+				activeMods.remove(modName);
 		}
 		catch (e)
 		{

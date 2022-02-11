@@ -2,7 +2,7 @@
  * @ Author: 4mbr0s3 2
  * @ Create Time: 2021-07-15 16:29:37
  * @ Modified by: 4mbr0s3 2
- * @ Modified time: 2022-01-26 00:00:18
+ * @ Modified time: 2022-02-10 23:49:29
  */
 
 package schmovin.note_mods;
@@ -17,7 +17,7 @@ using schmovin.SchmovinUtil;
 
 class NoteModReverse extends NoteModBase
 {
-	function GetPercentReverse(column, playfield)
+	inline function GetPercentReverse(column, playfield)
 	{
 		var percentReverse = GetPercent(playfield);
 		var playerColumn = column % 4;

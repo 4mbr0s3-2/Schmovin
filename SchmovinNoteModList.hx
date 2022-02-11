@@ -2,7 +2,7 @@
  * @ Author: 4mbr0s3 2
  * @ Create Time: 2021-06-22 12:04:54
  * @ Modified by: 4mbr0s3 2
- * @ Modified time: 2022-02-10 23:00:20
+ * @ Modified time: 2022-02-11 00:04:37
  */
 
 package schmovin;
@@ -295,7 +295,7 @@ class SchmovinNoteModList
 	public function UpdateNoteVertex(currentBeat:Float, sprite:FlxSprite, vertex:Vector4, vertexIndex:Int, pos:Vector4, playfield:SchmovinPlayfield,
 			player:Int = 0, column:Int = 0, exclude:Array<String> = null)
 	{
-		var outVertex = vertex.clone();
+		var outVertex = vertex;
 		for (modName in _modsOrder)
 		{
 			if (exclude != null && exclude.contains(modName))
@@ -318,10 +318,10 @@ class SchmovinNoteModList
 		return outVertex;
 	}
 
-	function ShouldSkipMod(notemod:ISchmovinNoteMod, playfield:SchmovinPlayfield)
+	inline function ShouldSkipMod(notemod:ISchmovinNoteMod, playfield:SchmovinPlayfield)
 	{
 		// return (notemod.IsMiscMod() || !notemod.IsActive()) && !notemod.MustExecute();
-		return playfield.GetPercent(notemod.GetName()) == 0 && !notemod.MustExecute();
+		return !playfield.CheckActiveMod(notemod.GetName()) && !notemod.MustExecute();
 	}
 
 	public function UpdateMiscMods(currentBeat:Float)
