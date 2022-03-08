@@ -2,7 +2,7 @@
  * @ Author: 4mbr0s3 2
  * @ Create Time: 2021-06-22 13:03:47
  * @ Modified by: 4mbr0s3 2
- * @ Modified time: 2022-02-10 19:27:40
+ * @ Modified time: 2022-03-07 20:07:01
  */
 
 package schmovin;
@@ -56,7 +56,7 @@ class SchmovinEventNull implements ISchmovinEvent
 
 	public function GetPlayfield()
 	{
-		return new SchmovinPlayfield();
+		return new SchmovinPlayfield(_timeline.GetModList());
 	}
 
 	public function GetBeat()
@@ -271,7 +271,7 @@ class SchmovinEventFunction implements ISchmovinEvent
 
 	public function GetPlayfield()
 	{
-		return new SchmovinPlayfield();
+		return new SchmovinPlayfield(_timeline.GetModList());
 	}
 
 	public function GetBeat()

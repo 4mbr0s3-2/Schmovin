@@ -2,7 +2,7 @@
  * @ Author: 4mbr0s3 2
  * @ Create Time: 2021-07-15 16:28:51
  * @ Modified by: 4mbr0s3 2
- * @ Modified time: 2022-02-10 19:25:52
+ * @ Modified time: 2022-03-07 18:38:30
  */
 
 package schmovin.note_mods;
@@ -14,6 +14,8 @@ interface ISchmovinNoteMod
 {
 	public function GetName():String;
 	public function SetName(v:String):Void;
+	public function GetParent():String;
+	public function SetParent(v:String):Void;
 	public function IsMiscMod():Bool;
 	public function SetOrder(v:Int):Void;
 	public function GetOrder():Int;

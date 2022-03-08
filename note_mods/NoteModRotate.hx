@@ -2,7 +2,7 @@
  * @ Author: 4mbr0s3 2
  * @ Create Time: 2021-07-23 17:48:21
  * @ Modified by: 4mbr0s3 2
- * @ Modified time: 2022-02-10 23:50:10
+ * @ Modified time: 2022-03-07 19:48:35
  */
 
 package schmovin.note_mods;
@@ -15,11 +15,6 @@ class NoteModRotate extends NoteModBase
 {
 	var _modPrefix:String;
 	var _origin:Vector4;
-
-	override function MustExecute():Bool
-	{
-		return true;
-	}
 
 	override public function new(modPrefix:String = '', origin:Vector4 = null)
 	{
@@ -37,7 +32,7 @@ class NoteModRotate extends NoteModBase
 			playfield:SchmovinPlayfield):Vector4
 	{
 		var out = RotateVector4(vert, GetOtherPercent('${_modPrefix}rotatex', playfield), GetOtherPercent('${_modPrefix}rotatey', playfield),
-			GetPercent(playfield));
+			GetOtherPercent('${_modPrefix}rotatez', playfield));
 		return out;
 	}
 
@@ -71,7 +66,7 @@ class NoteModRotate extends NoteModBase
 		var diff = pos.subtract(origin);
 
 		var out = RotateVector4(diff, GetOtherPercent('${_modPrefix}rotatex', playfield), GetOtherPercent('${_modPrefix}rotatey', playfield),
-			GetPercent(playfield));
+			GetOtherPercent('${_modPrefix}rotatez', playfield));
 
 		return origin.add(out);
 	}

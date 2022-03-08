@@ -2,7 +2,7 @@
  * @ Author: 4mbr0s3 2
  * @ Create Time: 2021-08-13 22:26:14
  * @ Modified by: 4mbr0s3 2
- * @ Modified time: 2022-02-10 22:13:50
+ * @ Modified time: 2022-03-07 21:26:32
  */
 
 package schmovin.overlays;
@@ -134,9 +134,10 @@ class SchmovinDebugger extends Sprite
 
 	public function AddAllTheSliders(player:Int)
 	{
-		for (mod in _timeline._mods._mods)
+		@:privateAccess
+		for (mod in _timeline._mods._auxModsOrder)
 		{
-			AddSlider(mod.GetName(), player);
+			AddSlider(mod, player);
 		}
 	}
 
@@ -174,21 +175,29 @@ class SchmovinDebugger extends Sprite
 			AddSlider(name, player, min, max);
 	}
 
-	public function GetNoteMods()
+	public function GetActiveMods(player:Int = 0)
+	{
+		// Ignore this lol
+		@:privateAccess
+		for (mod in _timeline._mods._playfields.GetPlayfieldAtIndex(player).activeMods)
+			FlxG.log.add(mod);
+	}
+
+	public function GetRegisteredMods()
 	{
 		@:privateAccess
 		for (mod in _timeline._mods._modsOrder)
 			FlxG.log.add(mod);
 	}
 
-	public function GetMiscMods()
+	public function GetRegisteredMiscMods()
 	{
 		@:privateAccess
 		for (mod in _timeline._mods._miscModsOrder)
 			FlxG.log.add(mod);
 	}
 
-	public function GetAuxMods()
+	public function GetRegisteredAuxMods()
 	{
 		@:privateAccess
 		for (mod in _timeline._mods._auxModsOrder)
@@ -231,9 +240,9 @@ class SchmovinDebugger extends Sprite
 
 	function AddEventsDisplay()
 	{
-		function NoPercent(mod:ISchmovinNoteMod)
+		function NoPercent(mod:String)
 		{
-			return mod.GetLegacyPercent(0) == 0 && mod.GetLegacyPercent(1) == 0;
+			return _timeline.GetModList().GetPercent(mod, 0) == 0.0 && _timeline.GetModList().GetPercent(mod, 1) == 0.0;
 		}
 		var iterator = _timeline._events.keyValueIterator();
 		var row = 0;
@@ -241,10 +250,10 @@ class SchmovinDebugger extends Sprite
 		while (iterator.hasNext())
 		{
 			var current = iterator.next();
+			if (NoPercent(current.key))
+				continue;
 			var mod = _timeline.GetNoteMod(current.key);
 			if (mod == null)
-				continue;
-			if (NoPercent(mod))
 				continue;
 			if (current.value.length > 0 && _displayEvents)
 			{

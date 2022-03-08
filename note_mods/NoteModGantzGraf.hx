@@ -2,7 +2,7 @@
  * @ Author: 4mbr0s3 2
  * @ Create Time: 2021-11-28 01:25:38
  * @ Modified by: 4mbr0s3 2
- * @ Modified time: 2022-01-17 23:29:52
+ * @ Modified time: 2022-02-17 18:43:58
  * @ Description:
  */
 
@@ -13,6 +13,7 @@ import flixel.math.FlxMath;
 import lime.math.Vector4;
 
 /**
+ * Gotta have some non-NotITG modifiers in here
  * https://www.youtube.com/watch?v=ev3vENli7wQ
  */
 class NoteModGantzGraf extends NoteModBase

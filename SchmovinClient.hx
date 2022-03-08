@@ -2,7 +2,7 @@
  * @ Author: 4mbr0s3 2
  * @ Create Time: 2021-06-22 12:05:21
  * @ Modified by: 4mbr0s3 2
- * @ Modified time: 2022-02-10 22:54:43
+ * @ Modified time: 2022-03-07 20:14:42
  */
 
 package schmovin;
@@ -27,7 +27,7 @@ class SchmovinClient
 
 	function AddPlayfield(name:String, playerToCopy:Int)
 	{
-		var p = new SchmovinPlayfield(name, playerToCopy);
+		var p = new SchmovinPlayfield(name, playerToCopy, _timeline.GetModList());
 		_instance.playfields.AddPlayfield(p);
 		return p;
 	}

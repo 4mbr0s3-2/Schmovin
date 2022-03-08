@@ -2,7 +2,7 @@
  * @ Author: 4mbr0s3 2
  * @ Create Time: 2021-06-22 12:04:54
  * @ Modified by: 4mbr0s3 2
- * @ Modified time: 2022-02-11 00:04:37
+ * @ Modified time: 2022-03-07 21:15:36
  */
 
 package schmovin;
@@ -23,6 +23,11 @@ class SchmovinNoteModList
 {
 	var _state:PlayState;
 	@:allow(schmovin.overlays.SchmovinDebugger)
+	/**
+	 * Names of mods that must execute before any other mod.
+	 */
+	var _mustExecuteModNames:Array<String>;
+
 	/**
 	 * Consists of all registered note mods.
 	 */
@@ -50,50 +55,13 @@ class SchmovinNoteModList
 	/**
 	 * Consists of mods to be updated.
 	 */
-	// var _modExecuteList:Array<ISchmovinNoteMod>;
-	// var _vertexModExecuteList:Array<ISchmovinNoteMod>;
 	var _timeline:SchmovinTimeline;
 
-	// public function IsInActiveModList(name:String)
-	// {
-	// 	var out = false;
-	// 	for (mod in _modExecuteList)
-	// 	{
-	// 		if (mod.GetName() == name)
-	// 			out = true;
-	// 	}
-	// 	return out;
-	// }
-	// @:allow(schmovin.note_mods.ISchmovinNoteMod)
-	// function AddToActiveModList(i:ISchmovinNoteMod)
-	// {
-	// 	if (!_modExecuteList.contains(i))
-	// 		_modExecuteList.push(i);
-	// 	SortModList(_modExecuteList);
-	// }
-	// @:allow(schmovin.note_mods.ISchmovinNoteMod)
-	// function AddToActiveVertexModList(i:ISchmovinNoteMod)
-	// {
-	// 	if (!_vertexModExecuteList.contains(i))
-	// 		_vertexModExecuteList.push(i);
-	// 	SortModList(_vertexModExecuteList);
-	// }
-	// function SortModList(list:Array<ISchmovinNoteMod>)
-	// {
-	// 	list.sort((m1, m2) ->
-	// 	{
-	// 		return m1.GetOrder() > m2.GetOrder() ? 1 : -1;
-	// 	});
-	// }
-	// @:allow(schmovin.note_mods.ISchmovinNoteMod)
-	// function RemoveFromActiveModList(i:ISchmovinNoteMod)
-	// {
-	// 	var out = _modExecuteList.remove(i);
-	// 	if (i.IsVertexModifier())
-	// 		_vertexModExecuteList.remove(i);
-	// 	SortModList(_modExecuteList);
-	// 	return out;
-	// }
+	public function GetModIndex(modName:String)
+	{
+		var modOrder = _modsOrder.indexOf(modName);
+		return modOrder;
+	}
 
 	public function new(state:PlayState, timeline:SchmovinTimeline, playfields:SchmovinPlayfieldManager)
 	{
@@ -103,6 +71,7 @@ class SchmovinNoteModList
 		_auxMods = new Map<String, ISchmovinNoteMod>();
 		_miscMods = new Map<String, ISchmovinNoteMod>();
 		_playfields = playfields;
+		_mustExecuteModNames = [];
 		InitializeNoteMods();
 	}
 
@@ -122,9 +91,10 @@ class SchmovinNoteModList
 		new ModRegistry(this, _state).Register();
 	}
 
-	public function AddNoteMod(modName:String, mod:ISchmovinNoteMod, auxiliary:Bool = false)
+	public function AddNoteMod(modName:String, mod:ISchmovinNoteMod, auxiliary:Bool = false, parent:String = '')
 	{
 		mod.Initialize(_state, this, _playfields);
+		mod.SetParent(parent);
 		mod.SetName(modName);
 		if (auxiliary)
 		{
@@ -141,6 +111,8 @@ class SchmovinNoteModList
 			_mods.set(modName, mod);
 			_modsOrder.push(modName);
 		}
+		if (mod.MustExecute())
+			_mustExecuteModNames.push(modName);
 	}
 
 	public function AddNoteModBefore(beforeModName:String, modName:String, mod:ISchmovinNoteMod, putInExecutionList:Bool = true)
@@ -237,14 +209,13 @@ class SchmovinNoteModList
 		return pf.GetPercent(modName);
 	}
 
+	@:deprecated
 	public function UpdatePath(playfield:SchmovinPlayfield, currentBeat:Float, sprite:FlxSprite, player:Int = 0, column:Int = 0)
 	{
 		var pos = new Vector4();
 		for (modName in _modsOrder)
 		{
 			var notemod = _mods[modName];
-			if (ShouldSkipMod(notemod, playfield))
-				continue;
 			// Concrete dependencies :P
 			if (Std.is(sprite, Note))
 			{
@@ -274,11 +245,9 @@ class SchmovinNoteModList
 
 	public function UpdateNote(playfield:SchmovinPlayfield, currentBeat:Float, sprite:FlxSprite, pos:Vector4, player:Int = 0, column:Int = 0)
 	{
-		for (modName in _modsOrder)
+		for (modName in GetModNameList(playfield))
 		{
 			var notemod = _mods[modName];
-			if (ShouldSkipMod(notemod, playfield))
-				continue;
 			if (Std.is(sprite, Note))
 			{
 				var note:Note = cast sprite;
@@ -296,13 +265,14 @@ class SchmovinNoteModList
 			player:Int = 0, column:Int = 0, exclude:Array<String> = null)
 	{
 		var outVertex = vertex;
-		for (modName in _modsOrder)
+		for (modName in GetModNameList(playfield))
 		{
 			if (exclude != null && exclude.contains(modName))
 				continue;
 			var notemod = _mods[modName];
-			if (ShouldSkipMod(notemod, playfield))
+			if (notemod == null)
 				continue;
+
 			if (!notemod.IsVertexModifier())
 				continue;
 			// Concrete dependencies :P
@@ -318,29 +288,29 @@ class SchmovinNoteModList
 		return outVertex;
 	}
 
-	inline function ShouldSkipMod(notemod:ISchmovinNoteMod, playfield:SchmovinPlayfield)
-	{
-		// return (notemod.IsMiscMod() || !notemod.IsActive()) && !notemod.MustExecute();
-		return !playfield.CheckActiveMod(notemod.GetName()) && !notemod.MustExecute();
-	}
-
 	public function UpdateMiscMods(currentBeat:Float)
 	{
 		for (miscmod in _miscModsOrder)
 			_miscMods[miscmod].Update(currentBeat);
 	}
 
+	inline function GetModNameList(playfield:SchmovinPlayfield)
+	{
+		return _mustExecuteModNames.concat(playfield.activeMods);
+	}
+
 	// I reassure you guys this is as optimized as it could possibly get
 	public function GetPath(currentBeat:Float, strumTime:Float, column:Int, player:Int, playfield:SchmovinPlayfield, exclude:Array<String> = null)
 	{
 		var pos = new Vector4();
-		for (modName in _modsOrder)
+		for (modName in GetModNameList(playfield))
 		{
 			if (exclude != null && exclude.contains(modName))
 				continue;
 			var notemod = _mods[modName];
-			if (ShouldSkipMod(notemod, playfield))
+			if (notemod == null)
 				continue;
+
 			pos = notemod.ExecutePath(currentBeat, strumTime, column, player, pos, playfield);
 		}
 		return pos;

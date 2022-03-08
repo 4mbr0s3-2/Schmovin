@@ -2,7 +2,7 @@
  * @ Author: 4mbr0s3 2
  * @ Create Time: 2021-08-22 19:49:42
  * @ Modified by: 4mbr0s3 2
- * @ Modified time: 2022-01-03 18:42:52
+ * @ Modified time: 2022-03-07 21:45:06
  */
 
 package schmovin;
@@ -120,9 +120,8 @@ class SchmovinInstance
 
 	function InitializePlayfields()
 	{
-		playfields = new SchmovinPlayfieldManager();
-		playfields.AddPlayfield(new SchmovinPlayfield('dad', 0));
-		playfields.AddPlayfield(new SchmovinPlayfield('bf', 1));
+		playfields.AddPlayfield(new SchmovinPlayfield('dad', 0, timeline.GetModList()));
+		playfields.AddPlayfield(new SchmovinPlayfield('bf', 1, timeline.GetModList()));
 	}
 
 	public function UpdateFakeExplosionReceptors()
@@ -188,8 +187,9 @@ class SchmovinInstance
 
 	public function InitializeSchmovin()
 	{
+		playfields = new SchmovinPlayfieldManager();
+		timeline = SchmovinTimeline.Create(state, this, playfields);
 		InitializePlayfields();
-		timeline = SchmovinTimeline.Create(state, this);
 		SwitchClient();
 		InitializeRenderers();
 	}

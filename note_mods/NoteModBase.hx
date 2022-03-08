@@ -2,7 +2,7 @@
  * @ Author: 4mbr0s3 2
  * @ Create Time: 2021-07-15 16:29:16
  * @ Modified by: 4mbr0s3 2
- * @ Modified time: 2022-02-10 22:27:28
+ * @ Modified time: 2022-03-07 19:54:02
  */
 
 package schmovin.note_mods;
@@ -18,6 +18,7 @@ class NoteModBase implements ISchmovinNoteMod
 	public var order:Int = 0;
 
 	var _name:String;
+	var _parent:String;
 	var _modList:SchmovinNoteModList;
 	var _state:PlayState;
 	var _currentEvent:ISchmovinEvent;
@@ -59,6 +60,17 @@ class NoteModBase implements ISchmovinNoteMod
 	{
 		if (_name == null)
 			_name = v;
+	}
+
+	public function GetParent()
+	{
+		return _parent;
+	}
+
+	public function SetParent(v:String)
+	{
+		if (_parent == null)
+			_parent = v;
 	}
 
 	public function IsMiscMod():Bool

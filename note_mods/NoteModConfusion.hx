@@ -2,7 +2,7 @@
  * @ Author: 4mbr0s3 2
  * @ Create Time: 2021-07-15 19:47:00
  * @ Modified by: 4mbr0s3 2
- * @ Modified time: 2022-02-10 23:38:11
+ * @ Modified time: 2022-03-07 19:01:21
  */
 
 package schmovin.note_mods;
@@ -15,11 +15,6 @@ using schmovin.SchmovinUtil;
 
 class NoteModConfusion extends NoteModBase
 {
-	override function MustExecute():Bool
-	{
-		return true;
-	}
-
 	inline function GetTotalConfusion(currentBeat:Float, playfield:SchmovinPlayfield, column:Int, axis:String = 'x')
 	{
 		var playerColumn = column % 4;

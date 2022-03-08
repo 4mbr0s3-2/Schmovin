@@ -9,7 +9,7 @@ class NoteModBumpy extends NoteModBase
 	{
 		var outPos = pos.clone();
 		var period = 300;
-		outPos.z += Math.sin(GetRelativeTime(strumTime) / period * Math.PI * 2) * 100;
+		outPos.z += Math.sin(GetRelativeTime(strumTime) / period * Math.PI * 2) * Note.swagWidth * GetPercent(playfield);
 		return outPos;
 	}
 }

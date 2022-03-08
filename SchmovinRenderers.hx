@@ -2,7 +2,7 @@
  * @ Author: 4mbr0s3 2
  * @ Create Time: 2021-07-07 13:26:53
  * @ Modified by: 4mbr0s3 2
- * @ Modified time: 2022-02-10 23:44:59
+ * @ Modified time: 2022-03-07 19:49:42
  */
 
 package schmovin;
@@ -236,7 +236,7 @@ class SchmovinTapNoteRenderer extends SchmovinRenderer
 		for (vertIndex in 0...relativeVerts.length)
 		{
 			var vert = relativeVerts[vertIndex];
-			// vert = _timeline.UpdateNoteVertex(playfield, SchmovinAdapter.GetInstance().GetCurrentBeat(), obj, vert, vertIndex, pos, player, column);
+			vert = _timeline.UpdateNoteVertex(playfield, SchmovinAdapter.GetInstance().GetCurrentBeat(), obj, vert, vertIndex, pos, player, column);
 			outVerts.push(vert.add(pos));
 		}
 

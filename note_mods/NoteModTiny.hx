@@ -14,11 +14,6 @@ using schmovin.SchmovinUtil;
 
 class NoteModTiny extends NoteModBase
 {
-	override function MustExecute():Bool
-	{
-		return true;
-	}
-
 	function GetScale(column:Int, playfield:SchmovinPlayfield)
 	{
 		var playerColumn = column % 4;

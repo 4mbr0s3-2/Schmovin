@@ -2,7 +2,7 @@
  * @ Author: 4mbr0s3 2
  * @ Create Time: 2021-06-22 11:55:58
  * @ Modified by: 4mbr0s3 2
- * @ Modified time: 2022-02-10 22:46:06
+ * @ Modified time: 2022-03-07 21:45:22
  */
 
 package schmovin;
@@ -30,8 +30,7 @@ class SchmovinTimeline
 		return _mods.GetModByName(name);
 	}
 
-	@:allow(schmovin.SchmovinClient, schmovin.overlays.SchmovinDebugger)
-	private function GetModList()
+	public function GetModList()
 	{
 		return _mods;
 	}
@@ -46,11 +45,11 @@ class SchmovinTimeline
 		}
 	}
 
-	public static function Create(state:PlayState, instance:SchmovinInstance)
+	public static function Create(state:PlayState, instance:SchmovinInstance, playfields:SchmovinPlayfieldManager)
 	{
 		var timeline = new SchmovinTimeline();
 		timeline._instance = instance;
-		timeline._mods = new SchmovinNoteModList(state, timeline, instance.playfields);
+		timeline._mods = new SchmovinNoteModList(state, timeline, playfields);
 		timeline.InitializeLists();
 		return timeline;
 	}

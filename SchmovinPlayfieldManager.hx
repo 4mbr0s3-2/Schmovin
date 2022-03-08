@@ -19,7 +19,7 @@ class SchmovinPlayfieldManager
 	public function GetPlayfieldAtIndex(i:Int)
 	{
 		if (i > list.length - 1 || i < 0)
-			return new SchmovinPlayfield();
+			return list[0];
 		return list[i];
 	}
 }
