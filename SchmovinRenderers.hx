@@ -2,7 +2,7 @@
  * @ Author: 4mbr0s3 2
  * @ Create Time: 2021-07-07 13:26:53
  * @ Modified by: 4mbr0s3 2
- * @ Modified time: 2022-03-07 19:49:42
+ * @ Modified time: 2022-03-15 00:45:49
  */
 
 package schmovin;
@@ -14,6 +14,7 @@ import flixel.graphics.FlxGraphic;
 import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.graphics.tile.FlxDrawTrianglesItem;
 import flixel.math.FlxMath;
+import flixel.system.FlxAssets.FlxShader;
 import flixel.util.FlxColor;
 import lime.math.Vector2;
 import lime.math.Vector4;
@@ -270,9 +271,11 @@ class SchmovinTapNoteRenderer extends SchmovinRenderer
 					SchmovinUtil.GetPlayerOfTotalColumn(receptor.column));
 
 			for (tap in GetTapNotes())
+			{
 				Render(camera, tap, GrabTapFrame(tap, tap.alpha), tap.alpha,
 					SchmovinAdapter.GetInstance().GetSongPosition() - tap.strumTime - SchmovinAdapter.GetInstance().GrabGlobalVisualOffset(),
 					SchmovinUtil.GetTotalColumn(tap), SchmovinUtil.GetPlayer(tap));
+			}
 		}
 	}
 
@@ -289,7 +292,12 @@ class SchmovinTapNoteRenderer extends SchmovinRenderer
 
 			var currentBeat = SchmovinAdapter.GetInstance().GetCurrentBeat();
 
-			var pos = _timeline.GetPath(currentBeat, strumTime, column, player, playfield, ['perspective']);
+			var props = _timeline.GetOtherMap(currentBeat, strumTime, column, player, playfield);
+
+			if (props.exists('alpha'))
+				alpha *= props['alpha'];
+
+			var pos = _timeline.GetPath(currentBeat, strumTime, column, player, playfield, ['cam']);
 
 			// TODO: Move to main update loop
 			// _timeline.UpdateNote(_instance.playfields.GetPlayfieldAtIndex(player), currentBeat, sprite, pos, player, column);
@@ -300,15 +308,17 @@ class SchmovinTapNoteRenderer extends SchmovinRenderer
 			var topPoints = [new Vector2(quad[0].x, quad[0].y), new Vector2(quad[1].x, quad[1].y)];
 			var bottomPoints = [new Vector2(quad[2].x, quad[2].y), new Vector2(quad[3].x, quad[3].y)];
 
+			if (sprite.shader == null)
+				sprite.shader = new FlxShader();
 			if (sprite.shader != null)
 			{
 				sprite.shader.bitmap.input = frame;
 				sprite.shader.bitmap.filter = sprite.antialiasing ? LINEAR : NEAREST;
-				sprite.shader.hasColorTransform.value = [true];
-				bitmap.graphics.beginShaderFill(sprite.shader, null);
+				sprite.shader.hasColorTransform.value = [false];
+				sprite.shader.alpha.value = [alpha];
 			}
-			else
-				bitmap.graphics.beginBitmapFill(frame, null, true, sprite.antialiasing);
+
+			bitmap.graphics.beginShaderFill(sprite.shader, null);
 			var vertices = new Vector<Float>(12, false, [
 				   topPoints[0].x,    topPoints[0].y,
 				   topPoints[1].x,    topPoints[1].y,
@@ -363,7 +373,8 @@ class SchmovinTapNoteRenderer extends SchmovinRenderer
  */
 class SchmovinHoldNoteRenderer extends SchmovinRenderer
 {
-	static inline var HOLD_ALPHA_DIVISIONS = 20;
+	@:deprecated('Outdated due to a better method of applying alpha (via shaders)')
+	static inline var HOLD_ALPHA_DIVISIONS = 1;
 
 	var _holdConditional:Null<Note->Bool>;
 
@@ -413,14 +424,16 @@ class SchmovinHoldNoteRenderer extends SchmovinRenderer
 		cache.set(column, map);
 		for (i in 0...HOLD_ALPHA_DIVISIONS)
 		{
-			map.set(i, updateFramePixels(note, i / (HOLD_ALPHA_DIVISIONS - 1)));
+			// map.set(i, updateFramePixels(note, i / (HOLD_ALPHA_DIVISIONS - 1)));
+			map.set(i, updateFramePixels(note, 1));
 		}
 	}
 
 	function GrabFrame(note:Note, alpha:Float)
 	{
 		// updateFramePixels() must be called as little as possible, so we use the same BitmapData for connected holds
-		var snapAlpha = Math.floor((HOLD_ALPHA_DIVISIONS - 1) * alpha);
+		// var snapAlpha = Math.floor((HOLD_ALPHA_DIVISIONS - 1) * alpha);
+		var snapAlpha = 0;
 		var column = SchmovinUtil.GetTotalColumn(note);
 
 		if (note.animation.name.contains('end'))
@@ -474,7 +487,11 @@ class SchmovinHoldNoteRenderer extends SchmovinRenderer
 
 		var outVerts = relativeVerts;
 
-		var trueWidth = outVerts[0].subtract(outVerts[1]).length / 2;
+		var perspectiveScale = 1.0;
+		if (pathPerspective.z != 0)
+			perspectiveScale = pathPerspective.z;
+
+		var trueWidth = outVerts[0].subtract(outVerts[1]).length / 2 / perspectiveScale;
 
 		var unit = path2.subtract(path1);
 
@@ -535,15 +552,16 @@ class SchmovinHoldNoteRenderer extends SchmovinRenderer
 
 					if (lastShader != currentShader || lastFrame != currentFrame)
 					{
+						if (hold.shader == null)
+							hold.shader = new FlxShader();
 						if (hold.shader != null)
 						{
 							hold.shader.bitmap.input = currentFrame;
 							hold.shader.bitmap.filter = hold.antialiasing ? LINEAR : NEAREST;
-							hold.shader.hasColorTransform.value = [true];
+							hold.shader.hasColorTransform.value = [false];
+							hold.shader.alpha.value = [alpha];
 							canvas.graphics.beginShaderFill(currentShader, null);
 						}
-						else
-							canvas.graphics.beginBitmapFill(frame, null, true, hold.antialiasing);
 					}
 
 					lastShader = currentShader;

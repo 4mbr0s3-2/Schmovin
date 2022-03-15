@@ -2,7 +2,7 @@
  * @ Author: 4mbr0s3 2
  * @ Create Time: 2021-06-22 11:55:58
  * @ Modified by: 4mbr0s3 2
- * @ Modified time: 2022-03-07 21:45:22
+ * @ Modified time: 2022-03-14 01:43:06
  */
 
 package schmovin;
@@ -57,6 +57,11 @@ class SchmovinTimeline
 	public function GetPath(currentBeat:Float, strumTime:Float, column:Int, player:Int, playfield:SchmovinPlayfield, exclude:Array<String> = null)
 	{
 		return _mods.GetPath(currentBeat, strumTime, column, player, playfield, exclude);
+	}
+
+	public function GetOtherMap(currentBeat:Float, strumTime:Float, column:Int, player:Int, playfield:SchmovinPlayfield, exclude:Array<String> = null)
+	{
+		return _mods.GetOtherMap(currentBeat, strumTime, column, player, playfield, exclude);
 	}
 
 	public function GetPreviousEvent(event:ISchmovinEvent):ISchmovinEvent

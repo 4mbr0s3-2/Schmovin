@@ -2,12 +2,11 @@
  * @ Author: 4mbr0s3 2
  * @ Create Time: 2021-07-15 16:29:16
  * @ Modified by: 4mbr0s3 2
- * @ Modified time: 2022-03-07 19:54:02
+ * @ Modified time: 2022-03-14 01:10:45
  */
 
 package schmovin.note_mods;
 
-import flixel.FlxSprite;
 import lime.math.Vector4;
 import schmovin.SchmovinEvent.ISchmovinEvent;
 
@@ -24,6 +23,8 @@ class NoteModBase implements ISchmovinNoteMod
 	var _currentEvent:ISchmovinEvent;
 	var _active = false;
 	var _playfields:SchmovinPlayfieldManager;
+
+	public function ExecuteOther(currentBeat:Float, strumTime:Float, column:Int, player:Int, map:Map<String, Dynamic>, playfield:SchmovinPlayfield):Void {}
 
 	public function Deactivate(receptors:Array<Receptor>, notes:Array<Note>)
 	{

@@ -2,7 +2,7 @@
  * @ Author: 4mbr0s3 2
  * @ Create Time: 2021-07-15 16:28:51
  * @ Modified by: 4mbr0s3 2
- * @ Modified time: 2022-03-07 18:38:30
+ * @ Modified time: 2022-03-14 01:08:23
  */
 
 package schmovin.note_mods;
@@ -44,6 +44,7 @@ interface ISchmovinNoteMod
 		playfield:SchmovinPlayfield):Vector4;
 
 	public function ExecutePath(currentBeat:Float, strumTime:Float, column:Int, player:Int, pos:Vector4, playfield:SchmovinPlayfield):Vector4;
+	public function ExecuteOther(currentBeat:Float, strumTime:Float, column:Int, player:Int, map:Map<String, Dynamic>, playfield:SchmovinPlayfield):Void;
 
 	public function Update(currentBeat:Float):Void;
 

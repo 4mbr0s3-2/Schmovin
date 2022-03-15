@@ -2,7 +2,7 @@
  * @ Author: 4mbr0s3 2
  * @ Create Time: 2021-06-22 12:04:54
  * @ Modified by: 4mbr0s3 2
- * @ Modified time: 2022-03-07 21:15:36
+ * @ Modified time: 2022-03-14 01:13:23
  */
 
 package schmovin;
@@ -314,5 +314,21 @@ class SchmovinNoteModList
 			pos = notemod.ExecutePath(currentBeat, strumTime, column, player, pos, playfield);
 		}
 		return pos;
+	}
+
+	public function GetOtherMap(currentBeat:Float, strumTime:Float, column:Int, player:Int, playfield:SchmovinPlayfield, exclude:Array<String> = null)
+	{
+		var map = new Map<String, Dynamic>();
+		for (modName in GetModNameList(playfield))
+		{
+			if (exclude != null && exclude.contains(modName))
+				continue;
+			var notemod = _mods[modName];
+			if (notemod == null)
+				continue;
+
+			notemod.ExecuteOther(currentBeat, strumTime, column, player, map, playfield);
+		}
+		return map;
 	}
 }

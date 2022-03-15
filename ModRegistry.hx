@@ -2,7 +2,7 @@
  * @ Author: 4mbr0s3 2
  * @ Create Time: 2021-07-15 16:25:02
  * @ Modified by: 4mbr0s3 2
- * @ Modified time: 2022-03-07 18:45:19
+ * @ Modified time: 2022-03-14 23:33:00
  */
 
 package schmovin;
@@ -13,6 +13,7 @@ import schmovin.misc_mods.MiscModCamRaymarch;
 import schmovin.note_mods.ISchmovinNoteMod;
 import schmovin.note_mods.NoteModBase;
 import schmovin.note_mods.NoteModBeat;
+import schmovin.note_mods.NoteModBlink;
 import schmovin.note_mods.NoteModBumpy;
 import schmovin.note_mods.NoteModColumnSwaps;
 import schmovin.note_mods.NoteModConfusion;
@@ -141,7 +142,16 @@ class ModRegistry
 
 		AddNoteMod('sine', new NoteModSine());
 
-		AddNoteMod('perspective', new NoteModPerspective());
+		AddNoteMod('blink', new NoteModBlink());
+
+		AddNoteAuxMod('camx', 'cam');
+		AddNoteAuxMod('camy', 'cam');
+		AddNoteAuxMod('camz', 'cam');
+		AddNoteAuxMod('campitch', 'cam');
+		AddNoteAuxMod('camyaw', 'cam');
+		AddNoteAuxMod('camroll', 'cam');
+		AddNoteAuxMod('camfov', 'cam');
+		AddNoteMod('cam', new NoteModPerspective());
 
 		AddNoteMod('drawdistance', new NoteModBase());
 	}
