@@ -2,7 +2,7 @@
  * @ Author: 4mbr0s3 2
  * @ Create Time: 2021-07-07 13:26:53
  * @ Modified by: 4mbr0s3 2
- * @ Modified time: 2022-03-15 00:45:49
+ * @ Modified time: 2022-03-27 20:12:16
  */
 
 package schmovin;
@@ -45,7 +45,7 @@ class SchmovinRenderer implements ISchmovinRenderer
 {
 	var _timeline:SchmovinTimeline;
 	var _instance:SchmovinInstance;
-	var _cameras:Array<FlxCamera>;
+	var _defaultCameras:Array<FlxCamera>;
 	var _playState:PlayState;
 
 	public function PreDraw() {}
@@ -58,7 +58,7 @@ class SchmovinRenderer implements ISchmovinRenderer
 	{
 		_instance = instance;
 		_timeline = timeline;
-		_cameras = cameras;
+		_defaultCameras = cameras;
 		_playState = playState;
 	}
 }
@@ -119,29 +119,30 @@ class SchmovinNotePathRenderer extends SchmovinRenderer
 				}
 				bitmap.graphics.drawPath(commands, data);
 			}
-		}
-		// For some reason, drawing to a bitmap here THEN copying to camera buffer is more efficient than copying to camera buffer directly
-		// (FPS increased from 35 to 50 in Windows build, rest of the lag caused by path computation I think)
-		// How does that even work??? - 4mbr0s3 2 (maybe it has to do with the set resolution or something)
-		// EDIT: This explains a little bit I think
-		// https://community.openfl.org/t/drawed-lines-uses-too-much-cpu-neko/8651/7
-		// EDIT 2: OK, so it looks like copying to camera buffer gives higher FPS on HTML (~100 to 190), so we'll use different methods accordingly
+			// For some reason, drawing to a bitmap here THEN copying to camera buffer is more efficient than copying to camera buffer directly
+			// (FPS increased from 35 to 50 in Windows build, rest of the lag caused by path computation I think)
+			// How does that even work??? - 4mbr0s3 2 (maybe it has to do with the set resolution or something)
+			// EDIT: This explains a little bit I think
+			// https://community.openfl.org/t/drawed-lines-uses-too-much-cpu-neko/8651/7
+			// EDIT 2: OK, so it looks like copying to camera buffer gives higher FPS on HTML (~100 to 190), so we'll use different methods accordingly
 
-		#if html5
-		for (camera in _cameras)
-		{
-			camera.canvas.graphics.copyFrom(bitmap.graphics);
+			#if html5
+			var cameras = playfield.cameras != null ? playfield.cameras : _defaultCameras;
+			for (camera in cameras)
+			{
+				camera.canvas.graphics.copyFrom(bitmap.graphics);
+			}
+			#else
+			var bitmapData = new BitmapData(FlxG.width, FlxG.height, true, 0);
+			bitmapData.draw(bitmap);
+			for (camera in cameras)
+			{
+				camera.canvas.graphics.beginBitmapFill(bitmapData, new Matrix());
+				camera.canvas.graphics.drawRect(0, 0, FlxG.width, FlxG.height);
+				camera.canvas.graphics.endFill();
+			}
+			#end
 		}
-		#else
-		var bitmapData = new BitmapData(FlxG.width, FlxG.height, true, 0);
-		bitmapData.draw(bitmap);
-		for (camera in _cameras)
-		{
-			camera.canvas.graphics.beginBitmapFill(bitmapData, new Matrix());
-			camera.canvas.graphics.drawRect(0, 0, FlxG.width, FlxG.height);
-			camera.canvas.graphics.endFill();
-		}
-		#end
 	}
 }
 
@@ -154,26 +155,11 @@ class SchmovinTapNoteRenderer extends SchmovinRenderer
 
 	public function Initialize() {}
 
-	override function Destroy()
-	{
-		_cachedReceptorGraphics = null;
-		_cachedTapGraphics = null;
-	}
+	override function Destroy() {}
 
 	override function PreDraw()
 	{
 		Draw();
-	}
-
-	var _cachedTapGraphics:Map<Int, Map<Int, BitmapData>> = new Map<Int, Map<Int, BitmapData>>();
-	var _cachedReceptorGraphics:Map<Int, Map<Int, BitmapData>> = new Map<Int, Map<Int, BitmapData>>();
-
-	function InitializeCache(cache:Map<Int, Map<Int, BitmapData>>, s:FlxSprite, column:Int)
-	{
-		var map = new Map<Int, BitmapData>();
-		cache.set(column, map);
-		for (i in 0...HOLD_ALPHA_DIVISIONS)
-			map.set(i, updateFramePixels(s, i / (HOLD_ALPHA_DIVISIONS - 1)).clone());
 	}
 
 	function updateFramePixels(s:FlxSprite, alpha:Float)
@@ -182,35 +168,6 @@ class SchmovinTapNoteRenderer extends SchmovinRenderer
 		if (alpha < 1)
 			data.colorTransform(new Rectangle(0, 0, s.frameWidth, s.frameHeight), new ColorTransform(1, 1, 1, alpha));
 		return data;
-	}
-
-	function GrabTapFrame(note:Note, alpha:Float)
-	{
-		var snapAlpha = Math.floor((HOLD_ALPHA_DIVISIONS - 1) * alpha);
-		var column = SchmovinUtil.GetTotalColumn(note);
-
-		if (!SchmovinAdapter.GetInstance().ShouldCacheNoteBitmap(note))
-			return updateFramePixels(note, alpha);
-
-		if (_cachedTapGraphics.get(column) == null)
-			InitializeCache(_cachedTapGraphics, note, column);
-		return _cachedTapGraphics[column][snapAlpha];
-	}
-
-	function GrabReceptorFrame(receptor:Receptor, alpha:Float)
-	{
-		var snapAlpha = Math.floor((HOLD_ALPHA_DIVISIONS - 1) * alpha);
-		var column = receptor.column;
-
-		if (receptor.wrappee.animation.name != 'static')
-			return updateFramePixels(receptor.wrappee, alpha);
-		// The only point where we return without caching lol
-		// This might crash the render context a bit??
-
-		if (_cachedReceptorGraphics.get(column) == null)
-			InitializeCache(_cachedReceptorGraphics, receptor.wrappee, column);
-
-		return _cachedReceptorGraphics[column][snapAlpha];
 	}
 
 	inline function GetQuadAlongPath(strumTime:Float, pos:Vector4, playfield:SchmovinPlayfield, obj:FlxSprite, column:Int, player:Int, targetWidth:Float,
@@ -264,81 +221,80 @@ class SchmovinTapNoteRenderer extends SchmovinRenderer
 				return onScreen;
 			});
 		}
-		for (camera in _cameras)
-		{
-			for (receptor in GetReceptors())
-				Render(camera, receptor.wrappee, GrabReceptorFrame(receptor, receptor.wrappee.alpha), receptor.wrappee.alpha, 0, receptor.column,
-					SchmovinUtil.GetPlayerOfTotalColumn(receptor.column));
+		for (receptor in GetReceptors())
+			Render(receptor.wrappee, receptor.wrappee.alpha, 0, receptor.column, SchmovinUtil.GetPlayerOfTotalColumn(receptor.column));
 
-			for (tap in GetTapNotes())
-			{
-				Render(camera, tap, GrabTapFrame(tap, tap.alpha), tap.alpha,
-					SchmovinAdapter.GetInstance().GetSongPosition() - tap.strumTime - SchmovinAdapter.GetInstance().GrabGlobalVisualOffset(),
-					SchmovinUtil.GetTotalColumn(tap), SchmovinUtil.GetPlayer(tap));
-			}
+		for (tap in GetTapNotes())
+		{
+			Render(tap, tap.alpha, SchmovinAdapter.GetInstance().GetSongPosition() - tap.strumTime - SchmovinAdapter.GetInstance().GrabGlobalVisualOffset(),
+				SchmovinUtil.GetTotalColumn(tap), SchmovinUtil.GetPlayer(tap));
 		}
 	}
 
 	// This is really laggy with OpenGL, but WebGL runs like it's nothing
 	// TODO: Figure out how to profile this on desktop??
 
-	function Render(camera:FlxCamera, sprite:FlxSprite, frame:BitmapData, alpha:Float, strumTime:Float, column:Int, player:Int)
+	function Render(sprite:FlxSprite, alpha:Float, strumTime:Float, column:Int, player:Int)
 	{
-		var bitmap = camera.canvas;
 		for (playfield in _instance.playfields.list)
 		{
 			if (playfield.player != player)
 				continue;
-
-			var currentBeat = SchmovinAdapter.GetInstance().GetCurrentBeat();
-
-			var props = _timeline.GetOtherMap(currentBeat, strumTime, column, player, playfield);
-
-			if (props.exists('alpha'))
-				alpha *= props['alpha'];
-
-			var pos = _timeline.GetPath(currentBeat, strumTime, column, player, playfield, ['cam']);
-
-			// TODO: Move to main update loop
-			// _timeline.UpdateNote(_instance.playfields.GetPlayfieldAtIndex(player), currentBeat, sprite, pos, player, column);
-
-			var quad = GetQuadAlongPath(strumTime, pos, playfield, sprite, column, player, sprite.frameWidth * sprite.scale.x,
-				sprite.frameHeight * sprite.scale.y);
-
-			var topPoints = [new Vector2(quad[0].x, quad[0].y), new Vector2(quad[1].x, quad[1].y)];
-			var bottomPoints = [new Vector2(quad[2].x, quad[2].y), new Vector2(quad[3].x, quad[3].y)];
-
-			if (sprite.shader == null)
-				sprite.shader = new FlxShader();
-			if (sprite.shader != null)
+			var cameras = playfield.cameras != null ? playfield.cameras : _defaultCameras;
+			for (camera in cameras)
 			{
-				sprite.shader.bitmap.input = frame;
-				sprite.shader.bitmap.filter = sprite.antialiasing ? LINEAR : NEAREST;
-				sprite.shader.hasColorTransform.value = [false];
-				sprite.shader.alpha.value = [alpha];
+				var bitmap = camera.canvas;
+
+				var currentBeat = SchmovinAdapter.GetInstance().GetCurrentBeat();
+
+				var props = _timeline.GetOtherMap(currentBeat, strumTime, column, player, playfield);
+
+				if (props.exists('alpha'))
+					alpha *= props['alpha'];
+
+				var pos = _timeline.GetPath(currentBeat, strumTime, column, player, playfield, ['cam']);
+
+				// TODO: Move to main update loop
+				// _timeline.UpdateNote(_instance.playfields.GetPlayfieldAtIndex(player), currentBeat, sprite, pos, player, column);
+
+				var quad = GetQuadAlongPath(strumTime, pos, playfield, sprite, column, player, sprite.frameWidth * sprite.scale.x,
+					sprite.frameHeight * sprite.scale.y);
+
+				var topPoints = [new Vector2(quad[0].x, quad[0].y), new Vector2(quad[1].x, quad[1].y)];
+				var bottomPoints = [new Vector2(quad[2].x, quad[2].y), new Vector2(quad[3].x, quad[3].y)];
+
+				if (sprite.shader == null)
+					sprite.shader = new FlxShader();
+				if (sprite.shader != null)
+				{
+					sprite.shader.bitmap.input = sprite.graphic.bitmap;
+					sprite.shader.bitmap.filter = sprite.antialiasing ? LINEAR : NEAREST;
+					sprite.shader.hasColorTransform.value = [false];
+					sprite.shader.alpha.value = [alpha];
+				}
+
+				bitmap.graphics.beginShaderFill(sprite.shader, null);
+				var vertices = new Vector<Float>(12, false, [
+					   topPoints[0].x,    topPoints[0].y,
+					   topPoints[1].x,    topPoints[1].y,
+					bottomPoints[1].x, bottomPoints[1].y,
+					   topPoints[0].x,    topPoints[0].y,
+					bottomPoints[0].x, bottomPoints[0].y,
+					bottomPoints[1].x, bottomPoints[1].y
+				]);
+
+				bitmap.graphics.drawTriangles(vertices, null, GetUV(sprite, sprite.flipY));
+
+				bitmap.graphics.endFill();
+				#if FLX_DEBUG
+				if (FlxG.debugger.drawDebug)
+				{
+					var gfx:Graphics = camera.debugLayer.graphics;
+					gfx.lineStyle(1, FlxColor.BLUE, 0.5);
+					gfx.drawTriangles(vertices, null);
+				}
+				#end
 			}
-
-			bitmap.graphics.beginShaderFill(sprite.shader, null);
-			var vertices = new Vector<Float>(12, false, [
-				   topPoints[0].x,    topPoints[0].y,
-				   topPoints[1].x,    topPoints[1].y,
-				bottomPoints[1].x, bottomPoints[1].y,
-				   topPoints[0].x,    topPoints[0].y,
-				bottomPoints[0].x, bottomPoints[0].y,
-				bottomPoints[1].x, bottomPoints[1].y
-			]);
-
-			bitmap.graphics.drawTriangles(vertices, null, GetUV(sprite.flipY));
-
-			bitmap.graphics.endFill();
-			#if FLX_DEBUG
-			if (FlxG.debugger.drawDebug)
-			{
-				var gfx:Graphics = camera.debugLayer.graphics;
-				gfx.lineStyle(1, FlxColor.BLUE, 0.5);
-				gfx.drawTriangles(vertices, null);
-			}
-			#end
 		}
 	}
 
@@ -348,15 +304,19 @@ class SchmovinTapNoteRenderer extends SchmovinRenderer
 		Initialize();
 	}
 
-	function GetUV(flipY:Bool)
+	function GetUV(sprite:FlxSprite, flipY:Bool)
 	{
+		var leftX = sprite.frame.frame.left / sprite.graphic.bitmap.width;
+		var topY = sprite.frame.frame.top / sprite.graphic.bitmap.height;
+		var rightX = sprite.frame.frame.right / sprite.graphic.bitmap.width;
+		var bottomY = sprite.frame.frame.bottom / sprite.graphic.bitmap.height;
 		return new Vector<Float>(12, false, [
-			0, 0,
-			1, 0,
-			1, 1,
-			0, 0,
-			0, 1,
-			1, 1
+			 leftX,    topY,
+			rightX,    topY,
+			rightX, bottomY,
+			 leftX,    topY,
+			 leftX, bottomY,
+			rightX, bottomY
 		]);
 	}
 }
@@ -364,7 +324,7 @@ class SchmovinTapNoteRenderer extends SchmovinRenderer
 /**
  * An overengineered way to get rid of the most notorious bug in the game: broken hold note spacing.
  * Oh yeah, it also allows you to divide hold notes into sections and bend them.
- * Instead of rectangles, it uses pairs of triangles to bend the hold note bitmap. 
+ * Instead of rectangles, it uses pairs of triangles (aka quadrilaterals) to bend the hold note bitmap. 
  * The ends of each pair are extended from the calculated tangent of the note path.
  * https://imgur.com/a/pI57u3A
  * 
@@ -382,19 +342,13 @@ class SchmovinHoldNoteRenderer extends SchmovinRenderer
 	 * updateFramePixels() grabs the bitmap of the hold note with the alpha channel but is quite costly.
 	 * The solution is to cache a few alpha variants of the bitmap for each column and then use them when needed.
 	 * 
-	 * hours_wasted = 37
+	 * ADDENDUM: 🦀 HOLD GRAPHICS CACHING IS GONE 🦀
+	 * 
+	 * hours_wasted = 38
 	 */
-	var _cachedHoldGraphics:Map<Int, Map<Int, FlxGraphic>> = new Map<Int, Map<Int, FlxGraphic>>();
-
-	var _cachedHoldEndGraphics:Map<Int, Map<Int, FlxGraphic>> = new Map<Int, Map<Int, FlxGraphic>>();
-
 	static var HOLD_SUBDIVISIONS(get, null):Int;
 
-	override function Destroy()
-	{
-		_cachedHoldEndGraphics = null;
-		_cachedHoldGraphics = null;
-	}
+	override function Destroy() {}
 
 	static function get_HOLD_SUBDIVISIONS()
 	{
@@ -408,44 +362,6 @@ class SchmovinHoldNoteRenderer extends SchmovinRenderer
 	override function PreDraw()
 	{
 		DrawHoldNotes();
-	}
-
-	function updateFramePixels(note:Note, alpha:Float)
-	{
-		var data = note.frame.paint();
-		if (alpha < 1)
-			data.colorTransform(new Rectangle(0, 0, note.frameWidth, note.frameHeight), new ColorTransform(1, 1, 1, alpha));
-		return FlxGraphic.fromBitmapData(data);
-	}
-
-	function InitializeHoldCache(cache:Map<Int, Map<Int, FlxGraphic>>, note:Note, column:Int)
-	{
-		var map = new Map<Int, FlxGraphic>();
-		cache.set(column, map);
-		for (i in 0...HOLD_ALPHA_DIVISIONS)
-		{
-			// map.set(i, updateFramePixels(note, i / (HOLD_ALPHA_DIVISIONS - 1)));
-			map.set(i, updateFramePixels(note, 1));
-		}
-	}
-
-	function GrabFrame(note:Note, alpha:Float)
-	{
-		// updateFramePixels() must be called as little as possible, so we use the same BitmapData for connected holds
-		// var snapAlpha = Math.floor((HOLD_ALPHA_DIVISIONS - 1) * alpha);
-		var snapAlpha = 0;
-		var column = SchmovinUtil.GetTotalColumn(note);
-
-		if (note.animation.name.contains('end'))
-		{
-			if (_cachedHoldEndGraphics.get(column) == null)
-				InitializeHoldCache(_cachedHoldEndGraphics, note, column);
-			return _cachedHoldEndGraphics[column][snapAlpha];
-		}
-
-		if (_cachedHoldGraphics.get(column) == null)
-			InitializeHoldCache(_cachedHoldGraphics, note, column);
-		return _cachedHoldGraphics[column][snapAlpha];
 	}
 
 	function CalculatePointsAlongPathNormal(targetWidth:Float, hold:Note, strumTime:Float, column:Int, player:Int, playfield:SchmovinPlayfield)
@@ -474,16 +390,6 @@ class SchmovinHoldNoteRenderer extends SchmovinRenderer
 
 		var path2 = _timeline.GetPath(currentBeat, strumTime + infinitesimal, column, player, playfield);
 		path2.z = 0;
-
-		// var outVerts = [];
-
-		// for (vertIndex in 0...relativeVerts.length)
-		// {
-		// 	var vert = relativeVerts[vertIndex];
-		// 	vert = _timeline.UpdateNoteVertex(playfield, SchmovinAdapter.GetInstance().GetCurrentBeat(), hold, vert, vertIndex, pathPerspective, player,
-		// 		column);
-		// 	outVerts.push(vert);
-		// }
 
 		var outVerts = relativeVerts;
 
@@ -523,11 +429,12 @@ class SchmovinHoldNoteRenderer extends SchmovinRenderer
 					&& dist >= 0;
 			});
 		}
-		for (camera in _cameras)
+		for (playfield in _instance.playfields.list)
 		{
-			var canvas = camera.canvas;
-			for (playfield in _instance.playfields.list)
+			var cameras = playfield.cameras != null ? playfield.cameras : _defaultCameras;
+			for (camera in cameras)
 			{
+				var canvas = camera.canvas;
 				var lastShader = null;
 				var lastFrame = null;
 				for (hold in GetHoldNotes(playfield))
@@ -545,7 +452,7 @@ class SchmovinHoldNoteRenderer extends SchmovinRenderer
 						- SchmovinAdapter.GetInstance().GrabGlobalVisualOffset();
 
 					var alpha = hold.alpha;
-					var frame = GrabFrame(hold, alpha).bitmap;
+					var frame = hold.graphic.bitmap;
 
 					var currentShader = hold.shader;
 					var currentFrame = frame;
@@ -614,7 +521,7 @@ class SchmovinHoldNoteRenderer extends SchmovinRenderer
 							bottomPoints[0].x, bottomPoints[0].y,
 							bottomPoints[1].x, bottomPoints[1].y
 						]);
-						uvArray = uvArray.concat(GetUV(hold.flipY, sub, subdivisions));
+						uvArray = uvArray.concat(GetUV(hold, hold.flipY, sub, subdivisions));
 					}
 					var vertices = new Vector<Float>(verticesArray.length, false, cast verticesArray);
 					var uv = new Vector<Float>(uvArray.length, false, uvArray);
@@ -638,8 +545,13 @@ class SchmovinHoldNoteRenderer extends SchmovinRenderer
 		}
 	}
 
-	function GetUV(flipY:Bool, sub:Int, subdivisions:Int)
+	function GetUV(sprite:FlxSprite, flipY:Bool, sub:Int, subdivisions:Int)
 	{
+		var leftX = sprite.frame.frame.left / sprite.graphic.bitmap.width;
+		var topY = sprite.frame.frame.top / sprite.graphic.bitmap.height;
+		var rightX = sprite.frame.frame.right / sprite.graphic.bitmap.width;
+		var height = sprite.frame.frame.height / sprite.graphic.bitmap.height;
+
 		if (!flipY)
 			sub = (subdivisions - 1) - sub;
 		var uvSub = 1.0 / subdivisions;
@@ -647,21 +559,21 @@ class SchmovinHoldNoteRenderer extends SchmovinRenderer
 		if (flipY)
 		{
 			return [
-				0,         uvOffset,
-				1,         uvOffset,
-				1, uvOffset + uvSub,
-				0,         uvOffset,
-				0, uvOffset + uvSub,
-				1, uvOffset + uvSub
+				 leftX,           topY + uvOffset * height,
+				rightX,           topY + uvOffset * height,
+				rightX, topY + (uvOffset + uvSub) * height,
+				 leftX,           topY + uvOffset * height,
+				 leftX, topY + (uvOffset + uvSub) * height,
+				rightX, topY + (uvOffset + uvSub) * height
 			];
 		}
 		return [
-			0, uvSub + uvOffset,
-			1, uvSub + uvOffset,
-			1,         uvOffset,
-			0, uvSub + uvOffset,
-			0,         uvOffset,
-			1,         uvOffset
+			 leftX, topY + (uvSub + uvOffset) * height,
+			rightX, topY + (uvSub + uvOffset) * height,
+			rightX,           topY + uvOffset * height,
+			 leftX, topY + (uvSub + uvOffset) * height,
+			 leftX,           topY + uvOffset * height,
+			rightX,           topY + uvOffset * height
 		];
 	}
 

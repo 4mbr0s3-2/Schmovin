@@ -2,14 +2,18 @@
  * @ Author: 4mbr0s3 2
  * @ Create Time: 2021-06-22 12:05:21
  * @ Modified by: 4mbr0s3 2
- * @ Modified time: 2022-03-07 20:14:42
+ * @ Modified time: 2022-03-21 02:03:57
  */
 
 package schmovin;
 
+import flixel.FlxSprite;
+import flixel.math.FlxMath;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween.FlxTweenManager;
 import flixel.tweens.FlxTween.TweenCallback;
+import haxe.Exception;
+import hscript.Expr.ModuleDecl;
 import hscript.Interp;
 import hscript.Parser;
 import schmovin.SchmovinTimeline;
@@ -25,6 +29,11 @@ class SchmovinClient
 	var _instance:SchmovinInstance;
 	var _tween:FlxTweenManager = new FlxTweenManager();
 
+	public function toString()
+	{
+		return '';
+	}
+
 	function AddPlayfield(name:String, playerToCopy:Int)
 	{
 		var p = new SchmovinPlayfield(name, playerToCopy, _timeline.GetModList());
@@ -39,13 +48,8 @@ class SchmovinClient
 
 	public function Initialize() {}
 
-	public function ParseHScript(script:String)
+	private function SetInterpreterValues(interp:Interp)
 	{
-		_timeline.ClearEvents();
-		var parser = new Parser();
-		var ast = parser.parseString(script);
-		var interp = new Interp();
-
 		interp.variables.set('FlxEase', FlxEase);
 		interp.variables.set('Alt', Alt);
 		interp.variables.set('Math', Math);
@@ -55,9 +59,23 @@ class SchmovinClient
 		interp.variables.set('Ease', Ease);
 		interp.variables.set('Set', Set);
 		interp.variables.set('Func', Func);
+		interp.variables.set('SchmovinClient', this);
+		interp.variables.set('PlayState', _state);
+		interp.variables.set('Timeline', _timeline);
+		interp.variables.set('TweenManager', _tween);
+		interp.variables.set('FlxMath', FlxMath);
+		interp.variables.set('FlxSprite', FlxSprite);
+	}
+
+	public function ParseHScript(script:String)
+	{
+		_timeline.ClearEvents();
+		var parser = new Parser();
+		var ast = parser.parseString(script);
+		var interp = new Interp();
+		SetInterpreterValues(interp);
 
 		var res = interp.execute(ast);
-		SchmovinAdapter.GetInstance().Log('Executed hscript: ${res}');
 		return res;
 	}
 

@@ -2,13 +2,12 @@
  * @ Author: 4mbr0s3 2
  * @ Create Time: 2021-06-22 11:55:58
  * @ Modified by: 4mbr0s3 2
- * @ Modified time: 2022-01-27 17:31:58
+ * @ Modified time: 2022-04-03 01:04:16
  */
 
 package schmovin;
 
 import Song.SwagSong;
-import flixel.FlxBasic;
 import flixel.FlxCamera;
 import flixel.FlxG;
 import flixel.FlxSprite;
@@ -30,7 +29,7 @@ class Schmovin extends Mod
 
 	public static var holdNoteSubdivisions:Int = 4;
 	public static var arrowPathSubdivisions:Int = 80;
-	public static var optimizeHoldNotes:Bool = #if desktop true #else false #end;
+	public static var optimizeHoldNotes:Bool = false;
 
 	override function GetCredits():String
 	{
@@ -71,47 +70,23 @@ class Schmovin extends Mod
 	{
 		InitializeGroovinSchmovinAdapter();
 
-		instance = SchmovinInstance.Create();
-		instance.state = cast FlxG.state;
-
-		instance.camHUD = camHUD;
-		instance.camGame = camGame;
-		InitializeCamBelowGame();
-
-		instance.InitializeCameras();
-		instance.InitializeSchmovin();
-	}
-
-	function InitializeCamBelowGame()
-	{
-		instance.camBelowGame = new FlxCamera();
-		instance.camBelowGame.bgColor = FlxColor.TRANSPARENT;
-		FlxG.cameras.add(instance.camBelowGame);
-		instance.layerBelowGame = new FlxTypedGroup<FlxBasic>();
-		instance.layerBelowGame.cameras = [instance.camBelowGame];
-		instance.state.add(instance.layerBelowGame);
+		instance = SchmovinInstance.Create(cast FlxG.state, camHUD, camGame);
+		instance.Initialize();
 	}
 
 	override function OnExitPlayState(nextState:FlxState)
 	{
-		Log('PlayState exited...');
+		Log('Destroying Schmovin instance...');
 		instance.Destroy();
-	}
-
-	function InitializeAboveHUD()
-	{
-		instance.layerAboveHUD = new FlxTypedGroup<FlxBasic>();
-		instance.layerAboveHUD.cameras = [instance.camHUD];
-		instance.state.add(instance.layerAboveHUD);
 	}
 
 	override function PostUI(state:PlayState)
 	{
 		state.strumLineNotes.cameras = [instance.camNotes];
 		state.notes.cameras = [instance.camNotes];
-
 		FlxCamera.defaultCameras = [instance.camGameCopy];
-		InitializeAboveHUD();
+
+		instance.InitializeAboveHUD();
 	}
 
 	override function PreDraw(state:PlayState)
@@ -126,16 +101,17 @@ class Schmovin extends Mod
 
 	override function OnCountdown(state:PlayState)
 	{
-		instance.InitializeFakeExplosionReceptors();
+		// No longer needed
+		// instance.InitializeFakeExplosionReceptors();
 	}
 
 	override function Update(elapsed:Float)
 	{
 		instance.Update(elapsed);
-		UpdateReceptors();
+		HideReceptors();
 	}
 
-	function UpdateReceptors()
+	function HideReceptors()
 	{
 		for (receptorIndex in 0...instance.state.strumLineNotes.length)
 		{
@@ -144,7 +120,6 @@ class Schmovin extends Mod
 			var receptor = instance.state.strumLineNotes.members[receptorIndex];
 			receptor.visible = false;
 		}
-		instance.UpdateFakeExplosionReceptors();
 	}
 
 	override function IsVisibleOnModList():Bool
@@ -168,9 +143,8 @@ class Schmovin extends Mod
 			new GroovinModOptionSlider(this, 'maxArrowPathSubdivisions', 'Maximum Arrow Path Subdivisions', 80, 10, 100, (v) ->
 			{
 				arrowPathSubdivisions = cast v;
-			}, 1, 80, '',
-				true),
-			new GroovinModOptionCheckbox(this, 'optimizeSustainNotes', 'Optimize Sustain Notes', #if desktop true #else false #end, (v) ->
+			}, 1, 80, '', true),
+			new GroovinModOptionCheckbox(this, 'optimizeSustainNotes', 'Optimize Sustain Notes', false, (v) ->
 			{
 				optimizeHoldNotes = cast v;
 			}, false,

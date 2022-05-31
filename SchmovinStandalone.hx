@@ -60,15 +60,9 @@ class SchmovinStandalone
 	 */
 	public function AfterCameras(camGame:FlxCamera, camHUD:FlxCamera)
 	{
-		instance = SchmovinInstance.Create();
-		instance.state = cast FlxG.state;
+		instance = SchmovinInstance.Create(cast FlxG.state, camGame, camHUD);
 
-		instance.camHUD = camHUD;
-		instance.camGame = camGame;
-		InitializeCamBelowGame();
-
-		instance.InitializeCameras();
-		instance.InitializeSchmovin();
+		instance.Initialize();
 	}
 
 	function InitializeCamBelowGame()
@@ -134,7 +128,7 @@ class SchmovinStandalone
 	 */
 	public function OnCountdown(state:PlayState)
 	{
-		instance.InitializeFakeExplosionReceptors();
+		// instance.InitializeFakeExplosionReceptors();
 	}
 
 	/**

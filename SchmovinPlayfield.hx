@@ -1,5 +1,6 @@
 package schmovin;
 
+import flixel.FlxCamera;
 import haxe.Exception;
 
 class SchmovinPlayfield
@@ -10,6 +11,7 @@ class SchmovinPlayfield
 	public var player:Int;
 	public var mods:Map<String, Float>;
 	public var activeMods:Array<String> = [];
+	public var cameras:Array<FlxCamera>;
 
 	public function CheckActiveMod(modName:String)
 	{
@@ -77,11 +79,12 @@ class SchmovinPlayfield
 		}
 	}
 
-	public function new(name:String = '', player:Int = -1, modList:SchmovinNoteModList)
+	public function new(name:String = '', player:Int = -1, modList:SchmovinNoteModList, cameras:Array<FlxCamera> = null)
 	{
 		this.name = name;
 		this.player = player;
 		this.mods = new Map<String, Float>();
 		this._modList = modList;
+		this.cameras = cameras;
 	}
 }

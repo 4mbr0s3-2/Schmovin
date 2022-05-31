@@ -2,7 +2,7 @@
  * @ Author: 4mbr0s3 2
  * @ Create Time: 2021-07-21 18:18:16
  * @ Modified by: 4mbr0s3 2
- * @ Modified time: 2021-12-26 16:16:51
+ * @ Modified time: 2022-03-19 20:58:12
  */
 
 package schmovin.misc_mods;
@@ -18,7 +18,7 @@ class MiscModWindowDance extends MiscModBase
 
 	public function new(primary:Bool = false, prefix:String = 'windowdance')
 	{
-		super(primary);
+		super();
 	}
 
 	override function Activate(receptors:Array<Receptor>, notes:Array<Note>)

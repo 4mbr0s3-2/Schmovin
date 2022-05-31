@@ -3,6 +3,8 @@ package schmovin.shaders;
 import flixel.system.FlxAssets.FlxShader;
 
 // Quick plane raymarcher thingy by 4mbr0s3 2 (partially)
+
+@:deprecated('GLSL raymarchers replaced by 3D note mod transformations (set the \'cam-\' note mods)')
 class PlaneRaymarcher
 {
 	public var shader(default, null):PlaneRaymarcherShader = new PlaneRaymarcherShader();
