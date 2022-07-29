@@ -2,7 +2,7 @@
  * @ Author: 4mbr0s3 2
  * @ Create Time: 2021-07-07 13:26:53
  * @ Modified by: 4mbr0s3 2
- * @ Modified time: 2022-03-27 20:12:16
+ * @ Modified time: 2022-07-23 14:37:02
  */
 
 package schmovin;
@@ -126,8 +126,8 @@ class SchmovinNotePathRenderer extends SchmovinRenderer
 			// https://community.openfl.org/t/drawed-lines-uses-too-much-cpu-neko/8651/7
 			// EDIT 2: OK, so it looks like copying to camera buffer gives higher FPS on HTML (~100 to 190), so we'll use different methods accordingly
 
-			#if html5
 			var cameras = playfield.cameras != null ? playfield.cameras : _defaultCameras;
+			#if html5
 			for (camera in cameras)
 			{
 				camera.canvas.graphics.copyFrom(bitmap.graphics);
