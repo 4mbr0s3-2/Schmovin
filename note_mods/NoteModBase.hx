@@ -2,7 +2,7 @@
  * @ Author: 4mbr0s3 2
  * @ Create Time: 2021-07-15 16:29:16
  * @ Modified by: 4mbr0s3 2
- * @ Modified time: 2022-03-14 01:10:45
+ * @ Modified time: 2022-07-30 19:16:17
  */
 
 package schmovin.note_mods;
@@ -15,6 +15,11 @@ using schmovin.SchmovinUtil;
 class NoteModBase implements ISchmovinNoteMod
 {
 	public var order:Int = 0;
+
+	function toString()
+	{
+		return '';
+	}
 
 	var _name:String;
 	var _parent:String;

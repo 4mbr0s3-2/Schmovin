@@ -2,7 +2,7 @@
  * @ Author: 4mbr0s3 2
  * @ Create Time: 2021-06-22 12:05:21
  * @ Modified by: 4mbr0s3 2
- * @ Modified time: 2022-03-21 02:03:57
+ * @ Modified time: 2022-07-30 20:08:01
  */
 
 package schmovin;
@@ -93,10 +93,23 @@ class SchmovinClient
 
 	public function new(instance:SchmovinInstance, timeline:SchmovinTimeline, state:PlayState)
 	{
+		SetParams(instance, timeline, state);
+		Initialize();
+	}
+
+	/**
+		For use in Polymod mods.
+
+		Apparently, Polymod doesn't call the superclass constructor when calling ScriptedClass.init() inside hscripts.
+		So, despite needing the parameters, the parameters never get passed.
+
+		You can just call this from the abstract script class (_asc.SetParams()) to initialize these parameters and call _asc.Initialize() manually.
+	**/
+	public function SetParams(instance:SchmovinInstance, timeline:SchmovinTimeline, state:PlayState)
+	{
 		_instance = instance;
 		_timeline = timeline;
 		_state = state;
-		Initialize();
 	}
 
 	function Ease(beat:Float, length:Float, easeFunc:Float->Float, target:Float, mod:String, player:Int = -1)
