@@ -31,12 +31,11 @@ interface ISchmovinNoteMod
 
 	@:deprecated
 	public function SetLegacyPercent(f:Float, player:Int):Void;
-	@:deprecated('Use SchmovinPlayfield.SetPercent() instead.')
-	public function SetPercent(f:Float, playfield:SchmovinPlayfield):Void;
 	@:deprecated
 	public function GetLegacyPercent(player:Int):Float;
 	@:deprecated
 	public function GetPercent(playfield:SchmovinPlayfield):Float;
+	public function OnSetPercent(f:Float, playfield:SchmovinPlayfield):Void;
 	public function IsActive():Bool;
 	public function ExecuteReceptor(currentBeat:Float, receptor:Receptor, player:Int, pos:Vector4, playfield:SchmovinPlayfield):Void;
 	public function ExecuteNote(currentBeat:Float, note:Note, player:Int, pos:Vector4, playfield:SchmovinPlayfield):Void;
@@ -44,6 +43,10 @@ interface ISchmovinNoteMod
 		playfield:SchmovinPlayfield):Vector4;
 
 	public function ExecutePath(currentBeat:Float, strumTime:Float, column:Int, player:Int, pos:Vector4, playfield:SchmovinPlayfield):Vector4;
+
+	/**
+		Called before ExecutePath(), so playfield.SetPercent() can work here.
+	**/
 	public function ExecuteOther(currentBeat:Float, strumTime:Float, column:Int, player:Int, map:Map<String, Dynamic>, playfield:SchmovinPlayfield):Void;
 
 	public function Update(currentBeat:Float):Void;

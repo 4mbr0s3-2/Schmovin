@@ -8,6 +8,7 @@
 package schmovin.overlays;
 
 import flixel.FlxG;
+import flixel.FlxState;
 import flixel.group.FlxGroup;
 import flixel.math.FlxMath;
 import flixel.text.FlxText;
@@ -114,6 +115,7 @@ class SchmovinDebugger extends Sprite
 	private var _displayEvents:Bool = false;
 	private var _labels = new Map<String, DisplayObject>();
 	private var _sliders = new FlxTypedGroup<ModSlider>();
+	private var _modsDebugText:FlxText;
 
 	public function new(client:SchmovinClient, timeline:SchmovinTimeline, displayEvents:Bool = false)
 	{
@@ -161,6 +163,17 @@ class SchmovinDebugger extends Sprite
 	{
 		SchmovinAdapter.GetInstance().Log('Script: ${script}');
 		return _client.ParseHScript(script);
+	}
+
+	public function AddDebugText()
+	{
+		_modsDebugText = new FlxText(10, 10, 0);
+		_modsDebugText.scrollFactor.set();
+		_modsDebugText.setFormat(Paths.font('vcr.ttf'), 20, FlxColor.WHITE, LEFT);
+		_modsDebugText.setBorderStyle(FlxTextBorderStyle.OUTLINE, 0xFF000000, 1, 1);
+		var ps = cast(FlxG.state, PlayState);
+		_modsDebugText.cameras = [ps.camHUD];
+		ps.add(_modsDebugText);
 	}
 
 	public function AddSlider(modName:String, player:Int = -1, min:Float = -1.0, max:Float = 1.0)
@@ -277,13 +290,43 @@ class SchmovinDebugger extends Sprite
 		Update();
 	}
 
+	function UpdateModsDebugText()
+	{
+		var text = 'Mods Debug\n';
+		function NoPercent(mod:String)
+		{
+			return _timeline.GetModList().GetPercent(mod, 0) == 0.0 && _timeline.GetModList().GetPercent(mod, 1) == 0.0;
+		}
+		var iterator = _timeline._events.keyValueIterator();
+		var row = 0;
+		while (iterator.hasNext())
+		{
+			var current = iterator.next();
+			if (NoPercent(current.key))
+				continue;
+			var mod = _timeline.GetNoteMod(current.key);
+			if (mod == null)
+				continue;
+			text += '${current.key}: [${mod.GetLegacyPercent(0)}, ${mod.GetLegacyPercent(1)}]\n';
+			// if (!_labels.exists(current.key))
+			// 	_labels.set(current.key, new ModLabel(current.key, mod));
+			// var child = _labels.get(current.key);
+			// cast(child, ModLabel).row = row;
+			// _eventsDisplay.addChild(child);
+			// row++;
+		}
+		if (_modsDebugText != null)
+			_modsDebugText.text = text;
+	}
+
 	function Update()
 	{
-		AddEventsDisplay();
-		for (childIndex in 0..._eventsDisplay.numChildren)
-		{
-			var child = _eventsDisplay.getChildAt(childIndex);
-			cast(child, IUpdateable).Update([_zoomX, _zoomY]);
-		}
+		UpdateModsDebugText();
+		// AddEventsDisplay();
+		// for (childIndex in 0..._eventsDisplay.numChildren)
+		// {
+		// 	var child = _eventsDisplay.getChildAt(childIndex);
+		// 	cast(child, IUpdateable).Update([_zoomX, _zoomY]);
+		// }
 	}
 }

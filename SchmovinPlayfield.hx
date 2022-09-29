@@ -47,19 +47,19 @@ class SchmovinPlayfield
 		try
 		{
 			mods[modName] = f;
+			var mod = _modList.GetModByName(modName);
+			var parent = mod.GetParent();
+			mod.OnSetPercent(f, this);
 			if (f != 0 && !activeMods.contains(modName))
 			{
-				var mod = _modList.GetModByName(modName);
-				var parent = mod.GetParent();
 				if (parent != '' && !activeMods.contains(parent))
 					activeMods.push(parent);
 				else if (parent == '')
 					activeMods.push(modName);
 				Sort();
 			}
-			else if (f == 0)
+			else if (f == 0 && !_modList.GetMustExecuteMods().contains(modName))
 			{
-				var parent = _modList.GetModByName(modName).GetParent();
 				activeMods.remove(modName);
 				for (mod in activeMods)
 				{
@@ -86,5 +86,6 @@ class SchmovinPlayfield
 		this.mods = new Map<String, Float>();
 		this._modList = modList;
 		this.cameras = cameras;
+		activeMods = _modList.GetMustExecuteMods();
 	}
 }

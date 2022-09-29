@@ -2,7 +2,7 @@
  * @ Author: 4mbr0s3 2
  * @ Create Time: 2021-07-23 17:48:21
  * @ Modified by: 4mbr0s3 2
- * @ Modified time: 2022-05-26 17:44:46
+ * @ Modified time: 2022-09-11 12:22:40
  */
 
 package schmovin.note_mods;
@@ -29,12 +29,11 @@ class NoteModRotate extends NoteModBase
 		return true;
 	}
 
-	override function ExecuteNoteVertex(currentBeat:Float, strumTime:Float, column:Int, player:Int, vert:Vector4, vertIndex:Int, pos:Vector4,
-			playfield:SchmovinPlayfield):Vector4
+	override function ExecuteOther(currentBeat:Float, strumTime:Float, column:Int, player:Int, map:Map<String, Dynamic>, playfield:SchmovinPlayfield)
 	{
-		var out = Camera3DTransforms.RotateVector4(vert, GetOtherPercent('${_modPrefix}rotatex', playfield),
-			GetOtherPercent('${_modPrefix}rotatey', playfield), GetOtherPercent('${_modPrefix}rotatez', playfield));
-		return out;
+		map.set('angleX', GetOtherPercent('${_modPrefix}rotatex', playfield));
+		map.set('angleY', GetOtherPercent('${_modPrefix}rotatey', playfield));
+		map.set('angleZ', GetOtherPercent('${_modPrefix}rotatez', playfield));
 	}
 
 	override function ExecutePath(currentBeat:Float, strumTime:Float, column:Int, player:Int, pos:Vector4, playfield:SchmovinPlayfield):Vector4
@@ -42,6 +41,7 @@ class NoteModRotate extends NoteModBase
 		var origin:Vector4 = new Vector4(50 + FlxG.width / 2 * player + 2 * Note.swagWidth, FlxG.height / 2);
 		if (_origin != null)
 			origin = _origin;
+		// Set center of rotation to origin
 		var diff = pos.subtract(origin);
 
 		var out = Camera3DTransforms.RotateVector4(diff, GetOtherPercent('${_modPrefix}rotatex', playfield),

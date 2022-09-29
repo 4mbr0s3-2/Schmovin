@@ -27,16 +27,34 @@ class Camera3DTransforms
 
 	public static function RotateVector4(vec:Vector4, angleX:Float, angleY:Float, angleZ:Float)
 	{
+		// var rotateZ = Rotate(vec.x, vec.y, angleZ);
+		// var offZ = new Vector4(rotateZ[0], rotateZ[1], vec.z);
+
+		// var rotateX = Rotate(offZ.z, offZ.y, angleX);
+		// var offX = new Vector4(offZ.x, rotateX[1], rotateX[0]);
+
+		// var rotateY = Rotate(offX.x, offX.z, angleY);
+		// var offY = new Vector4(rotateY[0], offX.y, rotateY[1]);
+
 		var rotateZ = Rotate(vec.x, vec.y, angleZ);
 		var offZ = new Vector4(rotateZ[0], rotateZ[1], vec.z);
 
-		var rotateX = Rotate(offZ.z, offZ.y, angleX);
-		var offX = new Vector4(offZ.x, rotateX[1], rotateX[0]);
+		var rotateY = Rotate(offZ.x, offZ.z, angleY);
+		var offY = new Vector4(rotateY[0], offZ.y, rotateY[1]);
 
-		var rotateY = Rotate(offX.x, offX.z, angleY);
-		var offY = new Vector4(rotateY[0], offX.y, rotateY[1]);
+		var rotateX = Rotate(offY.z, offY.y, angleX);
+		var offX = new Vector4(offY.x, rotateX[1], rotateX[0]);
 
-		return offY;
+		// var rotateX = Rotate(vec.z, vec.y, angleX);
+		// var offX = new Vector4(vec.x, rotateX[1], rotateX[0]);
+
+		// var rotateY = Rotate(offX.x, offX.z, angleY);
+		// var offY = new Vector4(rotateY[0], offX.y, rotateY[1]);
+
+		// var rotateZ = Rotate(offY.x, offY.y, angleZ);
+		// var offZ = new Vector4(rotateZ[0], rotateZ[1], offY.z);
+
+		return offX;
 	}
 
 	public static function Projection(pos:Vector4, pov:Float)

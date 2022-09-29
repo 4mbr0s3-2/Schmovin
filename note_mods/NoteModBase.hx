@@ -89,7 +89,7 @@ class NoteModBase implements ISchmovinNoteMod
 		return _playfields.GetPlayfieldAtIndex(p);
 	}
 
-	public function SetPercent(f:Float, playfield:SchmovinPlayfield)
+	private function SetPercent(f:Float, playfield:SchmovinPlayfield)
 	{
 		var player = playfield.player;
 		if (f != 0 && GetPercent(playfield) == 0)
@@ -99,6 +99,12 @@ class NoteModBase implements ISchmovinNoteMod
 		// _percents.set(playfield, f);
 		playfield.SetPercent(this.GetName(), f);
 	}
+
+	/**
+		Called whenever a playfield sets the mod.
+		Useful for having mods that sets other mods.
+	**/
+	public function OnSetPercent(f:Float, playfield:SchmovinPlayfield) {}
 
 	/**
 	 * Returns the number of pixels for the strum time, taking into account scroll speed. 
@@ -120,6 +126,9 @@ class NoteModBase implements ISchmovinNoteMod
 		SetPercent(f, GetDefaultPlayfieldFromPlayer(p));
 	}
 
+	/**
+		Legacy method that requires a player index rather than a playfield.
+	**/
 	public function GetLegacyPercent(p:Int)
 	{
 		if (p < 0)
@@ -134,11 +143,19 @@ class NoteModBase implements ISchmovinNoteMod
 		return GetPercent(GetDefaultPlayfieldFromPlayer(p));
 	}
 
+	/**
+		Set the percent of the note mod for the playfield.
+	**/
 	public function GetPercent(playfield:SchmovinPlayfield)
 	{
 		return playfield.GetPercent(this.GetName());
 	}
 
+	/**
+		Deprecated because calling playfield.GetPercent() would've already been enough. (Middle man)
+		However, I'm probably keeping it here in case legacy code calls it...
+	**/
+	@:deprecated
 	public function GetOtherPercent(modName:String, playfield:SchmovinPlayfield)
 	{
 		return playfield.GetPercent(modName);

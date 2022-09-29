@@ -28,6 +28,11 @@ class SchmovinNoteModList
 	 */
 	var _mustExecuteModNames:Array<String>;
 
+	public function GetMustExecuteMods()
+	{
+		return _mustExecuteModNames;
+	}
+
 	/**
 	 * Consists of all registered note mods.
 	 */
@@ -296,7 +301,7 @@ class SchmovinNoteModList
 
 	inline function GetModNameList(playfield:SchmovinPlayfield)
 	{
-		return _mustExecuteModNames.concat(playfield.activeMods);
+		return playfield.activeMods;
 	}
 
 	// I reassure you guys this is as optimized as it could possibly get

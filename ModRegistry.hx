@@ -2,7 +2,7 @@
  * @ Author: 4mbr0s3 2
  * @ Create Time: 2021-07-15 16:25:02
  * @ Modified by: 4mbr0s3 2
- * @ Modified time: 2022-03-14 23:33:00
+ * @ Modified time: 2022-09-11 22:42:51
  */
 
 package schmovin;
@@ -19,6 +19,9 @@ import schmovin.note_mods.NoteModColumnSwaps;
 import schmovin.note_mods.NoteModConfusion;
 import schmovin.note_mods.NoteModDrunk;
 import schmovin.note_mods.NoteModGantzGraf;
+import schmovin.note_mods.NoteModITGDrunk;
+import schmovin.note_mods.NoteModITGTipsy;
+import schmovin.note_mods.NoteModNoteRotate;
 import schmovin.note_mods.NoteModPerspective;
 import schmovin.note_mods.NoteModReverse;
 import schmovin.note_mods.NoteModRotate;
@@ -70,8 +73,10 @@ class ModRegistry
 		AddNoteMod('flip', new NoteModFlip());
 
 		AddNoteMod('tipsy', new NoteModTipsy());
+		AddNoteMod('itgtipsy', new NoteModITGTipsy());
 
 		AddNoteMod('drunk', new NoteModDrunk());
+		AddNoteMod('itgdrunk', new NoteModITGDrunk());
 
 		AddNoteMod('tornado', new NoteModTornado());
 
@@ -109,6 +114,16 @@ class ModRegistry
 		AddNoteAuxMod('rotatey', 'rotate');
 		AddNoteAuxMod('rotatez', 'rotate');
 		AddNoteMod('rotate', new NoteModRotate());
+
+		// Used as temporary places to store angles set by other mods
+		AddNoteAuxMod('othernoterotatex', 'noterotate');
+		AddNoteAuxMod('othernoterotatey', 'noterotate');
+		AddNoteAuxMod('othernoterotatez', 'noterotate');
+
+		AddNoteAuxMod('noterotatex', 'noterotate');
+		AddNoteAuxMod('noterotatey', 'noterotate');
+		AddNoteAuxMod('noterotatez', 'noterotate');
+		AddNoteMod('noterotate', new NoteModNoteRotate());
 
 		AddNoteAuxMod('centerrotatex', 'centerrotate');
 		AddNoteAuxMod('centerrotatey', 'centerrotate');
