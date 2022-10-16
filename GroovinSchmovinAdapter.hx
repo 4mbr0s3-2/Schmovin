@@ -38,7 +38,7 @@ class GroovinSchmovinAdapter extends SchmovinAdapter
 
 	override function GetSongPosition():Float
 	{
-		return Conductor.songPosition;
+		return Conductor.songPosition - GrabGlobalVisualOffset();
 	}
 
 	override function GrabGlobalVisualOffset()

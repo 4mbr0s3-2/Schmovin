@@ -226,8 +226,8 @@ class SchmovinTapNoteRenderer extends SchmovinRenderer
 
 		for (tap in GetTapNotes())
 		{
-			Render(tap, tap.alpha, SchmovinAdapter.GetInstance().GetSongPosition() - tap.strumTime - SchmovinAdapter.GetInstance().GrabGlobalVisualOffset(),
-				SchmovinUtil.GetTotalColumn(tap), SchmovinUtil.GetPlayer(tap));
+			Render(tap, tap.alpha, SchmovinAdapter.GetInstance().GetSongPosition() - tap.strumTime, SchmovinUtil.GetTotalColumn(tap),
+				SchmovinUtil.GetPlayer(tap));
 		}
 	}
 
@@ -448,8 +448,7 @@ class SchmovinHoldNoteRenderer extends SchmovinRenderer
 						holdEnd = true;
 					var lastBottom = null;
 					var crotchet = SchmovinAdapter.GetInstance().GetCrotchetAtTime(hold.strumTime) / 4;
-					var strumTimeDiff = SchmovinAdapter.GetInstance().GetSongPosition() - hold.strumTime
-						- SchmovinAdapter.GetInstance().GrabGlobalVisualOffset();
+					var strumTimeDiff = SchmovinAdapter.GetInstance().GetSongPosition() - hold.strumTime;
 
 					var alpha = hold.alpha;
 					var frame = hold.graphic.bitmap;
