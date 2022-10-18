@@ -225,7 +225,7 @@ class SchmovinNoteModList
 			if (Std.is(sprite, Note))
 			{
 				var note:Note = cast sprite;
-				var strumTimeDiff = SchmovinAdapter.GetInstance().GetSongPosition() - note.strumTime;
+				var strumTimeDiff = SchmovinAdapter.GetInstance().GetSongPosition() - note.strumTime - SchmovinAdapter.GetInstance().GrabGlobalVisualOffset();
 				pos = notemod.ExecutePath(currentBeat, strumTimeDiff, note.GetTotalColumn(), player, pos, playfield);
 			}
 			else
@@ -284,7 +284,7 @@ class SchmovinNoteModList
 			if (Std.is(sprite, Note))
 			{
 				var note:Note = cast sprite;
-				var strumTimeDiff = SchmovinAdapter.GetInstance().GetSongPosition() - note.strumTime;
+				var strumTimeDiff = SchmovinAdapter.GetInstance().GetSongPosition() - note.strumTime - SchmovinAdapter.GetInstance().GrabGlobalVisualOffset();
 				outVertex = notemod.ExecuteNoteVertex(currentBeat, strumTimeDiff, note.GetTotalColumn(), player, outVertex, vertexIndex, pos, playfield);
 			}
 			else
