@@ -27,14 +27,14 @@ class EventBox extends Shape implements IUpdateable
 		graphics.endFill();
 	}
 
-	public function Update(args:Dynamic)
+	public function update(args:Dynamic)
 	{
 		var zoomX = args[0];
 		var zoomY = args[1];
-		var currentBeat = SchmovinAdapter.GetInstance().GetSongPosition() / Conductor.crochet;
-		x = zoomX * (_event.GetBeat() - currentBeat);
+		var currentBeat = SchmovinAdapter.getInstance().getSongPosition() / Conductor.crochet;
+		x = zoomX * (_event.getBeat() - currentBeat);
 		y = zoomY * _row + _marginTop;
-		width = zoomX * _event.GetBeatLength();
+		width = zoomX * _event.getBeatLength();
 		height = zoomY;
 	}
 }

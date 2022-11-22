@@ -9,5 +9,5 @@ package schmovin.overlays;
 
 interface IUpdateable
 {
-	public function Update(args:Dynamic):Void;
+	public function update(args:Dynamic):Void;
 }

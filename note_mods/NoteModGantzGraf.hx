@@ -18,15 +18,15 @@ import schmovin.util.Camera3DTransforms;
  */
 class NoteModGantzGraf extends NoteModBase
 {
-	override function IsVertexModifier():Bool
+	override function isVertexModifier():Bool
 	{
 		return true;
 	}
 
-	override function ExecuteNoteVertex(currentBeat:Float, strumTime:Float, column:Int, player:Int, vert:Vector4, vertIndex:Int, pos:Vector4,
+	override function executeNoteVertex(currentBeat:Float, strumTime:Float, column:Int, player:Int, vert:Vector4, vertIndex:Int, pos:Vector4,
 			playfield:SchmovinPlayfield):Vector4
 	{
-		var p = GetPercent(playfield);
+		var p = getPercent(playfield);
 		var angle = Math.random() * p;
 
 		vert = Camera3DTransforms.RotateVector4(vert, angle, angle, angle);

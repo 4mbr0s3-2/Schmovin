@@ -25,19 +25,19 @@ class SchmovinTimeline
 	@:allow(schmovin.SchmovinNoteModList)
 	private var _instance:SchmovinInstance;
 
-	public function GetNoteMod(name:String)
+	public function getNoteMod(name:String)
 	{
-		return _mods.GetModByName(name);
+		return _mods.getModFromName(name);
 	}
 
-	public function GetModList()
+	public function getModList()
 	{
 		return _mods;
 	}
 
 	private function new() {}
 
-	public function ClearEvents()
+	public function clearEvents()
 	{
 		for (key in _events.keys())
 		{
@@ -45,34 +45,34 @@ class SchmovinTimeline
 		}
 	}
 
-	public static function Create(state:PlayState, instance:SchmovinInstance, playfields:SchmovinPlayfieldManager)
+	public static function create(state:PlayState, instance:SchmovinInstance, playfields:SchmovinPlayfieldManager)
 	{
 		var timeline = new SchmovinTimeline();
 		timeline._instance = instance;
 		timeline._mods = new SchmovinNoteModList(state, timeline, playfields);
-		timeline.InitializeLists();
+		timeline.initializeLists();
 		return timeline;
 	}
 
-	public function GetPath(currentBeat:Float, strumTime:Float, column:Int, player:Int, playfield:SchmovinPlayfield, exclude:Array<String> = null)
+	public function getPath(currentBeat:Float, strumTime:Float, column:Int, player:Int, playfield:SchmovinPlayfield, exclude:Array<String> = null)
 	{
-		return _mods.GetPath(currentBeat, strumTime, column, player, playfield, exclude);
+		return _mods.getPath(currentBeat, strumTime, column, player, playfield, exclude);
 	}
 
-	public function GetOtherMap(currentBeat:Float, strumTime:Float, column:Int, player:Int, playfield:SchmovinPlayfield, exclude:Array<String> = null)
+	public function getOtherMap(currentBeat:Float, strumTime:Float, column:Int, player:Int, playfield:SchmovinPlayfield, exclude:Array<String> = null)
 	{
-		return _mods.GetOtherMap(currentBeat, strumTime, column, player, playfield, exclude);
+		return _mods.getOtherMap(currentBeat, strumTime, column, player, playfield, exclude);
 	}
 
-	public function GetPreviousEvent(event:ISchmovinEvent):ISchmovinEvent
+	public function getPreviousEvent(event:ISchmovinEvent):ISchmovinEvent
 	{
-		var eventList = _events.get(event.GetModName()).filter((e) -> e.GetPlayer() == event.GetPlayer());
+		var eventList = _events.get(event.getModName()).filter((e) -> e.getPlayer() == event.getPlayer());
 		if (eventList != null)
 		{
-			if (event.GetIndex() < 0)
-				event.SetIndex(eventList.indexOf(event));
+			if (event.getIndex() < 0)
+				event.setIndex(eventList.indexOf(event));
 
-			var index = event.GetIndex();
+			var index = event.getIndex();
 			if (index <= 0)
 				return new SchmovinEventNull();
 			return eventList[index - 1];
@@ -80,17 +80,17 @@ class SchmovinTimeline
 		return new SchmovinEventNull();
 	}
 
-	public function InitializeLists()
+	public function initializeLists()
 	{
 		_events = new Map<String, Array<ISchmovinEvent>>();
-		for (notemod in _mods.GetNoteModsMap())
+		for (notemod in _mods.getNoteModsMap())
 		{
-			_events.set(notemod.GetName(), new Array<ISchmovinEvent>());
+			_events.set(notemod.getName(), new Array<ISchmovinEvent>());
 		}
 		_events.set('events', new Array<ISchmovinEvent>());
 	}
 
-	public function Update(currentBeat:Float)
+	public function update(currentBeat:Float)
 	{
 		for (eventList in _events)
 		{
@@ -100,73 +100,73 @@ class SchmovinTimeline
 			// FIX: Pop finished events and use first event of array?
 			for (event in eventList)
 			{
-				event.TimelineUpdate(currentBeat);
+				event.timelineUpdate(currentBeat);
 			}
 		}
-		_mods.UpdateMiscMods(currentBeat);
+		_mods.updateMiscMods(currentBeat);
 	}
 
-	public function UpdatePath(playfield:SchmovinPlayfield, currentBeat:Float, obj:FlxSprite, plr:Int, column:Int = 0)
+	public function updatePath(playfield:SchmovinPlayfield, currentBeat:Float, obj:FlxSprite, plr:Int, column:Int = 0)
 	{
-		return _mods.UpdatePath(playfield, currentBeat, obj, plr, column);
+		return _mods.updatePath(playfield, currentBeat, obj, plr, column);
 	}
 
-	public function UpdateNote(playfield:SchmovinPlayfield, currentBeat:Float, obj:FlxSprite, pos:Vector4, plr:Int, column:Int = 0)
+	public function updateNote(playfield:SchmovinPlayfield, currentBeat:Float, obj:FlxSprite, pos:Vector4, plr:Int, column:Int = 0)
 	{
-		return _mods.UpdateNote(playfield, currentBeat, obj, pos, plr, column);
+		return _mods.updateNote(playfield, currentBeat, obj, pos, plr, column);
 	}
 
-	public function UpdateNoteVertex(playfield:SchmovinPlayfield, currentBeat:Float, obj:FlxSprite, vertex:Vector4, vertexIndex:Int, pos:Vector4,
+	public function updateNoteVertex(playfield:SchmovinPlayfield, currentBeat:Float, obj:FlxSprite, vertex:Vector4, vertexIndex:Int, pos:Vector4,
 			player:Int = 0, column:Int = 0, exclude:Array<String> = null)
 	{
-		return _mods.UpdateNoteVertex(currentBeat, obj, vertex, vertexIndex, pos, playfield, player, column, exclude);
+		return _mods.updateNoteVertex(currentBeat, obj, vertex, vertexIndex, pos, playfield, player, column, exclude);
 	}
 
-	public function AddEvent(modName:String, event:ISchmovinEvent)
+	public function addEvent(modName:String, event:ISchmovinEvent)
 	{
 		var mod = _events.get(modName);
 		if (mod != null)
 		{
-			event.SetTimeline(this);
+			event.setTimeline(this);
 			mod.push(event);
 		}
 	}
 
-	public function RemoveEvent(modName:String, event:ISchmovinEvent)
+	public function removeEvent(modName:String, event:ISchmovinEvent)
 	{
 		var mod = _events.get(modName);
 		if (mod != null)
 			mod.remove(event);
 	}
 
-	function GetDefaultPlayfieldFromPlayer(p:Int)
+	private function getDefaultPlayfieldFromPlayer(p:Int)
 	{
-		return _instance.playfields.GetPlayfieldAtIndex(p);
+		return _instance.playfields.getPlayfieldAtIndex(p);
 	}
 
-	public function Ease(beat:Float, length:Float, easeFunc:Float->Float, target:Float, mod:String, player:Int = -1)
+	public function ease(beat:Float, length:Float, easeFunc:Float->Float, target:Float, mod:String, player:Int = -1)
 	{
 		if (player == -1)
 		{
 			for (p in 0...2)
-				AddEvent(mod, new SchmovinEventEase(beat, length, easeFunc, target, GetNoteMod(mod), p, GetDefaultPlayfieldFromPlayer(p)));
+				addEvent(mod, new SchmovinEventEase(beat, length, easeFunc, target, getNoteMod(mod), p, getDefaultPlayfieldFromPlayer(p)));
 			return;
 		}
-		AddEvent(mod, new SchmovinEventEase(beat, length, easeFunc, target, GetNoteMod(mod), player, GetDefaultPlayfieldFromPlayer(player)));
+		addEvent(mod, new SchmovinEventEase(beat, length, easeFunc, target, getNoteMod(mod), player, getDefaultPlayfieldFromPlayer(player)));
 	}
 
-	public function Set(beat:Float, target:Float, mod:String, player:Int = -1)
+	public function set(beat:Float, target:Float, mod:String, player:Int = -1)
 	{
 		if (player == -1)
 		{
 			for (p in 0...2)
-				AddEvent(mod, new SchmovinEventSet(beat, target, GetNoteMod(mod), p, GetDefaultPlayfieldFromPlayer(p)));
+				addEvent(mod, new SchmovinEventSet(beat, target, getNoteMod(mod), p, getDefaultPlayfieldFromPlayer(p)));
 		}
-		AddEvent(mod, new SchmovinEventSet(beat, target, GetNoteMod(mod), player, GetDefaultPlayfieldFromPlayer(player)));
+		addEvent(mod, new SchmovinEventSet(beat, target, getNoteMod(mod), player, getDefaultPlayfieldFromPlayer(player)));
 	}
 
-	public function Func(beat:Float, callback:Void->Void)
+	public function func(beat:Float, callback:Void->Void)
 	{
-		AddEvent('events', new SchmovinEventFunction(beat, callback));
+		addEvent('events', new SchmovinEventFunction(beat, callback));
 	}
 }

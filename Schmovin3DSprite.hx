@@ -117,7 +117,7 @@ class Schmovin3DSprite extends FlxSprite
 				bottomPoints[1].x, bottomPoints[1].y
 			]);
 
-			bitmap.graphics.drawTriangles(vertices, null, GetUV(this.flipY));
+			bitmap.graphics.drawTriangles(vertices, null, getUV(this.flipY));
 
 			bitmap.graphics.endFill();
 
@@ -132,7 +132,7 @@ class Schmovin3DSprite extends FlxSprite
 		#end
 	}
 
-	function GetUV(flipY:Bool)
+	function getUV(flipY:Bool)
 	{
 		var leftX = this.frame.frame.left / this.graphic.bitmap.width;
 		var topY = this.frame.frame.top / this.graphic.bitmap.height;

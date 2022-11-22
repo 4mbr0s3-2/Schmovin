@@ -11,10 +11,10 @@ import lime.math.Vector4;
 
 class NoteModTranslate extends NoteModBase
 {
-	override function ExecutePath(currentBeat:Float, strumTime:Float, column:Int, player:Int, pos:Vector4, playfield:SchmovinPlayfield):Vector4
+	override function executePath(currentBeat:Float, strumTime:Float, column:Int, player:Int, pos:Vector4, playfield:SchmovinPlayfield):Vector4
 	{
 		var newPos = pos;
-		var extraOffset = new Vector4(GetOtherPercent('xoffset', playfield), GetOtherPercent('yoffset', playfield), GetOtherPercent('zoffset', playfield));
-		return newPos.add(new Vector4(GetOtherPercent('x', playfield), GetOtherPercent('y', playfield), GetOtherPercent('z', playfield)).add(extraOffset));
+		var extraOffset = new Vector4(getOtherPercent('xoffset', playfield), getOtherPercent('yoffset', playfield), getOtherPercent('zoffset', playfield));
+		return newPos.add(new Vector4(getOtherPercent('x', playfield), getOtherPercent('y', playfield), getOtherPercent('z', playfield)).add(extraOffset));
 	}
 }

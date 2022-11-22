@@ -6,8 +6,8 @@ package schmovin.note_mods;
  */
 class NoteModBlink extends NoteModBase
 {
-	override function ExecuteOther(currentBeat:Float, strumTime:Float, column:Int, player:Int, map:Map<String, Dynamic>, playfield:SchmovinPlayfield)
+	override function executeOther(currentBeat:Float, strumTime:Float, column:Int, player:Int, map:Map<String, Dynamic>, playfield:SchmovinPlayfield)
 	{
-		map.set('alpha', Math.abs(Math.sin(currentBeat * GetPercent(playfield))));
+		map.set('alpha', Math.abs(Math.sin(currentBeat * getPercent(playfield))));
 	}
 }

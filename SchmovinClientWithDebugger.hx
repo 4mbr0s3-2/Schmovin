@@ -22,10 +22,10 @@ class SchmovinClientWithDebugger extends SchmovinClient
 		Lib.current.addChild(_debugger);
 	}
 
-	override function Destroy()
+	override function destroy()
 	{
-		super.Destroy();
-		_debugger.Destroy();
+		super.destroy();
+		_debugger.destroy();
 		Lib.current.removeChild(_debugger);
 	}
 
@@ -36,11 +36,11 @@ class SchmovinClientWithDebugger extends SchmovinClient
 		js.Browser.navigator.clipboard.readText().then((d) ->
 		{
 			cb = d;
-			_debugger.ParseHScript(cb);
+			_debugger.parseHScript(cb);
 		});
 		#else
 		var cb = Clipboard.generalClipboard.getData(TEXT_FORMAT, CLONE_PREFERRED);
-		_debugger.ParseHScript(cb);
+		_debugger.parseHScript(cb);
 		#end
 	}
 }

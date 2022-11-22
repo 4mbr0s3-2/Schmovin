@@ -14,14 +14,14 @@ using schmovin.SchmovinUtil;
 
 class NoteModTornado extends NoteModBase
 {
-	override function ExecutePath(currentBeat:Float, strumTime:Float, column:Int, player:Int, pos:Vector4, playfield:SchmovinPlayfield):Vector4
+	override function executePath(currentBeat:Float, strumTime:Float, column:Int, player:Int, pos:Vector4, playfield:SchmovinPlayfield):Vector4
 	{
 		var playerColumn = column % 4;
 		var columnPhaseShift = playerColumn * Math.PI / 3;
-		var phaseShift = GetRelativeTime(strumTime) / 135;
+		var phaseShift = getRelativeTime(strumTime) / 135;
 		var returnReceptorToZeroOffsetX = (-Math.cos(-columnPhaseShift) + 1) / 2 * Note.swagWidth * 3;
 		var offsetX = (-Math.cos(phaseShift - columnPhaseShift) + 1) / 2 * Note.swagWidth * 3 - returnReceptorToZeroOffsetX;
 		var outPos = pos.clone();
-		return outPos.add(new Vector4(offsetX * GetPercent(playfield)));
+		return outPos.add(new Vector4(offsetX * getPercent(playfield)));
 	}
 }

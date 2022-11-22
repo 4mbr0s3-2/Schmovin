@@ -8,71 +8,71 @@ import groovin_input.GroovinInput;
 // Don't you love these naming conventions?
 class GroovinSchmovinAdapter extends SchmovinAdapter
 {
-	override function ForEveryMod(param:Array<Dynamic>)
+	override function forEveryMod(param:Array<Dynamic>)
 	{
-		ModHooks.ForEveryMod((mod) ->
+		ModHooks.forEveryMod((mod) ->
 		{
-			mod.ReceiveCrossModCall('SchmovinSetClient', null, param);
+			mod.receiveCrossModCall('SchmovinSetClient', null, param);
 		});
 	}
 
-	override function GetCrotchetAtTime(time:Float):Float
+	override function getCrotchetAtTime(time:Float):Float
 	{
-		return GroovinConductor.GetCrotchetAtTime(time);
+		return GroovinConductor.getCrotchetAtTime(time);
 	}
 
-	override function GrabScrollSpeed():Float
+	override function grabScrollSpeed():Float
 	{
-		return GroovinInput.GrabScrollSpeed(PlayState.SONG);
+		return GroovinInput.grabScrollSpeed(PlayState.SONG);
 	}
 
-	override function GrabReverse():Bool
+	override function grabReverse():Bool
 	{
-		return GroovinInput.GrabReverse();
+		return GroovinInput.grabReverse();
 	}
 
-	override function GetCrotchetNow():Float
+	override function getCrotchetNow():Float
 	{
-		return GroovinConductor.GetCrotchetNow();
+		return GroovinConductor.getCrotchetNow();
 	}
 
-	override function GetSongPosition():Float
+	override function getSongPosition():Float
 	{
 		return Conductor.songPosition;
 	}
 
-	override function GrabGlobalVisualOffset()
+	override function grabGlobalVisualOffset()
 	{
-		return GroovinInput.GrabGlobalVisualOffset();
+		return GroovinInput.grabGlobalVisualOffset();
 	}
 
-	override function ShouldCacheNoteBitmap(note:Note):Bool
+	override function shouldCacheNoteBitmap(note:Note):Bool
 	{
 		return !note.extraData.exists('forceBitmap');
 	}
 
-	override function GetCurrentBeat():Float
+	override function getCurrentBeat():Float
 	{
-		return GroovinConductor.GetTotalBeatsToTime(GetSongPosition());
+		return GroovinConductor.getTotalBeatsToTime(getSongPosition());
 	}
 
-	override function GetHoldNoteSubdivisions():Int
+	override function getHoldNoteSubdivisions():Int
 	{
 		return Schmovin.holdNoteSubdivisions;
 	}
 
-	override function GetArrowPathSubdivisions():Int
+	override function getArrowPathSubdivisions():Int
 	{
 		return Schmovin.arrowPathSubdivisions;
 	}
 
-	override function GetDefaultNoteX(column:Int, player:Int)
+	override function getDefaultNoteX(column:Int, player:Int)
 	{
 		var playerColumn = column % 4;
-		return SchmovinUtil.NoteWidthHalf() + 50 + playerColumn * Note.swagWidth + FlxG.width / 2 * player;
+		return SchmovinUtil.getNoteWidthHalf() + 50 + playerColumn * Note.swagWidth + FlxG.width / 2 * player;
 	}
 
-	override function GetOptimizeHoldNotes():Bool
+	override function getOptimizeHoldNotes():Bool
 	{
 		return Schmovin.optimizeHoldNotes;
 	}

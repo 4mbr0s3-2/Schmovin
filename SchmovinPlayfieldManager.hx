@@ -6,17 +6,17 @@ class SchmovinPlayfieldManager
 
 	public function new() {}
 
-	public function AddPlayfield(p:SchmovinPlayfield)
+	public function addPlayfield(p:SchmovinPlayfield)
 	{
 		list.push(p);
 	}
 
-	public function RemovePlayfield(p:SchmovinPlayfield)
+	public function removePlayfield(p:SchmovinPlayfield)
 	{
 		list.remove(p);
 	}
 
-	public function GetPlayfieldAtIndex(i:Int)
+	public function getPlayfieldAtIndex(i:Int)
 	{
 		if (i > list.length - 1 || i < 0)
 			return list[0];

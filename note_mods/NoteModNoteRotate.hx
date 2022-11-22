@@ -27,41 +27,41 @@ class NoteModNoteRotate extends NoteModBase
 		super();
 	}
 
-	override function MustExecute():Bool
+	override function alwaysExecute():Bool
 	{
 		return true;
 	}
 
-	override function IsVertexModifier():Bool
+	override function isVertexModifier():Bool
 	{
 		return true;
 	}
 
-	override function ExecuteOther(currentBeat:Float, strumTime:Float, column:Int, player:Int, map:Map<String, Dynamic>, playfield:SchmovinPlayfield)
+	override function executeOther(currentBeat:Float, strumTime:Float, column:Int, player:Int, map:Map<String, Dynamic>, playfield:SchmovinPlayfield)
 	{
 		var x = map.get('angleX');
 		if (x != null)
-			playfield.SetPercent('${_modPrefix}othernoterotatex', x);
+			playfield.setPercent('${_modPrefix}othernoterotatex', x);
 		var y = map.get('angleY');
 		if (y != null)
-			playfield.SetPercent('${_modPrefix}othernoterotatey', y);
+			playfield.setPercent('${_modPrefix}othernoterotatey', y);
 		var z = map.get('angleZ');
 		if (z != null)
-			playfield.SetPercent('${_modPrefix}othernoterotatez', z);
+			playfield.setPercent('${_modPrefix}othernoterotatez', z);
 	}
 
-	override function ExecuteNoteVertex(currentBeat:Float, strumTime:Float, column:Int, player:Int, vert:Vector4, vertIndex:Int, pos:Vector4,
+	override function executeNoteVertex(currentBeat:Float, strumTime:Float, column:Int, player:Int, vert:Vector4, vertIndex:Int, pos:Vector4,
 			playfield:SchmovinPlayfield):Vector4
 	{
-		var angleX = GetOtherPercent('${_modPrefix}noterotatex', playfield)
-			+ GetOtherPercent('${_modPrefix}othernoterotatex', playfield)
-			+ GetOtherPercent('${_modPrefix}noterotatex${column}', playfield);
-		var angleY = GetOtherPercent('${_modPrefix}noterotatey', playfield)
-			+ GetOtherPercent('${_modPrefix}othernoterotatey', playfield)
-			+ GetOtherPercent('${_modPrefix}noterotatey${column}', playfield);
-		var angleZ = GetOtherPercent('${_modPrefix}noterotatez', playfield)
-			+ GetOtherPercent('${_modPrefix}othernoterotatez', playfield)
-			+ GetOtherPercent('${_modPrefix}noterotatez${column}', playfield);
+		var angleX = getOtherPercent('${_modPrefix}noterotatex', playfield)
+			+ getOtherPercent('${_modPrefix}othernoterotatex', playfield)
+			+ getOtherPercent('${_modPrefix}noterotatex${column}', playfield);
+		var angleY = getOtherPercent('${_modPrefix}noterotatey', playfield)
+			+ getOtherPercent('${_modPrefix}othernoterotatey', playfield)
+			+ getOtherPercent('${_modPrefix}noterotatey${column}', playfield);
+		var angleZ = getOtherPercent('${_modPrefix}noterotatez', playfield)
+			+ getOtherPercent('${_modPrefix}othernoterotatez', playfield)
+			+ getOtherPercent('${_modPrefix}noterotatez${column}', playfield);
 		var out = Camera3DTransforms.RotateVector4(vert, angleX, angleY, angleZ);
 		return out;
 	}

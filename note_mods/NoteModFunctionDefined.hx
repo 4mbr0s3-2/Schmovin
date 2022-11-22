@@ -10,7 +10,7 @@ class NoteModFunctionDefined extends NoteModBase
 		super();
 	}
 
-	override function OnSetPercent(f:Float, playfield:SchmovinPlayfield)
+	override function onSetPercent(f:Float, playfield:SchmovinPlayfield)
 	{
 		_func(this, f, playfield);
 	}

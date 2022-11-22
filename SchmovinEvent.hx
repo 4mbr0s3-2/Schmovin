@@ -13,16 +13,16 @@ import schmovin.note_mods.ISchmovinNoteMod.ISchmovinNoteMod;
 
 interface ISchmovinEvent
 {
-	public function TimelineUpdate(currentBeat:Float):Void;
-	public function GetModName():String;
-	public function GetPlayer():Int;
-	public function GetPlayfield():SchmovinPlayfield;
-	public function GetTargetPercent(player:Int):Float;
-	public function SetTimeline(t:SchmovinTimeline):Void;
-	public function GetIndex():Int;
-	public function SetIndex(index:Int):Void;
-	public function GetBeat():Float;
-	public function GetBeatLength():Float;
+	public function timelineUpdate(currentBeat:Float):Void;
+	public function getModName():String;
+	public function getPlayer():Int;
+	public function getPlayfield():SchmovinPlayfield;
+	public function getTargetPercent(player:Int):Float;
+	public function setTimeline(t:SchmovinTimeline):Void;
+	public function getIndex():Int;
+	public function setIndex(index:Int):Void;
+	public function getBeat():Float;
+	public function getBeatLength():Float;
 }
 
 class SchmovinEventNull implements ISchmovinEvent
@@ -31,50 +31,50 @@ class SchmovinEventNull implements ISchmovinEvent
 
 	public function new() {}
 
-	public function TimelineUpdate(currentBeat:Float) {}
+	public function timelineUpdate(currentBeat:Float) {}
 
 	// (Violates interface segregation)
-	public function GetTargetPercent(player:Int)
+	public function getTargetPercent(player:Int)
 	{
 		return 0;
 	}
 
-	public function GetModName()
+	public function getModName()
 	{
 		return null;
 	}
 
-	public function SetTimeline(t:SchmovinTimeline)
+	public function setTimeline(t:SchmovinTimeline)
 	{
 		_timeline = t;
 	}
 
-	public function GetPlayer()
+	public function getPlayer()
 	{
 		return 0;
 	}
 
-	public function GetPlayfield()
+	public function getPlayfield()
 	{
-		return new SchmovinPlayfield(_timeline.GetModList());
+		return new SchmovinPlayfield(_timeline.getModList());
 	}
 
-	public function GetBeat()
-	{
-		return 0;
-	}
-
-	public function GetBeatLength()
+	public function getBeat()
 	{
 		return 0;
 	}
 
-	public function GetIndex()
+	public function getBeatLength()
+	{
+		return 0;
+	}
+
+	public function getIndex()
 	{
 		return -1;
 	}
 
-	public function SetIndex(index:Int) {}
+	public function setIndex(index:Int) {}
 }
 
 class SchmovinEventEase implements ISchmovinEvent
@@ -90,42 +90,42 @@ class SchmovinEventEase implements ISchmovinEvent
 	var _index = -1;
 	var _playfield:SchmovinPlayfield;
 
-	public function GetPlayfield()
+	public function getPlayfield()
 	{
 		return _playfield;
 	}
 
-	public function GetBeat()
+	public function getBeat()
 	{
 		return _beat;
 	}
 
-	public function GetBeatLength()
+	public function getBeatLength()
 	{
 		return _length;
 	}
 
-	public function GetIndex()
+	public function getIndex()
 	{
 		return _index;
 	}
 
-	public function SetIndex(index:Int)
+	public function setIndex(index:Int)
 	{
 		_index = index;
 	}
 
-	public function SetTimeline(t:SchmovinTimeline)
+	public function setTimeline(t:SchmovinTimeline)
 	{
 		_timeline = t;
 	}
 
-	public function GetPreviousEvent()
+	public function getPreviousEvent()
 	{
-		return _timeline.GetPreviousEvent(this);
+		return _timeline.getPreviousEvent(this);
 	}
 
-	public function GetPlayer()
+	public function getPlayer()
 	{
 		return _player;
 	}
@@ -141,17 +141,17 @@ class SchmovinEventEase implements ISchmovinEvent
 		_playfield = playfield;
 	}
 
-	public function GetModName()
+	public function getModName()
 	{
-		return _mod.GetName();
+		return _mod.getName();
 	}
 
-	public function GetTargetPercent(player:Int)
+	public function getTargetPercent(player:Int)
 	{
 		return _targetPercent;
 	}
 
-	public function TimelineUpdate(currentBeat:Float)
+	public function timelineUpdate(currentBeat:Float)
 	{
 		var endBeat = _beat + _length;
 		var isOverlapping = currentBeat > _beat && currentBeat <= endBeat;
@@ -159,17 +159,17 @@ class SchmovinEventEase implements ISchmovinEvent
 		if (isOverlapping)
 		{
 			// Costly, so we're moving it here (when it's actually needed)
-			var lastPercent = GetPreviousEvent().GetTargetPercent(_player);
+			var lastPercent = getPreviousEvent().getTargetPercent(_player);
 
 			_done = false;
 			var progress = (currentBeat - _beat) / _length;
 			var percent = FlxMath.lerp(lastPercent, _targetPercent, _easeFunction(progress));
-			_playfield.SetPercent(_mod.GetName(), percent);
+			_playfield.setPercent(_mod.getName(), percent);
 		}
 		else if (!_done && currentBeat > endBeat) // Reached the end
 		{
 			_done = true;
-			_playfield.SetPercent(_mod.GetName(), _targetPercent);
+			_playfield.setPercent(_mod.getName(), _targetPercent);
 		}
 	}
 }
@@ -185,47 +185,47 @@ class SchmovinEventSet implements ISchmovinEvent
 	var _index = -1;
 	var _playfield:SchmovinPlayfield;
 
-	public function GetPlayfield()
+	public function getPlayfield()
 	{
 		return _playfield;
 	}
 
-	public function GetBeat()
+	public function getBeat()
 	{
 		return _beat;
 	}
 
-	public function GetBeatLength()
+	public function getBeatLength()
 	{
 		return 0;
 	}
 
-	public function GetIndex()
+	public function getIndex()
 	{
 		return _index;
 	}
 
-	public function SetIndex(index:Int)
+	public function setIndex(index:Int)
 	{
 		_index = index;
 	}
 
-	public function GetPreviousEvent()
+	public function getPreviousEvent()
 	{
-		return _timeline.GetPreviousEvent(this);
+		return _timeline.getPreviousEvent(this);
 	}
 
-	public function GetModName()
+	public function getModName()
 	{
-		return _mod.GetName();
+		return _mod.getName();
 	}
 
-	public function GetPlayer()
+	public function getPlayer()
 	{
 		return _player;
 	}
 
-	public function SetTimeline(t:SchmovinTimeline)
+	public function setTimeline(t:SchmovinTimeline)
 	{
 		_timeline = t;
 	}
@@ -239,24 +239,24 @@ class SchmovinEventSet implements ISchmovinEvent
 		_playfield = playfield;
 	}
 
-	public function GetTargetPercent(player:Int)
+	public function getTargetPercent(player:Int)
 	{
 		return _targetPercent;
 	}
 
-	public function TimelineUpdate(currentBeat:Float)
+	public function timelineUpdate(currentBeat:Float)
 	{
-		// var prevEvent = GetPreviousEvent();
-		// var isOverlapping = currentBeat <= _beat && currentBeat > prevEvent.GetBeat() + prevEvent.GetBeatLength();
+		// var prevEvent = getPreviousEvent();
+		// var isOverlapping = currentBeat <= _beat && currentBeat > prevEvent.getBeat() + prevEvent.getBeatLength();
 		var isOverlapping = currentBeat <= _beat;
 		if (isOverlapping)
 		{
-			// _mod.SetPercent(prevEvent.GetTargetPercent(_player), _player);
+			// _mod.setPercent(prevEvent.getTargetPercent(_player), _player);
 			_done = false;
 		}
 		else if (!_done)
 		{
-			_playfield.SetPercent(_mod.GetName(), _targetPercent);
+			_playfield.setPercent(_mod.getName(), _targetPercent);
 			_done = true;
 		}
 	}
@@ -269,39 +269,39 @@ class SchmovinEventFunction implements ISchmovinEvent
 	var _done = false;
 	var _beat:Float;
 
-	public function GetPlayfield()
+	public function getPlayfield()
 	{
-		return new SchmovinPlayfield(_timeline.GetModList());
+		return new SchmovinPlayfield(_timeline.getModList());
 	}
 
-	public function GetBeat()
+	public function getBeat()
 	{
 		return _beat;
 	}
 
-	public function GetBeatLength()
+	public function getBeatLength()
 	{
 		return 0;
 	}
 
-	public function GetIndex()
+	public function getIndex()
 	{
 		return -1;
 	}
 
-	public function SetIndex(index:Int) {}
+	public function setIndex(index:Int) {}
 
-	public function GetModName()
+	public function getModName()
 	{
 		return null;
 	}
 
-	public function SetTimeline(t:SchmovinTimeline)
+	public function setTimeline(t:SchmovinTimeline)
 	{
 		_timeline = t;
 	}
 
-	public function GetPlayer()
+	public function getPlayer()
 	{
 		return -1;
 	}
@@ -312,7 +312,7 @@ class SchmovinEventFunction implements ISchmovinEvent
 		_callback = callback;
 	}
 
-	public function TimelineUpdate(currentBeat:Float):Void
+	public function timelineUpdate(currentBeat:Float):Void
 	{
 		var isOverlapping = currentBeat <= _beat;
 		if (isOverlapping)
@@ -327,7 +327,7 @@ class SchmovinEventFunction implements ISchmovinEvent
 	}
 
 	// Violates interface segregation lol
-	public function GetTargetPercent(player:Int):Float
+	public function getTargetPercent(player:Int):Float
 	{
 		return 0;
 	}

@@ -24,19 +24,19 @@ class NoteModRotate extends NoteModBase
 		super();
 	}
 
-	override function IsVertexModifier():Bool
+	override function isVertexModifier():Bool
 	{
 		return true;
 	}
 
-	override function ExecuteOther(currentBeat:Float, strumTime:Float, column:Int, player:Int, map:Map<String, Dynamic>, playfield:SchmovinPlayfield)
+	override function executeOther(currentBeat:Float, strumTime:Float, column:Int, player:Int, map:Map<String, Dynamic>, playfield:SchmovinPlayfield)
 	{
-		map.set('angleX', GetOtherPercent('${_modPrefix}rotatex', playfield));
-		map.set('angleY', GetOtherPercent('${_modPrefix}rotatey', playfield));
-		map.set('angleZ', GetOtherPercent('${_modPrefix}rotatez', playfield));
+		map.set('angleX', getOtherPercent('${_modPrefix}rotatex', playfield));
+		map.set('angleY', getOtherPercent('${_modPrefix}rotatey', playfield));
+		map.set('angleZ', getOtherPercent('${_modPrefix}rotatez', playfield));
 	}
 
-	override function ExecutePath(currentBeat:Float, strumTime:Float, column:Int, player:Int, pos:Vector4, playfield:SchmovinPlayfield):Vector4
+	override function executePath(currentBeat:Float, strumTime:Float, column:Int, player:Int, pos:Vector4, playfield:SchmovinPlayfield):Vector4
 	{
 		var origin:Vector4 = new Vector4(50 + FlxG.width / 2 * player + 2 * Note.swagWidth, FlxG.height / 2);
 		if (_origin != null)
@@ -44,8 +44,8 @@ class NoteModRotate extends NoteModBase
 		// Set center of rotation to origin
 		var diff = pos.subtract(origin);
 
-		var out = Camera3DTransforms.RotateVector4(diff, GetOtherPercent('${_modPrefix}rotatex', playfield),
-			GetOtherPercent('${_modPrefix}rotatey', playfield), GetOtherPercent('${_modPrefix}rotatez', playfield));
+		var out = Camera3DTransforms.RotateVector4(diff, getOtherPercent('${_modPrefix}rotatex', playfield),
+			getOtherPercent('${_modPrefix}rotatey', playfield), getOtherPercent('${_modPrefix}rotatez', playfield));
 
 		return origin.add(out);
 	}

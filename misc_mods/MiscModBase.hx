@@ -11,12 +11,7 @@ import schmovin.note_mods.NoteModBase;
 
 class MiscModBase extends NoteModBase
 {
-	override function IsMiscMod():Bool
-	{
-		return true;
-	}
-
-	override function ShouldDoUpdate():Bool
+	override function isMiscMod():Bool
 	{
 		return true;
 	}

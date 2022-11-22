@@ -49,33 +49,33 @@ A: I just figured that it'd be neat to allow people to make simple modcharts in 
 
 ### The Gist
 There's a class called `SchmovinClient`. Subclasses of it should contain all the actual modchart implementation. 
-To load in a modchart, pass an instance of a subclass of `SchmovinClient` into `SchmovinInstance` with `SetClient(cli:SchmovinClient)`.
+To load in a modchart, pass an instance of a subclass of `SchmovinClient` into `SchmovinInstance` with `setClient(cli:SchmovinClient)`.
 
 ### "Porting" to Other Engines
 Since Groovin' Mod Framework decouples mod code into separate submodules (like this whole repository), you can easily use it in other engines by instantiating the base class as a singleton (in this case, `Schmovin`) and calling its methods in the base game's code.
 
 ### Plugging in the Modchart (In Groovin')
 In `SchmovinInstance`, you'll see a method that sends a "cross mod call" to all other loaded Groovin' mods.
-The mod that actually implements the modchart calls the `SetClient(cli:SchmovinClient)` method in the `SchmovinInstance` parameter.
+The mod that actually implements the modchart calls the `setClient(cli:SchmovinClient)` method in the `SchmovinInstance` parameter.
 
 In your main mod class, which should be loaded *after* Schmovin', use the following code as a base to instantiate the `SchmovinClient`.
 ```haxe
-override function ReceiveCrossModCall(command:String, sender:Mod, args:Array<Dynamic>)
+override function receiveCrossModCall(command:String, sender:Mod, args:Array<Dynamic>)
 {
     // Here, you'd actually check the song and pass in the respective modchart
     // If the number of songs with modcharts gets too unwieldy and this code gets too long,
     // use a switch case or a map or some other collection thing 
-    if (PlayState.SONG.song == 'false-paradise' && ShouldRun())
+    if (PlayState.SONG.song == 'false-paradise' && shouldRun())
     {
         switch (command)
         {
             case 'SchmovinSetClient':
                 var instance:SchmovinInstance = cast args[0];
                 var cli = new FalseParadiseSchmovinClient(instance, args[1], args[2]);
-                instance.SetClient(cli);
+                instance.setClient(cli);
                 
                 // Optional if you want to use debug tools
-                // SendCrossModCall('SchmovinPrepareDebug', [cli]);
+                // sendCrossModCall('SchmovinPrepareDebug', [cli]);
         }
     }
 }
@@ -86,9 +86,9 @@ override function ReceiveCrossModCall(command:String, sender:Mod, args:Array<Dyn
 If you're *not* using Groovin' and are using the standalone version of Schmovin' in another engine, you can just pass the client in after `SchmovinInstance` is instantiated... somewhere. Each engine will probably have their own way of doing that.
 
 ### Making the Modchart
-In your `SchmovinClient` subclass, override `Initialize()` and define every timeline event there.
+In your `SchmovinClient` subclass, override `initialize()` and define every timeline event there.
 Add events to the `SchmovinTimeline` by using the ease, set, function, and tween methods defined in the superclass.
 For the ease functions, use `FlxEase`.
 
-You can also make some cooler custom-defined stuff by overriding the `Update()` class.
+You can also make some cooler custom-defined stuff by overriding the `update()` class.
 For the list of note mods at your disposal, look in the `Registry` class.

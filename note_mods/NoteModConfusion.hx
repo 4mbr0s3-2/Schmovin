@@ -19,13 +19,13 @@ class NoteModConfusion extends NoteModBase
 	inline function GetTotalConfusion(currentBeat:Float, playfield:SchmovinPlayfield, column:Int, axis:String = 'x')
 	{
 		var playerColumn = column % 4;
-		var offsetConfusion = currentBeat * 45 * GetPercent(playfield);
-		var offsetConfusionOff = GetOtherPercent('confusion${axis}offset', playfield);
-		offsetConfusionOff += GetOtherPercent('confusion${axis}offset${playerColumn}', playfield);
+		var offsetConfusion = currentBeat * 45 * getPercent(playfield);
+		var offsetConfusionOff = getOtherPercent('confusion${axis}offset', playfield);
+		offsetConfusionOff += getOtherPercent('confusion${axis}offset${playerColumn}', playfield);
 		return offsetConfusion + offsetConfusionOff;
 	}
 
-	override function ExecuteNoteVertex(currentBeat:Float, strumTime:Float, column:Int, player:Int, vert:Vector4, vertIndex:Int, pos:Vector4,
+	override function executeNoteVertex(currentBeat:Float, strumTime:Float, column:Int, player:Int, vert:Vector4, vertIndex:Int, pos:Vector4,
 			playfield:SchmovinPlayfield):Vector4
 	{
 		var angleZ = GetTotalConfusion(currentBeat, playfield, column, 'z');
@@ -36,7 +36,7 @@ class NoteModConfusion extends NoteModBase
 		return out;
 	}
 
-	override function IsVertexModifier():Bool
+	override function isVertexModifier():Bool
 	{
 		return true;
 	}

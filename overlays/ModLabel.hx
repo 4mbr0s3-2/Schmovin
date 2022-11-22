@@ -21,11 +21,11 @@ class ModLabel extends TextField implements IUpdateable
 
 	private var _margin = 10;
 
-	public function Update(args:Dynamic)
+	public function update(args:Dynamic)
 	{
 		if (_noteMod == null)
 			return;
-		text = '${_mod}: ${_noteMod.GetLegacyPercent(0)}, ${_noteMod.GetLegacyPercent(1)}';
+		text = '${_mod}: ${_noteMod.getLegacyPercent(0)}, ${_noteMod.getLegacyPercent(1)}';
 		x = _margin;
 		y = row * args[1];
 	}

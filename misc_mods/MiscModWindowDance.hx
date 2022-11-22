@@ -21,11 +21,11 @@ class MiscModWindowDance extends MiscModBase
 		super();
 	}
 
-	override function Activate(receptors:Array<Receptor>, notes:Array<Note>)
+	override function activate(receptors:Array<Receptor>, notes:Array<Note>)
 	{
 		_initialX = Application.current.window.x;
 		_initialY = Application.current.window.y;
 	}
 
-	override function Update(currentBeat:Float) {}
+	override function update(currentBeat:Float) {}
 }

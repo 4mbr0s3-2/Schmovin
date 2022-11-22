@@ -129,9 +129,9 @@ class SchmovinDebugger extends Sprite
 		InitializeSliders();
 	}
 
-	public function ITGApplyModifiers(stringOptions:String, player:Int)
+	public function itgParseApplyModifiers(stringOptions:String, player:Int)
 	{
-		_timeline._mods.ITGApplyModifiers(stringOptions, player);
+		_timeline._mods.itgParseApplyModifiers(stringOptions, player);
 	}
 
 	public function AddAllTheSliders(player:Int)
@@ -149,7 +149,7 @@ class SchmovinDebugger extends Sprite
 		addChild(_eventsDisplay);
 	}
 
-	public function Destroy()
+	public function destroy()
 	{
 		removeChild(_eventsDisplay);
 	}
@@ -159,10 +159,10 @@ class SchmovinDebugger extends Sprite
 		FlxG.console.registerObject('SchmovinDebugger', this);
 	}
 
-	public function ParseHScript(script:String)
+	public function parseHScript(script:String)
 	{
-		SchmovinAdapter.GetInstance().Log('Script: ${script}');
-		return _client.ParseHScript(script);
+		SchmovinAdapter.getInstance().Log('Script: ${script}');
+		return _client.parseHScript(script);
 	}
 
 	public function AddDebugText()
@@ -178,7 +178,7 @@ class SchmovinDebugger extends Sprite
 
 	public function AddSlider(modName:String, player:Int = -1, min:Float = -1.0, max:Float = 1.0)
 	{
-		SchmovinAdapter.GetInstance().Log('Added slider ${modName} for player ${player}');
+		SchmovinAdapter.getInstance().Log('Added slider ${modName} for player ${player}');
 		_sliders.add(new ModSlider(this, _sliders.length, player, modName, min, max));
 	}
 
@@ -192,7 +192,7 @@ class SchmovinDebugger extends Sprite
 	{
 		// Ignore this lol
 		@:privateAccess
-		for (mod in _timeline._mods._playfields.GetPlayfieldAtIndex(player).activeMods)
+		for (mod in _timeline._mods._playfields.getPlayfieldAtIndex(player).activeMods)
 			FlxG.log.add(mod);
 	}
 
@@ -238,24 +238,24 @@ class SchmovinDebugger extends Sprite
 
 	public function SetPercentPlayfield(modName:String, percent:Float, index:Int)
 	{
-		_timeline._mods.SetPercentPlayfieldIndex(modName, percent, index);
+		_timeline._mods.setPercentPlayfieldIndex(modName, percent, index);
 	}
 
-	public function SetPercent(modName:String, percent:Float, player:Int)
+	public function setPercent(modName:String, percent:Float, player:Int)
 	{
-		_timeline._mods.SetPercent(modName, percent, player);
+		_timeline._mods.setPercent(modName, percent, player);
 	}
 
-	public function GetPercent(modName:String, player:Int)
+	public function getPercent(modName:String, player:Int)
 	{
-		return _timeline._mods.GetPercent(modName, player);
+		return _timeline._mods.getPercent(modName, player);
 	}
 
-	function AddEventsDisplay()
+	function addEventsDisplay()
 	{
 		function NoPercent(mod:String)
 		{
-			return _timeline.GetModList().GetPercent(mod, 0) == 0.0 && _timeline.GetModList().GetPercent(mod, 1) == 0.0;
+			return _timeline.getModList().getPercent(mod, 0) == 0.0 && _timeline.getModList().getPercent(mod, 1) == 0.0;
 		}
 		var iterator = _timeline._events.keyValueIterator();
 		var row = 0;
@@ -265,7 +265,7 @@ class SchmovinDebugger extends Sprite
 			var current = iterator.next();
 			if (NoPercent(current.key))
 				continue;
-			var mod = _timeline.GetNoteMod(current.key);
+			var mod = _timeline.getNoteMod(current.key);
 			if (mod == null)
 				continue;
 			if (current.value.length > 0 && _displayEvents)
@@ -287,7 +287,7 @@ class SchmovinDebugger extends Sprite
 
 	function OnEnterFrame(_)
 	{
-		Update();
+		update();
 	}
 
 	function UpdateModsDebugText()
@@ -295,7 +295,7 @@ class SchmovinDebugger extends Sprite
 		var text = 'Mods Debug\n';
 		function NoPercent(mod:String)
 		{
-			return _timeline.GetModList().GetPercent(mod, 0) == 0.0 && _timeline.GetModList().GetPercent(mod, 1) == 0.0;
+			return _timeline.getModList().getPercent(mod, 0) == 0.0 && _timeline.getModList().getPercent(mod, 1) == 0.0;
 		}
 		var iterator = _timeline._events.keyValueIterator();
 		var row = 0;
@@ -304,10 +304,10 @@ class SchmovinDebugger extends Sprite
 			var current = iterator.next();
 			if (NoPercent(current.key))
 				continue;
-			var mod = _timeline.GetNoteMod(current.key);
+			var mod = _timeline.getNoteMod(current.key);
 			if (mod == null)
 				continue;
-			text += '${current.key}: [${mod.GetLegacyPercent(0)}, ${mod.GetLegacyPercent(1)}]\n';
+			text += '${current.key}: [${mod.getLegacyPercent(0)}, ${mod.getLegacyPercent(1)}]\n';
 			// if (!_labels.exists(current.key))
 			// 	_labels.set(current.key, new ModLabel(current.key, mod));
 			// var child = _labels.get(current.key);
@@ -319,14 +319,14 @@ class SchmovinDebugger extends Sprite
 			_modsDebugText.text = text;
 	}
 
-	function Update()
+	function update()
 	{
 		UpdateModsDebugText();
-		// AddEventsDisplay();
+		// addEventsDisplay();
 		// for (childIndex in 0..._eventsDisplay.numChildren)
 		// {
 		// 	var child = _eventsDisplay.getChildAt(childIndex);
-		// 	cast(child, IUpdateable).Update([_zoomX, _zoomY]);
+		// 	cast(child, IUpdateable).update([_zoomX, _zoomY]);
 		// }
 	}
 }

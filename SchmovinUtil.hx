@@ -81,32 +81,32 @@ class Receptor
 
 class SchmovinUtil
 {
-	public static inline function GetTotalColumn(note:Note)
+	public static inline function getTotalColumn(note:Note)
 	{
-		return note.noteData + GetPlayer(note) * 4;
+		return note.noteData + getPlayer(note) * 4;
 	}
 
-	public static inline function NoteWidthHalf()
+	public static inline function getNoteWidthHalf()
 	{
 		return Note.swagWidth / 2;
 	}
 
-	public static inline function PosNoteWidthHalf()
+	public static inline function posGetNoteWidthHalf()
 	{
-		return new Vector4(NoteWidthHalf(), NoteWidthHalf());
+		return new Vector4(getNoteWidthHalf(), getNoteWidthHalf());
 	}
 
-	public static inline function Vec4NotePosition(note:Note)
+	public static inline function getVec4NotePosition(note:Note)
 	{
-		return new Vector4(note.x, note.y).add(SchmovinUtil.PosNoteWidthHalf());
+		return new Vector4(note.x, note.y).add(SchmovinUtil.posGetNoteWidthHalf());
 	}
 
-	public static inline function Vec4ReceptorPosition(rec:Receptor)
+	public static inline function getVec4ReceptorPosition(rec:Receptor)
 	{
-		return new Vector4(rec.x, rec.y).add(SchmovinUtil.PosNoteWidthHalf());
+		return new Vector4(rec.x, rec.y).add(SchmovinUtil.posGetNoteWidthHalf());
 	}
 
-	public static inline function Vec4Lerp(vec:Vector4, vec2:Vector4, lerp:Float)
+	public static inline function vec4Lerp(vec:Vector4, vec2:Vector4, lerp:Float)
 	{
 		var out1 = vec.clone();
 		out1.scaleBy(1 - lerp);
@@ -115,28 +115,28 @@ class SchmovinUtil
 		return out1.add(out2);
 	}
 
-	public static inline function GetPlayerOfTotalColumn(column:Int)
+	public static inline function getPlayerOfTotalColumn(column:Int)
 	{
 		return column > 3 ? 1 : 0;
 	}
 
-	public static inline function GetReceptor(note:Note, state:PlayState)
+	public static inline function getReceptor(note:Note, state:PlayState)
 	{
-		var column = GetTotalColumn(note);
+		var column = getTotalColumn(note);
 		return new Receptor(state.strumLineNotes.members[column], column);
 	}
 
-	public static inline function GetPlayer(note:Note)
+	public static inline function getPlayer(note:Note)
 	{
 		return note.mustPress ? 1 : 0;
 	}
 
-	public static inline function GetReceptors(player:Int, state:PlayState):Array<Receptor>
+	public static inline function getReceptors(player:Int, state:PlayState):Array<Receptor>
 	{
 		var receptors = [];
 		for (index in 0...state.strumLineNotes.members.length)
 		{
-			if (GetPlayerOfTotalColumn(index) == player)
+			if (getPlayerOfTotalColumn(index) == player)
 			{
 				var receptor = state.strumLineNotes.members[index];
 				receptors.push(new Receptor(receptor, index));
@@ -145,13 +145,13 @@ class SchmovinUtil
 		return receptors;
 	}
 
-	public static inline function GetNotes(player:Int, state:PlayState):Array<Note>
+	public static inline function getNotes(player:Int, state:PlayState):Array<Note>
 	{
 		var notes = [];
 		for (index in 0...state.notes.members.length)
 		{
 			var note = state.notes.members[index];
-			if (GetPlayer(note) == player)
+			if (getPlayer(note) == player)
 				notes.push(note);
 		}
 		return notes;

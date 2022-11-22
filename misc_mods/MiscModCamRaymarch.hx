@@ -24,17 +24,17 @@ class MiscModCamRaymarch extends MiscModBase
 		_player = plr;
 	}
 
-	override function Update(currentBeat:Float)
+	override function update(currentBeat:Float)
 	{
-		var schmovinInstance = _modList.GetSchmovinInstance();
+		var schmovinInstance = _modList.getSchmovinInstance();
 		var getRaymarcher = schmovinInstance.planeRaymarcher;
-		getRaymarcher.cameraLookAtX = GetOtherLegacyPercent('${_prefix}lookatx', _player);
-		getRaymarcher.cameraLookAtY = GetOtherLegacyPercent('${_prefix}lookaty', _player);
-		getRaymarcher.cameraLookAtZ = GetOtherLegacyPercent('${_prefix}lookatz', _player);
-		getRaymarcher.cameraOffX = GetOtherLegacyPercent('${_prefix}x', _player);
-		getRaymarcher.cameraOffY = GetOtherLegacyPercent('${_prefix}y', _player);
-		getRaymarcher.cameraOffZ = GetOtherLegacyPercent('${_prefix}z', _player);
-		getRaymarcher.pitch = GetOtherLegacyPercent('${_prefix}pitch', _player);
-		getRaymarcher.yaw = GetOtherLegacyPercent('${_prefix}yaw', _player);
+		getRaymarcher.cameraLookAtX = getOtherLegacyPercent('${_prefix}lookatx', _player);
+		getRaymarcher.cameraLookAtY = getOtherLegacyPercent('${_prefix}lookaty', _player);
+		getRaymarcher.cameraLookAtZ = getOtherLegacyPercent('${_prefix}lookatz', _player);
+		getRaymarcher.cameraOffX = getOtherLegacyPercent('${_prefix}x', _player);
+		getRaymarcher.cameraOffY = getOtherLegacyPercent('${_prefix}y', _player);
+		getRaymarcher.cameraOffZ = getOtherLegacyPercent('${_prefix}z', _player);
+		getRaymarcher.pitch = getOtherLegacyPercent('${_prefix}pitch', _player);
+		getRaymarcher.yaw = getOtherLegacyPercent('${_prefix}yaw', _player);
 	}
 }

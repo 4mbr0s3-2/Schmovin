@@ -18,21 +18,21 @@ class NoteModTiny extends NoteModBase
 	{
 		var playerColumn = column % 4;
 		var scale = new FlxPoint(1, 1);
-		scale.scale(1 - GetPercent(playfield) * 0.5);
-		scale.scale(1 - GetOtherPercent('tiny${playerColumn}', playfield) * 0.5);
-		scale.x *= 1 - GetOtherPercent('tinyx${playerColumn}', playfield) * 0.5;
-		scale.y *= 1 - GetOtherPercent('tinyy${playerColumn}', playfield) * 0.5;
-		scale.x *= 1 - GetOtherPercent('tinyx', playfield) * 0.5;
-		scale.y *= 1 - GetOtherPercent('tinyy', playfield) * 0.5;
+		scale.scale(1 - getPercent(playfield) * 0.5);
+		scale.scale(1 - getOtherPercent('tiny${playerColumn}', playfield) * 0.5);
+		scale.x *= 1 - getOtherPercent('tinyx${playerColumn}', playfield) * 0.5;
+		scale.y *= 1 - getOtherPercent('tinyy${playerColumn}', playfield) * 0.5;
+		scale.x *= 1 - getOtherPercent('tinyx', playfield) * 0.5;
+		scale.y *= 1 - getOtherPercent('tinyy', playfield) * 0.5;
 		return scale;
 	}
 
-	override function IsVertexModifier():Bool
+	override function isVertexModifier():Bool
 	{
 		return true;
 	}
 
-	override function ExecuteNoteVertex(currentBeat:Float, strumTime:Float, column:Int, player:Int, vert:Vector4, vertIndex:Int, pos:Vector4,
+	override function executeNoteVertex(currentBeat:Float, strumTime:Float, column:Int, player:Int, vert:Vector4, vertIndex:Int, pos:Vector4,
 			playfield:SchmovinPlayfield):Vector4
 	{
 		var scale = GetScale(column, playfield);

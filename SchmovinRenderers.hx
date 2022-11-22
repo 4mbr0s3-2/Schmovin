@@ -36,9 +36,9 @@ using StringTools;
 
 interface ISchmovinRenderer
 {
-	public function PreDraw():Void;
-	public function PostDraw():Void;
-	public function Destroy():Void;
+	public function preDraw():Void;
+	public function postDraw():Void;
+	public function destroy():Void;
 }
 
 class SchmovinRenderer implements ISchmovinRenderer
@@ -48,11 +48,11 @@ class SchmovinRenderer implements ISchmovinRenderer
 	var _defaultCameras:Array<FlxCamera>;
 	var _playState:PlayState;
 
-	public function PreDraw() {}
+	public function preDraw() {}
 
-	public function PostDraw() {}
+	public function postDraw() {}
 
-	public function Destroy() {}
+	public function destroy() {}
 
 	public function new(playState:PlayState, cameras:Array<FlxCamera>, timeline:SchmovinTimeline, instance:SchmovinInstance)
 	{
@@ -69,7 +69,7 @@ class SchmovinNotePathRenderer extends SchmovinRenderer
 
 	static function get_ARROW_PATH_SUBDIVISIONS()
 	{
-		return SchmovinAdapter.GetInstance().GetArrowPathSubdivisions();
+		return SchmovinAdapter.getInstance().getArrowPathSubdivisions();
 	}
 
 	public function new(playState:PlayState, cameras:Array<FlxCamera>, timeline:SchmovinTimeline, instance:SchmovinInstance)
@@ -77,38 +77,38 @@ class SchmovinNotePathRenderer extends SchmovinRenderer
 		super(playState, cameras, timeline, instance);
 	}
 
-	override function PreDraw()
+	override function preDraw()
 	{
-		var currentBeat = SchmovinAdapter.GetInstance().GetCurrentBeat();
+		var currentBeat = SchmovinAdapter.getInstance().getCurrentBeat();
 		var length = -2000.0;
 		var subdivisions:Int = cast ARROW_PATH_SUBDIVISIONS / _instance.playfields.list.length;
 		var boundary = 300;
 		var bitmap = new Shape();
 
-		// This gets REALLY laggy because of those GetPath() calls, but I have no idea how else to optimize it...
+		// This gets REALLY laggy because of those getPath() calls, but I have no idea how else to optimize it...
 
 		for (playfield in _instance.playfields.list)
 		{
 			@:privateAccess
-			if (playfield.GetPercent('arrowpath') == 0)
+			if (playfield.getPercent('arrowpath') == 0)
 				continue;
 			for (column in 0...4)
 			{
-				var alpha = playfield.GetPercent('arrowpath${column}') + playfield.GetPercent('arrowpath');
+				var alpha = playfield.getPercent('arrowpath${column}') + playfield.getPercent('arrowpath');
 
 				var commands = new Vector<Int>();
 				var data = new Vector<Float>();
-				var player = SchmovinUtil.GetPlayerOfTotalColumn(column);
+				var player = SchmovinUtil.getPlayerOfTotalColumn(column);
 
-				var size = _timeline.GetNoteMod('arrowpathsize${column}').GetPercent(playfield) + _timeline.GetNoteMod('arrowpathsize').GetPercent(playfield);
-				var path1 = _timeline.GetPath(currentBeat, 0, column, player, playfield);
+				var size = _timeline.getNoteMod('arrowpathsize${column}').getPercent(playfield) + _timeline.getNoteMod('arrowpathsize').getPercent(playfield);
+				var path1 = _timeline.getPath(currentBeat, 0, column, player, playfield);
 				bitmap.graphics.lineStyle(1 + size, 0xFFFFFF, 1);
 				commands.push(GraphicsPathCommand.MOVE_TO);
 				data.push(path1.x);
 				data.push(path1.y);
 				for (i in 0...subdivisions)
 				{
-					var path2 = _timeline.GetPath(currentBeat, length / subdivisions * (i + 1), column, player, playfield);
+					var path2 = _timeline.getPath(currentBeat, length / subdivisions * (i + 1), column, player, playfield);
 					if (FlxMath.inBounds(path2.x, -boundary, FlxG.width + boundary)
 						&& FlxMath.inBounds(path2.y, -boundary, FlxG.height + boundary))
 					{
@@ -151,15 +151,15 @@ class SchmovinNotePathRenderer extends SchmovinRenderer
  */
 class SchmovinTapNoteRenderer extends SchmovinRenderer
 {
-	static inline var HOLD_ALPHA_DIVISIONS = 20;
+	static private inline var HOLD_ALPHA_DIVISIONS = 20;
 
-	public function Initialize() {}
+	public function initialize() {}
 
-	override function Destroy() {}
+	override function destroy() {}
 
-	override function PreDraw()
+	override function preDraw()
 	{
-		Draw();
+		draw();
 	}
 
 	function updateFramePixels(s:FlxSprite, alpha:Float)
@@ -170,7 +170,7 @@ class SchmovinTapNoteRenderer extends SchmovinRenderer
 		return data;
 	}
 
-	inline function GetQuadAlongPath(strumTime:Float, pos:Vector4, playfield:SchmovinPlayfield, obj:FlxSprite, column:Int, player:Int, targetWidth:Float,
+	inline function getQuadAlongPath(strumTime:Float, pos:Vector4, playfield:SchmovinPlayfield, obj:FlxSprite, column:Int, player:Int, targetWidth:Float,
 			targetHeight:Float)
 	{
 		var texWidth = targetWidth;
@@ -194,22 +194,22 @@ class SchmovinTapNoteRenderer extends SchmovinRenderer
 		for (vertIndex in 0...relativeVerts.length)
 		{
 			var vert = relativeVerts[vertIndex];
-			vert = _timeline.UpdateNoteVertex(playfield, SchmovinAdapter.GetInstance().GetCurrentBeat(), obj, vert, vertIndex, pos, player, column);
+			vert = _timeline.updateNoteVertex(playfield, SchmovinAdapter.getInstance().getCurrentBeat(), obj, vert, vertIndex, pos, player, column);
 			outVerts.push(vert.add(pos));
 		}
 
 		return outVerts;
 	}
 
-	function GetReceptors():Array<Receptor>
+	private function getReceptors():Array<Receptor>
 	{
 		var receps = [];
 		for (p in 0...2)
-			receps = receps.concat(SchmovinUtil.GetReceptors(p, _playState));
+			receps = receps.concat(SchmovinUtil.getReceptors(p, _playState));
 		return receps;
 	}
 
-	function Draw()
+	private function draw()
 	{
 		function GetTapNotes()
 		{
@@ -221,20 +221,20 @@ class SchmovinTapNoteRenderer extends SchmovinRenderer
 				return onScreen;
 			});
 		}
-		for (receptor in GetReceptors())
-			Render(receptor.wrappee, receptor.wrappee.alpha, 0, receptor.column, SchmovinUtil.GetPlayerOfTotalColumn(receptor.column));
+		for (receptor in getReceptors())
+			render(receptor.wrappee, receptor.wrappee.alpha, 0, receptor.column, SchmovinUtil.getPlayerOfTotalColumn(receptor.column));
 
 		for (tap in GetTapNotes())
 		{
-			Render(tap, tap.alpha, SchmovinAdapter.GetInstance().GetSongPosition() - tap.strumTime - SchmovinAdapter.GetInstance().GrabGlobalVisualOffset(),
-				SchmovinUtil.GetTotalColumn(tap), SchmovinUtil.GetPlayer(tap));
+			render(tap, tap.alpha, SchmovinAdapter.getInstance().getSongPosition() - tap.strumTime - SchmovinAdapter.getInstance().grabGlobalVisualOffset(),
+				SchmovinUtil.getTotalColumn(tap), SchmovinUtil.getPlayer(tap));
 		}
 	}
 
 	// This is really laggy with OpenGL, but WebGL runs like it's nothing
 	// TODO: Figure out how to profile this on desktop??
 
-	function Render(sprite:FlxSprite, alpha:Float, strumTime:Float, column:Int, player:Int)
+	function render(sprite:FlxSprite, alpha:Float, strumTime:Float, column:Int, player:Int)
 	{
 		for (playfield in _instance.playfields.list)
 		{
@@ -245,19 +245,19 @@ class SchmovinTapNoteRenderer extends SchmovinRenderer
 			{
 				var bitmap = camera.canvas;
 
-				var currentBeat = SchmovinAdapter.GetInstance().GetCurrentBeat();
+				var currentBeat = SchmovinAdapter.getInstance().getCurrentBeat();
 
-				var props = _timeline.GetOtherMap(currentBeat, strumTime, column, player, playfield);
+				var props = _timeline.getOtherMap(currentBeat, strumTime, column, player, playfield);
 
 				if (props.exists('alpha'))
 					alpha *= props['alpha'];
 
-				var pos = _timeline.GetPath(currentBeat, strumTime, column, player, playfield, ['cam']);
+				var pos = _timeline.getPath(currentBeat, strumTime, column, player, playfield, ['cam']);
 
 				// TODO: Move to main update loop
-				// _timeline.UpdateNote(_instance.playfields.GetPlayfieldAtIndex(player), currentBeat, sprite, pos, player, column);
+				// _timeline.updateNote(_instance.playfields.getPlayfieldAtIndex(player), currentBeat, sprite, pos, player, column);
 
-				var quad = GetQuadAlongPath(strumTime, pos, playfield, sprite, column, player, sprite.frameWidth * sprite.scale.x,
+				var quad = getQuadAlongPath(strumTime, pos, playfield, sprite, column, player, sprite.frameWidth * sprite.scale.x,
 					sprite.frameHeight * sprite.scale.y);
 
 				var topPoints = [new Vector2(quad[0].x, quad[0].y), new Vector2(quad[1].x, quad[1].y)];
@@ -283,7 +283,7 @@ class SchmovinTapNoteRenderer extends SchmovinRenderer
 					bottomPoints[1].x, bottomPoints[1].y
 				]);
 
-				bitmap.graphics.drawTriangles(vertices, null, GetUV(sprite, sprite.flipY));
+				bitmap.graphics.drawTriangles(vertices, null, getUV(sprite, sprite.flipY));
 
 				bitmap.graphics.endFill();
 				#if FLX_DEBUG
@@ -301,10 +301,10 @@ class SchmovinTapNoteRenderer extends SchmovinRenderer
 	public function new(playState:PlayState, cameras:Array<FlxCamera>, timeline:SchmovinTimeline, instance:SchmovinInstance)
 	{
 		super(playState, cameras, timeline, instance);
-		Initialize();
+		initialize();
 	}
 
-	function GetUV(sprite:FlxSprite, flipY:Bool)
+	function getUV(sprite:FlxSprite, flipY:Bool)
 	{
 		var leftX = sprite.frame.frame.left / sprite.graphic.bitmap.width;
 		var topY = sprite.frame.frame.top / sprite.graphic.bitmap.height;
@@ -348,30 +348,30 @@ class SchmovinHoldNoteRenderer extends SchmovinRenderer
 	 */
 	static var HOLD_SUBDIVISIONS(get, null):Int;
 
-	override function Destroy() {}
+	override function destroy() {}
 
 	static function get_HOLD_SUBDIVISIONS()
 	{
-		return SchmovinAdapter.GetInstance().GetHoldNoteSubdivisions();
+		return SchmovinAdapter.getInstance().getHoldNoteSubdivisions();
 	}
 
 	static inline var SEAMLESS_EXTENSION = 2;
 
-	public function Initialize() {}
+	public function initialize() {}
 
-	override function PreDraw()
+	override function preDraw()
 	{
-		DrawHoldNotes();
+		drawHoldNotes();
 	}
 
-	function CalculatePointsAlongPathNormal(targetWidth:Float, hold:Note, strumTime:Float, column:Int, player:Int, playfield:SchmovinPlayfield)
+	private function calculatePointsAlongPathNormal(targetWidth:Float, hold:Note, strumTime:Float, column:Int, player:Int, playfield:SchmovinPlayfield)
 	{
-		var currentBeat = SchmovinAdapter.GetInstance().GetCurrentBeat();
+		var currentBeat = SchmovinAdapter.getInstance().getCurrentBeat();
 
 		// We do a lil' calculus
 		var infinitesimal = 1;
 
-		var path1 = _timeline.GetPath(currentBeat, strumTime, column, player, playfield);
+		var path1 = _timeline.getPath(currentBeat, strumTime, column, player, playfield);
 		var pathPerspective = path1.clone();
 		path1.z = 0;
 
@@ -381,14 +381,14 @@ class SchmovinHoldNoteRenderer extends SchmovinRenderer
 
 		var relativeVerts = [new Vector4(-halfWidth, 0), new Vector4(halfWidth, 0)];
 
-		if (SchmovinAdapter.GetInstance().GetOptimizeHoldNotes())
+		if (SchmovinAdapter.getInstance().getOptimizeHoldNotes())
 		{
 			var perp1 = path1.add(relativeVerts[0]);
 			var perp2 = path1.add(relativeVerts[1]);
 			return [perp1, perp2];
 		}
 
-		var path2 = _timeline.GetPath(currentBeat, strumTime + infinitesimal, column, player, playfield);
+		var path2 = _timeline.getPath(currentBeat, strumTime + infinitesimal, column, player, playfield);
 		path2.z = 0;
 
 		var outVerts = relativeVerts;
@@ -415,17 +415,17 @@ class SchmovinHoldNoteRenderer extends SchmovinRenderer
 	}
 
 	// TODO: Extract methods, make it a bit neater
-	function DrawHoldNotes()
+	function drawHoldNotes()
 	{
-		function GetHoldNotes(playfield:SchmovinPlayfield)
+		function getHoldNotes(playfield:SchmovinPlayfield)
 		{
 			return _playState.notes.members.filter((hold) ->
 			{
 				var dist = hold.strumTime - Conductor.songPosition;
-				return SchmovinUtil.GetPlayer(hold) == playfield.player
+				return SchmovinUtil.getPlayer(hold) == playfield.player
 					&& hold.isSustainNote
 					&& hold.alive
-					&& dist < 1500 + _timeline.GetNoteMod('drawdistance').GetPercent(playfield)
+					&& dist < 1500 + _timeline.getNoteMod('drawdistance').getPercent(playfield)
 					&& dist >= 0;
 			});
 		}
@@ -437,7 +437,7 @@ class SchmovinHoldNoteRenderer extends SchmovinRenderer
 				var canvas = camera.canvas;
 				var lastShader = null;
 				var lastFrame = null;
-				for (hold in GetHoldNotes(playfield))
+				for (hold in getHoldNotes(playfield))
 				{
 					var verticesArray = [];
 					var uvArray = [];
@@ -447,9 +447,9 @@ class SchmovinHoldNoteRenderer extends SchmovinRenderer
 					if (hold.animation.name.contains('end'))
 						holdEnd = true;
 					var lastBottom = null;
-					var crotchet = SchmovinAdapter.GetInstance().GetCrotchetAtTime(hold.strumTime) / 4;
-					var strumTimeDiff = SchmovinAdapter.GetInstance().GetSongPosition() - hold.strumTime
-						- SchmovinAdapter.GetInstance().GrabGlobalVisualOffset();
+					var crotchet = SchmovinAdapter.getInstance().getCrotchetAtTime(hold.strumTime) / 4;
+					var strumTimeDiff = SchmovinAdapter.getInstance().getSongPosition() - hold.strumTime
+						- SchmovinAdapter.getInstance().grabGlobalVisualOffset();
 
 					var alpha = hold.alpha;
 					var frame = hold.graphic.bitmap;
@@ -489,7 +489,7 @@ class SchmovinHoldNoteRenderer extends SchmovinRenderer
 						var strumLineOffset = strumLineSub * sub;
 
 						// This scaling will be our "clipping rectangle"
-						if (strumTimeDiff > -crotchet - SchmovinAdapter.GetInstance().GrabGlobalVisualOffset() && strumTimeDiff <= 0)
+						if (strumTimeDiff > -crotchet - SchmovinAdapter.getInstance().grabGlobalVisualOffset() && strumTimeDiff <= 0)
 						{
 							var scale = 1 - (strumTimeDiff + crotchet) / crotchet;
 							strumLineSub *= scale;
@@ -501,12 +501,12 @@ class SchmovinHoldNoteRenderer extends SchmovinRenderer
 						var topWidth = FlxMath.lerp(calcTopWidth, calcBottomWidth, subdivisionProg);
 						var bottomWidth = FlxMath.lerp(calcTopWidth, calcBottomWidth, nextSubdivisionProg);
 
-						var totalColumn = SchmovinUtil.GetTotalColumn(hold);
-						var player = SchmovinUtil.GetPlayer(hold);
+						var totalColumn = SchmovinUtil.getTotalColumn(hold);
+						var player = SchmovinUtil.getPlayer(hold);
 
-						var top = lastBottom == null ? CalculatePointsAlongPathNormal(topWidth, hold, strumTimeDiff + strumLineOffset, totalColumn, player,
+						var top = lastBottom == null ? calculatePointsAlongPathNormal(topWidth, hold, strumTimeDiff + strumLineOffset, totalColumn, player,
 							playfield) : lastBottom;
-						var bottom = CalculatePointsAlongPathNormal(bottomWidth, hold, strumTimeDiff + strumLineOffset + strumLineSub, totalColumn, player,
+						var bottom = calculatePointsAlongPathNormal(bottomWidth, hold, strumTimeDiff + strumLineOffset + strumLineSub, totalColumn, player,
 							playfield);
 						lastBottom = bottom;
 						var topPoints = [new Vector2(top[0].x, top[0].y), new Vector2(top[1].x, top[1].y)];
@@ -521,7 +521,7 @@ class SchmovinHoldNoteRenderer extends SchmovinRenderer
 							bottomPoints[0].x, bottomPoints[0].y,
 							bottomPoints[1].x, bottomPoints[1].y
 						]);
-						uvArray = uvArray.concat(GetUV(hold, hold.flipY, sub, subdivisions));
+						uvArray = uvArray.concat(getUV(hold, hold.flipY, sub, subdivisions));
 					}
 					var vertices = new Vector<Float>(verticesArray.length, false, cast verticesArray);
 					var uv = new Vector<Float>(uvArray.length, false, uvArray);
@@ -545,7 +545,7 @@ class SchmovinHoldNoteRenderer extends SchmovinRenderer
 		}
 	}
 
-	function GetUV(sprite:FlxSprite, flipY:Bool, sub:Int, subdivisions:Int)
+	function getUV(sprite:FlxSprite, flipY:Bool, sub:Int, subdivisions:Int)
 	{
 		var leftX = sprite.frame.frame.left / sprite.graphic.bitmap.width;
 		var topY = sprite.frame.frame.top / sprite.graphic.bitmap.height;
@@ -582,6 +582,6 @@ class SchmovinHoldNoteRenderer extends SchmovinRenderer
 	{
 		_holdConditional = holdConditional;
 		super(playState, cameras, timeline, instance);
-		Initialize();
+		initialize();
 	}
 }

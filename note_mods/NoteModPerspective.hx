@@ -15,7 +15,7 @@ using schmovin.SchmovinUtil;
 
 class NoteModPerspective extends NoteModBase
 {
-	override function MustExecute():Bool
+	override function alwaysExecute():Bool
 	{
 		return false;
 	}
@@ -23,27 +23,27 @@ class NoteModPerspective extends NoteModBase
 	function View(pos:Vector4, playfield:SchmovinPlayfield)
 	{
 		var props = new Map<String, Float>();
-		props.set('camx', GetOtherPercent('camx', playfield));
-		props.set('camy', GetOtherPercent('camy', playfield));
-		props.set('camz', GetOtherPercent('camz', playfield));
+		props.set('camx', getOtherPercent('camx', playfield));
+		props.set('camy', getOtherPercent('camy', playfield));
+		props.set('camz', getOtherPercent('camz', playfield));
 		return Camera3DTransforms.View(pos, props);
 	}
 
 	function Projection(pos:Vector4, playfield:SchmovinPlayfield)
 	{
-		var camfov = GetOtherPercent('camfov', playfield);
+		var camfov = getOtherPercent('camfov', playfield);
 		return Camera3DTransforms.Projection(pos, camfov);
 	}
 
 	// https://www.youtube.com/watch?v=dul0mui292Q Quick mafs
 	// Nooooo broken link :(
-	override function ExecutePath(currentBeat:Float, strumTime:Float, column:Int, player:Int, pos:Vector4, playfield:SchmovinPlayfield):Vector4
+	override function executePath(currentBeat:Float, strumTime:Float, column:Int, player:Int, pos:Vector4, playfield:SchmovinPlayfield):Vector4
 	{
 		var halfScreenOffset = new Vector4(FlxG.width / 2, FlxG.height / 2);
 
 		var modelCoords = pos.subtract(halfScreenOffset); // Center to origin
-		modelCoords = Camera3DTransforms.RotateVector4(modelCoords, GetOtherPercent('campitch', playfield), GetOtherPercent('camyaw', playfield),
-			GetOtherPercent('camroll', playfield));
+		modelCoords = Camera3DTransforms.RotateVector4(modelCoords, getOtherPercent('campitch', playfield), getOtherPercent('camyaw', playfield),
+			getOtherPercent('camroll', playfield));
 		var viewCoords = View(modelCoords, playfield);
 
 		var clipCoords = Projection(viewCoords, playfield);
@@ -51,19 +51,19 @@ class NoteModPerspective extends NoteModBase
 		return clipCoords.add(halfScreenOffset); // Recenter to viewport
 	}
 
-	override function IsVertexModifier():Bool
+	override function isVertexModifier():Bool
 	{
 		return true;
 	}
 
-	override function ExecuteNoteVertex(currentBeat:Float, strumTime:Float, column:Int, player:Int, vert:Vector4, vertIndex:Int, pos:Vector4,
+	override function executeNoteVertex(currentBeat:Float, strumTime:Float, column:Int, player:Int, vert:Vector4, vertIndex:Int, pos:Vector4,
 			playfield:SchmovinPlayfield):Vector4
 	{
 		var halfScreenOffset = new Vector4(FlxG.width / 2, FlxG.height / 2);
 
 		var modelCoords = vert.add(pos).subtract(halfScreenOffset); // Center to origin
-		modelCoords = Camera3DTransforms.RotateVector4(modelCoords, GetOtherPercent('campitch', playfield), GetOtherPercent('camyaw', playfield),
-			GetOtherPercent('camroll', playfield));
+		modelCoords = Camera3DTransforms.RotateVector4(modelCoords, getOtherPercent('campitch', playfield), getOtherPercent('camyaw', playfield),
+			getOtherPercent('camroll', playfield));
 		var viewCoords = View(modelCoords, playfield);
 
 		var clipCoords = Projection(viewCoords, playfield);

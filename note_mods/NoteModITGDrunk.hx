@@ -18,11 +18,11 @@ using schmovin.SchmovinUtil;
  */
 class NoteModITGDrunk extends NoteModBase
 {
-	override function ExecutePath(currentBeat:Float, strumTime:Float, column:Int, player:Int, pos:Vector4, playfield:SchmovinPlayfield):Vector4
+	override function executePath(currentBeat:Float, strumTime:Float, column:Int, player:Int, pos:Vector4, playfield:SchmovinPlayfield):Vector4
 	{
 		var playerColumn = column % 4;
-		var phaseShift = playerColumn * 0.2 + GetRelativeTime(strumTime) * 10 / FlxG.height;
-		var offsetX = Math.cos(phaseShift + Conductor.songPosition / 1000) * Note.swagWidth / 2 * GetPercent(playfield);
+		var phaseShift = playerColumn * 0.2 + getRelativeTime(strumTime) * 10 / FlxG.height;
+		var offsetX = Math.cos(phaseShift + Conductor.songPosition / 1000) * Note.swagWidth / 2 * getPercent(playfield);
 		var outPos = pos.clone();
 		return outPos.add(new Vector4(offsetX));
 	}

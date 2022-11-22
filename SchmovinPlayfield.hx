@@ -18,7 +18,7 @@ class SchmovinPlayfield
 		return activeMods.contains(modName);
 	}
 
-	public function GetPercent(modName:String):Float
+	public function getPercent(modName:String):Float
 	{
 		try
 		{
@@ -38,18 +38,18 @@ class SchmovinPlayfield
 	{
 		activeMods.sort((a, b) ->
 		{
-			return _modList.GetModIndex(a) > _modList.GetModIndex(b) ? 1 : -1;
+			return _modList.getModIndex(a) > _modList.getModIndex(b) ? 1 : -1;
 		});
 	}
 
-	public function SetPercent(modName:String, f:Float)
+	public function setPercent(modName:String, f:Float)
 	{
 		try
 		{
 			mods[modName] = f;
-			var mod = _modList.GetModByName(modName);
-			var parent = mod.GetParent();
-			mod.OnSetPercent(f, this);
+			var mod = _modList.getModFromName(modName);
+			var parent = mod.getParent();
+			mod.onSetPercent(f, this);
 			if (f != 0 && !activeMods.contains(modName))
 			{
 				if (parent != '' && !activeMods.contains(parent))
@@ -63,7 +63,7 @@ class SchmovinPlayfield
 				activeMods.remove(modName);
 				for (mod in activeMods)
 				{
-					if (_modList.GetModByName(mod).GetParent() == parent)
+					if (_modList.getModFromName(mod).getParent() == parent)
 					{
 						Sort();
 						return;

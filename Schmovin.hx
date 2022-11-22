@@ -31,83 +31,83 @@ class Schmovin extends Mod
 	public static var arrowPathSubdivisions:Int = 80;
 	public static var optimizeHoldNotes:Bool = false;
 
-	override function GetCredits():String
+	override function getCredits():String
 	{
 		return '4mbr0s3 2';
 	}
 
-	override function Initialize()
+	override function initialize()
 	{
-		Hook(ModHooks.HookAfterCameras);
-		Hook(ModHooks.HookUpdate);
-		Hook(ModHooks.HookPostNotePosition);
-		Hook(ModHooks.HookPreDraw);
-		Hook(ModHooks.HookPostDraw);
-		Hook(ModHooks.HookPostUI);
-		Hook(ModHooks.HookOnCountdown);
-		Hook(ModHooks.HookSetupCharacters);
-		Hook(ModHooks.HookOnExitPlayState);
+		hook(ModHooks.hookAfterCameras);
+		hook(ModHooks.hookUpdate);
+		hook(ModHooks.hookPostNotePosition);
+		hook(ModHooks.hookPreDraw);
+		hook(ModHooks.hookPostDraw);
+		hook(ModHooks.hookPostUI);
+		hook(ModHooks.hookOnCountdown);
+		hook(ModHooks.hookSetupCharacters);
+		hook(ModHooks.hookOnExitPlayState);
 	}
 
-	override function ShouldRun():Bool
+	override function shouldRun():Bool
 	{
 		if (Std.is(FlxG.state.subState, PauseSubState))
 			return true;
 		return FlxG.state.subState == null;
 	}
 
-	override function OnGameOver(state:PlayState)
+	override function onGameOver(state:PlayState)
 	{
-		instance.Destroy();
+		instance.destroy();
 	}
 
-	function InitializeGroovinSchmovinAdapter()
+	function initializeGroovinSchmovinAdapter()
 	{
-		SchmovinAdapter.SetInstance(new GroovinSchmovinAdapter());
+		SchmovinAdapter.setInstance(new GroovinSchmovinAdapter());
 	}
 
-	override function AfterCameras(camGame:FlxCamera, camHUD:FlxCamera)
+	override function afterCameras(camGame:FlxCamera, camHUD:FlxCamera)
 	{
-		InitializeGroovinSchmovinAdapter();
+		initializeGroovinSchmovinAdapter();
 
 		instance = SchmovinInstance.Create(cast FlxG.state, camHUD, camGame);
-		instance.Initialize();
+		instance.initialize();
 	}
 
-	override function OnExitPlayState(nextState:FlxState)
+	override function onExitPlayState(nextState:FlxState)
 	{
 		Log('Destroying Schmovin instance...');
-		instance.Destroy();
+		instance.destroy();
 	}
 
-	override function PostUI(state:PlayState)
+	override function postUI(state:PlayState)
 	{
 		state.strumLineNotes.cameras = [instance.camNotes];
 		state.notes.cameras = [instance.camNotes];
 		FlxCamera.defaultCameras = [instance.camGameCopy];
 
-		instance.InitializeAboveHUD();
+		instance.initializeAboveHUD();
 	}
 
-	override function PreDraw(state:PlayState)
+	override function preDraw(state:PlayState)
 	{
-		instance.PreDraw();
+		instance.preDraw();
 	}
 
-	override function PostDraw(state:PlayState)
+	override function postDraw(state:PlayState)
 	{
-		instance.PostDraw();
+		instance.postDraw();
 	}
 
-	override function OnCountdown(state:PlayState)
+	override function onCountdown(state:PlayState)
 	{
 		// No longer needed
-		// instance.InitializeFakeExplosionReceptors();
+		// instance.initializeFakeExplosionReceptors();
 	}
 
-	override function Update(elapsed:Float)
+	override function update(elapsed:Float)
 	{
-		instance.Update(elapsed);
+		instance.update(elapsed);
 		HideReceptors();
 	}
 
@@ -122,17 +122,17 @@ class Schmovin extends Mod
 		}
 	}
 
-	override function IsVisibleOnModList():Bool
+	override function isVisibleOnModList():Bool
 	{
 		return false;
 	}
 
-	public static function GetCurrentBeat()
+	public static function getCurrentBeat()
 	{
-		return SchmovinAdapter.GetInstance().GetCurrentBeat();
+		return SchmovinAdapter.getInstance().getCurrentBeat();
 	}
 
-	override function RegisterModOptions():Array<GroovinModOption<Dynamic>>
+	override function registerModOptions():Array<GroovinModOption<Dynamic>>
 	{
 		return [
 			new GroovinModOptionSectionTitle(this, 'Visual'),
@@ -152,7 +152,7 @@ class Schmovin extends Mod
 		];
 	}
 
-	override function PostNotePosition(state:PlayState, strumLine:FlxSprite, daNote:Note, SONG:SwagSong):Bool
+	override function postNotePosition(state:PlayState, strumLine:FlxSprite, daNote:Note, SONG:SwagSong):Bool
 	{
 		// Note positioning moved to SchmovinRenderers for multiple playfield support
 

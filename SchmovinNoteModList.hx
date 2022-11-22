@@ -62,7 +62,7 @@ class SchmovinNoteModList
 	 */
 	var _timeline:SchmovinTimeline;
 
-	public function GetModIndex(modName:String)
+	public function getModIndex(modName:String)
 	{
 		var modOrder = _modsOrder.indexOf(modName);
 		return modOrder;
@@ -77,36 +77,36 @@ class SchmovinNoteModList
 		_miscMods = new Map<String, ISchmovinNoteMod>();
 		_playfields = playfields;
 		_mustExecuteModNames = [];
-		InitializeNoteMods();
+		initializeNoteMods();
 	}
 
 	@:allow(schmovin.note_mods.ISchmovinNoteMod, schmovin.ModRegistry)
-	function GetSchmovinInstance()
+	function getSchmovinInstance()
 	{
 		return _timeline._instance;
 	}
 
-	public function GetNoteModsMap()
+	public function getNoteModsMap()
 	{
 		return [for (m in _mods) m].concat([for (m in _auxMods) m]).concat([for (m in _miscMods) m]);
 	}
 
-	public function InitializeNoteMods()
+	public function initializeNoteMods()
 	{
 		new ModRegistry(this, _state).Register();
 	}
 
-	public function AddNoteMod(modName:String, mod:ISchmovinNoteMod, auxiliary:Bool = false, parent:String = '')
+	public function addNoteMod(modName:String, mod:ISchmovinNoteMod, auxiliary:Bool = false, parent:String = '')
 	{
-		mod.Initialize(_state, this, _playfields);
-		mod.SetParent(parent);
-		mod.SetName(modName);
+		mod.initialize(_state, this, _playfields);
+		mod.setParent(parent);
+		mod.setName(modName);
 		if (auxiliary)
 		{
 			_auxMods.set(modName, mod);
 			_auxModsOrder.push(modName);
 		}
-		else if (mod.IsMiscMod())
+		else if (mod.isMiscMod())
 		{
 			_miscMods.set(modName, mod);
 			_miscModsOrder.push(modName);
@@ -116,21 +116,21 @@ class SchmovinNoteModList
 			_mods.set(modName, mod);
 			_modsOrder.push(modName);
 		}
-		if (mod.MustExecute())
+		if (mod.alwaysExecute())
 			_mustExecuteModNames.push(modName);
 	}
 
-	public function AddNoteModBefore(beforeModName:String, modName:String, mod:ISchmovinNoteMod, putInExecutionList:Bool = true)
+	public function addNoteModAt(beforeModName:String, modName:String, mod:ISchmovinNoteMod, putInExecutionList:Bool = true)
 	{
-		mod.SetName(modName);
+		mod.setName(modName);
 		_mods.set(modName, mod);
-		// if (putInExecutionList || mod.MustExecute() || mod.IsMiscMod())
+		// if (putInExecutionList || mod.alwaysExecute() || mod.isMiscMod())
 		// {
-		// 	_modExecuteList.insert(_modExecuteList.indexOf(GetModByName(beforeModName)), mod);
+		// 	_modExecuteList.insert(_modExecuteList.indexOf(getModFromName(beforeModName)), mod);
 		// }
 	}
 
-	public function GetModByName(modName:String)
+	public function getModFromName(modName:String)
 	{
 		var aux = _auxMods.get(modName);
 		if (aux != null)
@@ -144,7 +144,7 @@ class SchmovinNoteModList
 		return new NoteModBase();
 	}
 
-	public function RemoveNoteModByName(modName:String)
+	public function removeNoteModFromName(modName:String)
 	{
 		_mods.remove(modName);
 		_modsOrder.remove(modName);
@@ -161,7 +161,7 @@ class SchmovinNoteModList
 	 * 
 	 * TODO: Translate speeds to eases and sets, add Lua support, and try using Mirin Template?
 	 */
-	public function ITGApplyModifiers(stringOptions:String, player:Int)
+	public function itgParseApplyModifiers(stringOptions:String, player:Int)
 	{
 		var stringBits = stringOptions.toLowerCase().split(',');
 		for (bit in stringBits)
@@ -182,7 +182,7 @@ class SchmovinNoteModList
 
 			bit = parts[parts.length - 1];
 
-			SetPercentPlayfieldIndex(bit, level, player);
+			setPercentPlayfieldIndex(bit, level, player);
 		}
 	}
 
@@ -192,30 +192,30 @@ class SchmovinNoteModList
 	 * @param percent 
 	 * @return Bool
 	 */
-	public function SetPercent(modName:String, percent:Float, player:Int, playfield:SchmovinPlayfield = null):Bool
+	public function setPercent(modName:String, percent:Float, player:Int, playfield:SchmovinPlayfield = null):Bool
 	{
-		var pf = _playfields.GetPlayfieldAtIndex(player);
+		var pf = _playfields.getPlayfieldAtIndex(player);
 		if (playfield != null)
 			pf = playfield;
-		pf.SetPercent(modName, percent);
+		pf.setPercent(modName, percent);
 		return true;
 	}
 
-	public function SetPercentPlayfieldIndex(modName:String, percent:Float, index:Int)
+	public function setPercentPlayfieldIndex(modName:String, percent:Float, index:Int)
 	{
-		SetPercent(modName, percent, index, _playfields.GetPlayfieldAtIndex(index));
+		setPercent(modName, percent, index, _playfields.getPlayfieldAtIndex(index));
 	}
 
-	public function GetPercent(modName:String, player:Int, playfield:SchmovinPlayfield = null)
+	public function getPercent(modName:String, player:Int, playfield:SchmovinPlayfield = null)
 	{
-		var pf = _playfields.GetPlayfieldAtIndex(player);
+		var pf = _playfields.getPlayfieldAtIndex(player);
 		if (playfield != null)
 			pf = playfield;
-		return pf.GetPercent(modName);
+		return pf.getPercent(modName);
 	}
 
 	@:deprecated
-	public function UpdatePath(playfield:SchmovinPlayfield, currentBeat:Float, sprite:FlxSprite, player:Int = 0, column:Int = 0)
+	public function updatePath(playfield:SchmovinPlayfield, currentBeat:Float, sprite:FlxSprite, player:Int = 0, column:Int = 0)
 	{
 		var pos = new Vector4();
 		for (modName in _modsOrder)
@@ -225,52 +225,52 @@ class SchmovinNoteModList
 			if (Std.is(sprite, Note))
 			{
 				var note:Note = cast sprite;
-				var strumTimeDiff = SchmovinAdapter.GetInstance().GetSongPosition() - note.strumTime - SchmovinAdapter.GetInstance().GrabGlobalVisualOffset();
-				pos = notemod.ExecutePath(currentBeat, strumTimeDiff, note.GetTotalColumn(), player, pos, playfield);
+				var strumTimeDiff = SchmovinAdapter.getInstance().getSongPosition() - note.strumTime - SchmovinAdapter.getInstance().grabGlobalVisualOffset();
+				pos = notemod.executePath(currentBeat, strumTimeDiff, note.getTotalColumn(), player, pos, playfield);
 			}
 			else
 			{
 				var receptor = new Receptor(sprite, column);
-				pos = notemod.ExecutePath(currentBeat, 0, receptor.column, player, pos, playfield);
+				pos = notemod.executePath(currentBeat, 0, receptor.column, player, pos, playfield);
 			}
 		}
-		pos = pos.subtract(SchmovinUtil.PosNoteWidthHalf());
+		pos = pos.subtract(SchmovinUtil.posGetNoteWidthHalf());
 		return pos;
 	}
 
-	function GetOrderedPlayfieldMods(pf:SchmovinPlayfield)
+	private function getOrderedPlayfieldMods(pf:SchmovinPlayfield)
 	{
 		var array = [for (k in pf.mods.keys()) k];
 		array.sort((m1, m2) ->
 		{
-			_mods[m1].GetOrder() > _mods[m2].GetOrder() ? 1 : -1;
+			_mods[m1].getOrder() > _mods[m2].getOrder() ? 1 : -1;
 		});
 		return array;
 	}
 
-	public function UpdateNote(playfield:SchmovinPlayfield, currentBeat:Float, sprite:FlxSprite, pos:Vector4, player:Int = 0, column:Int = 0)
+	public function updateNote(playfield:SchmovinPlayfield, currentBeat:Float, sprite:FlxSprite, pos:Vector4, player:Int = 0, column:Int = 0)
 	{
-		for (modName in GetModNameList(playfield))
+		for (modName in getModNameList(playfield))
 		{
 			var notemod = _mods[modName];
 			if (Std.is(sprite, Note))
 			{
 				var note:Note = cast sprite;
-				notemod.ExecuteNote(currentBeat, note, player, pos, playfield);
+				notemod.executeNote(currentBeat, note, player, pos, playfield);
 			}
 			else
 			{
 				var receptor = new Receptor(sprite, column);
-				notemod.ExecuteReceptor(currentBeat, receptor, player, pos, playfield);
+				notemod.executeReceptor(currentBeat, receptor, player, pos, playfield);
 			}
 		}
 	}
 
-	public function UpdateNoteVertex(currentBeat:Float, sprite:FlxSprite, vertex:Vector4, vertexIndex:Int, pos:Vector4, playfield:SchmovinPlayfield,
+	public function updateNoteVertex(currentBeat:Float, sprite:FlxSprite, vertex:Vector4, vertexIndex:Int, pos:Vector4, playfield:SchmovinPlayfield,
 			player:Int = 0, column:Int = 0, exclude:Array<String> = null)
 	{
 		var outVertex = vertex;
-		for (modName in GetModNameList(playfield))
+		for (modName in getModNameList(playfield))
 		{
 			if (exclude != null && exclude.contains(modName))
 				continue;
@@ -278,37 +278,37 @@ class SchmovinNoteModList
 			if (notemod == null)
 				continue;
 
-			if (!notemod.IsVertexModifier())
+			if (!notemod.isVertexModifier())
 				continue;
 			// Concrete dependencies :P
 			if (Std.is(sprite, Note))
 			{
 				var note:Note = cast sprite;
-				var strumTimeDiff = SchmovinAdapter.GetInstance().GetSongPosition() - note.strumTime - SchmovinAdapter.GetInstance().GrabGlobalVisualOffset();
-				outVertex = notemod.ExecuteNoteVertex(currentBeat, strumTimeDiff, note.GetTotalColumn(), player, outVertex, vertexIndex, pos, playfield);
+				var strumTimeDiff = SchmovinAdapter.getInstance().getSongPosition() - note.strumTime - SchmovinAdapter.getInstance().grabGlobalVisualOffset();
+				outVertex = notemod.executeNoteVertex(currentBeat, strumTimeDiff, note.getTotalColumn(), player, outVertex, vertexIndex, pos, playfield);
 			}
 			else
-				outVertex = notemod.ExecuteNoteVertex(currentBeat, 0, column, player, outVertex, vertexIndex, pos, playfield);
+				outVertex = notemod.executeNoteVertex(currentBeat, 0, column, player, outVertex, vertexIndex, pos, playfield);
 		}
 		return outVertex;
 	}
 
-	public function UpdateMiscMods(currentBeat:Float)
+	public function updateMiscMods(currentBeat:Float)
 	{
 		for (miscmod in _miscModsOrder)
-			_miscMods[miscmod].Update(currentBeat);
+			_miscMods[miscmod].update(currentBeat);
 	}
 
-	inline function GetModNameList(playfield:SchmovinPlayfield)
+	private inline function getModNameList(playfield:SchmovinPlayfield)
 	{
 		return playfield.activeMods;
 	}
 
 	// I reassure you guys this is as optimized as it could possibly get
-	public function GetPath(currentBeat:Float, strumTime:Float, column:Int, player:Int, playfield:SchmovinPlayfield, exclude:Array<String> = null)
+	public function getPath(currentBeat:Float, strumTime:Float, column:Int, player:Int, playfield:SchmovinPlayfield, exclude:Array<String> = null)
 	{
 		var pos = new Vector4();
-		for (modName in GetModNameList(playfield))
+		for (modName in getModNameList(playfield))
 		{
 			if (exclude != null && exclude.contains(modName))
 				continue;
@@ -316,15 +316,15 @@ class SchmovinNoteModList
 			if (notemod == null)
 				continue;
 
-			pos = notemod.ExecutePath(currentBeat, strumTime, column, player, pos, playfield);
+			pos = notemod.executePath(currentBeat, strumTime, column, player, pos, playfield);
 		}
 		return pos;
 	}
 
-	public function GetOtherMap(currentBeat:Float, strumTime:Float, column:Int, player:Int, playfield:SchmovinPlayfield, exclude:Array<String> = null)
+	public function getOtherMap(currentBeat:Float, strumTime:Float, column:Int, player:Int, playfield:SchmovinPlayfield, exclude:Array<String> = null)
 	{
 		var map = new Map<String, Dynamic>();
-		for (modName in GetModNameList(playfield))
+		for (modName in getModNameList(playfield))
 		{
 			if (exclude != null && exclude.contains(modName))
 				continue;
@@ -332,7 +332,7 @@ class SchmovinNoteModList
 			if (notemod == null)
 				continue;
 
-			notemod.ExecuteOther(currentBeat, strumTime, column, player, map, playfield);
+			notemod.executeOther(currentBeat, strumTime, column, player, map, playfield);
 		}
 		return map;
 	}

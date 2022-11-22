@@ -28,11 +28,11 @@ class NoteModBeat extends NoteModBase
 		return amp / 0.3 * neg;
 	}
 
-	override function ExecutePath(currentBeat:Float, strumTimeDiff:Float, column:Int, player:Int, pos:Vector4, playfield:SchmovinPlayfield):Vector4
+	override function executePath(currentBeat:Float, strumTimeDiff:Float, column:Int, player:Int, pos:Vector4, playfield:SchmovinPlayfield):Vector4
 	{
 		var newPos = pos.clone();
-		var amp = GetAmplitude(currentBeat) * Math.cos(GetRelativeTime(strumTimeDiff) / 45);
-		var offsetX = amp * Note.swagWidth / 2 * GetPercent(playfield);
+		var amp = GetAmplitude(currentBeat) * Math.cos(getRelativeTime(strumTimeDiff) / 45);
+		var offsetX = amp * Note.swagWidth / 2 * getPercent(playfield);
 		return newPos.add(new Vector4(offsetX));
 	}
 }

@@ -25,14 +25,14 @@ class MiscModCamCopyPosition extends MiscModBase
 		_player = plr;
 	}
 
-	override function Update(currentBeat:Float)
+	override function update(currentBeat:Float)
 	{
-		_cam.scrollOffset.x = GetLegacyPercent(0);
-		_cam.scrollOffset.y = GetOtherLegacyPercent('${_prefix}y', 0);
-		_cam.scrollOverride = GetOtherLegacyPercent('${_prefix}override', 0);
-		_cam.scrollOverrideTarget.x = GetOtherLegacyPercent('${_prefix}overridex', 0);
-		_cam.scrollOverrideTarget.y = GetOtherLegacyPercent('${_prefix}overridey', 0);
-		_cam.zoomOffset = GetOtherLegacyPercent('${_prefix}zoom', 0);
-		_cam.angleOffset = GetOtherLegacyPercent('${_prefix}angle', 0);
+		_cam.scrollOffset.x = getLegacyPercent(0);
+		_cam.scrollOffset.y = getOtherLegacyPercent('${_prefix}y', 0);
+		_cam.scrollOverride = getOtherLegacyPercent('${_prefix}override', 0);
+		_cam.scrollOverrideTarget.x = getOtherLegacyPercent('${_prefix}overridex', 0);
+		_cam.scrollOverrideTarget.y = getOtherLegacyPercent('${_prefix}overridey', 0);
+		_cam.zoomOffset = getOtherLegacyPercent('${_prefix}zoom', 0);
+		_cam.angleOffset = getOtherLegacyPercent('${_prefix}angle', 0);
 	}
 }

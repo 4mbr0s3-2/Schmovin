@@ -29,9 +29,9 @@ class NoteModBase implements ISchmovinNoteMod
 	var _active = false;
 	var _playfields:SchmovinPlayfieldManager;
 
-	public function ExecuteOther(currentBeat:Float, strumTime:Float, column:Int, player:Int, map:Map<String, Dynamic>, playfield:SchmovinPlayfield):Void {}
+	public function executeOther(currentBeat:Float, strumTime:Float, column:Int, player:Int, map:Map<String, Dynamic>, playfield:SchmovinPlayfield):Void {}
 
-	public function Deactivate(receptors:Array<Receptor>, notes:Array<Note>)
+	public function deactivate(receptors:Array<Receptor>, notes:Array<Note>)
 	{
 		// Only check activity after deactivation
 		// var o = false;
@@ -42,133 +42,133 @@ class NoteModBase implements ISchmovinNoteMod
 		// 	_modList.RemoveFromActiveModList(this);
 	}
 
-	public function Activate(receptors:Array<Receptor>, notes:Array<Note>)
+	public function activate(receptors:Array<Receptor>, notes:Array<Note>)
 	{
 		_active = true;
 	}
 
-	public function IsActive()
+	public function isActive()
 	{
 		return _active;
 	}
 
-	public function MustExecute()
+	public function alwaysExecute()
 	{
 		return false;
 	}
 
-	public function GetName()
+	public function getName()
 	{
 		return _name;
 	}
 
-	public function SetName(v:String)
+	public function setName(v:String)
 	{
 		if (_name == null)
 			_name = v;
 	}
 
-	public function GetParent()
+	public function getParent()
 	{
 		return _parent;
 	}
 
-	public function SetParent(v:String)
+	public function setParent(v:String)
 	{
 		if (_parent == null)
 			_parent = v;
 	}
 
-	public function IsMiscMod():Bool
+	public function isMiscMod():Bool
 	{
 		return false;
 	}
 
-	function GetDefaultPlayfieldFromPlayer(p:Int)
+	function getDefaultPlayfieldFromPlayer(p:Int)
 	{
-		return _playfields.GetPlayfieldAtIndex(p);
+		return _playfields.getPlayfieldAtIndex(p);
 	}
 
-	private function SetPercent(f:Float, playfield:SchmovinPlayfield)
+	private function setPercent(f:Float, playfield:SchmovinPlayfield)
 	{
 		var player = playfield.player;
-		if (f != 0 && GetPercent(playfield) == 0)
-			Activate(SchmovinUtil.GetReceptors(player, _state), SchmovinUtil.GetNotes(player, _state));
-		else if (f == 0 && GetPercent(playfield) != 0)
-			Deactivate(SchmovinUtil.GetReceptors(player, _state), SchmovinUtil.GetNotes(player, _state));
+		if (f != 0 && getPercent(playfield) == 0)
+			activate(SchmovinUtil.getReceptors(player, _state), SchmovinUtil.getNotes(player, _state));
+		else if (f == 0 && getPercent(playfield) != 0)
+			deactivate(SchmovinUtil.getReceptors(player, _state), SchmovinUtil.getNotes(player, _state));
 		// _percents.set(playfield, f);
-		playfield.SetPercent(this.GetName(), f);
+		playfield.setPercent(this.getName(), f);
 	}
 
 	/**
 		Called whenever a playfield sets the mod.
 		Useful for having mods that sets other mods.
 	**/
-	public function OnSetPercent(f:Float, playfield:SchmovinPlayfield) {}
+	public function onSetPercent(f:Float, playfield:SchmovinPlayfield) {}
 
 	/**
 	 * Returns the number of pixels for the strum time, taking into account scroll speed. 
 	 * @param strumTimeDiff 
 	 */
-	public function GetRelativeTime(strumTimeDiff:Float)
+	public function getRelativeTime(strumTimeDiff:Float)
 	{
-		return strumTimeDiff * SchmovinAdapter.GetInstance().GrabScrollSpeed() * 0.45;
+		return strumTimeDiff * SchmovinAdapter.getInstance().grabScrollSpeed() * 0.45;
 	}
 
-	public function SetLegacyPercent(f:Float, p:Int)
+	public function setLegacyPercent(f:Float, p:Int)
 	{
 		if (p < 0)
 		{
 			for (i in 0...2)
-				SetPercent(f, GetDefaultPlayfieldFromPlayer(i));
+				setPercent(f, getDefaultPlayfieldFromPlayer(i));
 			return;
 		}
-		SetPercent(f, GetDefaultPlayfieldFromPlayer(p));
+		setPercent(f, getDefaultPlayfieldFromPlayer(p));
 	}
 
 	/**
 		Legacy method that requires a player index rather than a playfield.
 	**/
-	public function GetLegacyPercent(p:Int)
+	public function getLegacyPercent(p:Int)
 	{
 		if (p < 0)
 		{
 			var sum = 0.0;
 			for (i in 0...2)
-				sum += GetPercent(GetDefaultPlayfieldFromPlayer(i));
+				sum += getPercent(getDefaultPlayfieldFromPlayer(i));
 			return sum;
 		}
 		if (_playfields == null)
 			return 0.0;
-		return GetPercent(GetDefaultPlayfieldFromPlayer(p));
+		return getPercent(getDefaultPlayfieldFromPlayer(p));
 	}
 
 	/**
 		Set the percent of the note mod for the playfield.
 	**/
-	public function GetPercent(playfield:SchmovinPlayfield)
+	public function getPercent(playfield:SchmovinPlayfield)
 	{
-		return playfield.GetPercent(this.GetName());
+		return playfield.getPercent(this.getName());
 	}
 
 	/**
-		Deprecated because calling playfield.GetPercent() would've already been enough. (Middle man)
+		Deprecated because calling playfield.getPercent() would've already been enough. (Middle man)
 		However, I'm probably keeping it here in case legacy code calls it...
 	**/
 	@:deprecated
-	public function GetOtherPercent(modName:String, playfield:SchmovinPlayfield)
+	public function getOtherPercent(modName:String, playfield:SchmovinPlayfield)
 	{
-		return playfield.GetPercent(modName);
+		return playfield.getPercent(modName);
 	}
 
-	public function GetOtherLegacyPercent(modName:String, player:Int)
+	public function getOtherLegacyPercent(modName:String, player:Int)
 	{
-		return _modList.GetPercent(modName, player);
+		return _modList.getPercent(modName, player);
 	}
 
-	public function SetOtherPercent(f:Float, modName:String, player:Int)
+	public function setOtherPercent(f:Float, modName:String, player:Int)
 	{
-		_modList.SetPercent(modName, f, player);
+		_modList.setPercent(modName, f, player);
 	}
 
 	@:deprecated
@@ -176,47 +176,42 @@ class NoteModBase implements ISchmovinNoteMod
 
 	public function new() {}
 
-	public function Initialize(state:PlayState, modList:SchmovinNoteModList, playfields:SchmovinPlayfieldManager)
+	public function initialize(state:PlayState, modList:SchmovinNoteModList, playfields:SchmovinPlayfieldManager)
 	{
 		_state = state;
 		_modList = modList; // Bi-directional
 		_playfields = playfields;
 	}
 
-	public function SetOrder(v:Int)
+	public function setOrder(v:Int)
 	{
 		order = v;
 	}
 
-	public function GetOrder()
+	public function getOrder()
 	{
 		return order;
 	}
 
-	public function IsVertexModifier()
+	public function isVertexModifier()
 	{
 		return false;
 	}
 
-	public function ExecuteNoteVertex(currentBeat:Float, strumTime:Float, column:Int, player:Int, vert:Vector4, vertIndex:Int, pos:Vector4,
+	public function executeNoteVertex(currentBeat:Float, strumTime:Float, column:Int, player:Int, vert:Vector4, vertIndex:Int, pos:Vector4,
 			playfield:SchmovinPlayfield)
 	{
 		return vert;
 	}
 
-	public function ExecuteReceptor(currentBeat:Float, receptor:Receptor, player:Int, pos:Vector4, playfield:SchmovinPlayfield) {}
+	public function executeReceptor(currentBeat:Float, receptor:Receptor, player:Int, pos:Vector4, playfield:SchmovinPlayfield) {}
 
-	public function ExecuteNote(currentBeat:Float, note:Note, player:Int, pos:Vector4, playfield:SchmovinPlayfield) {}
+	public function executeNote(currentBeat:Float, note:Note, player:Int, pos:Vector4, playfield:SchmovinPlayfield) {}
 
-	public function ExecutePath(currentBeat:Float, strumTime:Float, column:Int, player:Int, pos:Vector4, playfield:SchmovinPlayfield):Vector4
+	public function executePath(currentBeat:Float, strumTime:Float, column:Int, player:Int, pos:Vector4, playfield:SchmovinPlayfield):Vector4
 	{
 		return pos;
 	}
 
-	public function Update(currentBeat:Float) {}
-
-	public function ShouldDoUpdate()
-	{
-		return false;
-	}
+	public function update(currentBeat:Float) {}
 }
