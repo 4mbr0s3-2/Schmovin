@@ -211,7 +211,7 @@ class SchmovinTapNoteRenderer extends SchmovinRenderer
 
 	private function draw()
 	{
-		function GetTapNotes()
+		function getTapNotes()
 		{
 			return _playState.notes.members.filter((note) ->
 			{
@@ -224,7 +224,7 @@ class SchmovinTapNoteRenderer extends SchmovinRenderer
 		for (receptor in getReceptors())
 			render(receptor.wrappee, receptor.wrappee.alpha, 0, receptor.column, SchmovinUtil.getPlayerOfTotalColumn(receptor.column));
 
-		for (tap in GetTapNotes())
+		for (tap in getTapNotes())
 		{
 			render(tap, tap.alpha, SchmovinAdapter.getInstance().getSongPosition() - tap.strumTime - SchmovinAdapter.getInstance().grabGlobalVisualOffset(),
 				SchmovinUtil.getTotalColumn(tap), SchmovinUtil.getPlayer(tap));

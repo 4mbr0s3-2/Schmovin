@@ -16,7 +16,7 @@ using schmovin.SchmovinUtil;
 
 class NoteModConfusion extends NoteModBase
 {
-	inline function GetTotalConfusion(currentBeat:Float, playfield:SchmovinPlayfield, column:Int, axis:String = 'x')
+	private inline function getTotalConfusion(currentBeat:Float, playfield:SchmovinPlayfield, column:Int, axis:String = 'x')
 	{
 		var playerColumn = column % 4;
 		var offsetConfusion = currentBeat * 45 * getPercent(playfield);
@@ -28,9 +28,9 @@ class NoteModConfusion extends NoteModBase
 	override function executeNoteVertex(currentBeat:Float, strumTime:Float, column:Int, player:Int, vert:Vector4, vertIndex:Int, pos:Vector4,
 			playfield:SchmovinPlayfield):Vector4
 	{
-		var angleZ = GetTotalConfusion(currentBeat, playfield, column, 'z');
-		var angleX = GetTotalConfusion(currentBeat, playfield, column, 'x');
-		var angleY = GetTotalConfusion(currentBeat, playfield, column, 'y');
+		var angleZ = getTotalConfusion(currentBeat, playfield, column, 'z');
+		var angleX = getTotalConfusion(currentBeat, playfield, column, 'x');
+		var angleY = getTotalConfusion(currentBeat, playfield, column, 'y');
 		var out = vert.clone();
 		out = Camera3DTransforms.RotateVector4(out, angleX, angleY, angleZ);
 		return out;

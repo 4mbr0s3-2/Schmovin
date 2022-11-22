@@ -108,10 +108,10 @@ class Schmovin extends Mod
 	override function update(elapsed:Float)
 	{
 		instance.update(elapsed);
-		HideReceptors();
+		hideReceptors();
 	}
 
-	function HideReceptors()
+	private function hideReceptors()
 	{
 		for (receptorIndex in 0...instance.state.strumLineNotes.length)
 		{

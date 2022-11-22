@@ -14,7 +14,7 @@ using schmovin.SchmovinUtil;
 
 class NoteModBeat extends NoteModBase
 {
-	function GetAmplitude(currentBeat:Float)
+	private function getAmplitude(currentBeat:Float)
 	{
 		var beat = currentBeat % 1;
 		var amp:Float = 0;
@@ -31,7 +31,7 @@ class NoteModBeat extends NoteModBase
 	override function executePath(currentBeat:Float, strumTimeDiff:Float, column:Int, player:Int, pos:Vector4, playfield:SchmovinPlayfield):Vector4
 	{
 		var newPos = pos.clone();
-		var amp = GetAmplitude(currentBeat) * Math.cos(getRelativeTime(strumTimeDiff) / 45);
+		var amp = getAmplitude(currentBeat) * Math.cos(getRelativeTime(strumTimeDiff) / 45);
 		var offsetX = amp * Note.swagWidth / 2 * getPercent(playfield);
 		return newPos.add(new Vector4(offsetX));
 	}

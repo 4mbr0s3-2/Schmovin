@@ -6,18 +6,18 @@ import lime.math.Vector4;
 
 class Camera3DTransforms
 {
-	static function FastTan(rad:Float)
+	private static function fastTan(rad:Float)
 	{
 		// Thanks Maclaurin
 		return FlxMath.fastSin(rad) / FlxMath.fastCos(rad);
 	}
 
-	public static function View(pos:Vector4, camProperties:Map<String, Float>)
+	public static function view(pos:Vector4, camProperties:Map<String, Float>)
 	{
 		return pos.subtract(new Vector4(camProperties.get('camx'), camProperties.get('camy'), FlxG.height + camProperties.get('camz')));
 	}
 
-	public static function Rotate(x:Float, y:Float, angle:Float)
+	public static function rotate(x:Float, y:Float, angle:Float)
 	{
 		return [
 			x * FlxMath.fastCos(angle) - y * FlxMath.fastSin(angle),
@@ -25,39 +25,39 @@ class Camera3DTransforms
 		];
 	}
 
-	public static function RotateVector4(vec:Vector4, angleX:Float, angleY:Float, angleZ:Float)
+	public static function rotateVector4(vec:Vector4, angleX:Float, angleY:Float, angleZ:Float)
 	{
-		// var rotateZ = Rotate(vec.x, vec.y, angleZ);
+		// var rotateZ = rotate(vec.x, vec.y, angleZ);
 		// var offZ = new Vector4(rotateZ[0], rotateZ[1], vec.z);
 
-		// var rotateX = Rotate(offZ.z, offZ.y, angleX);
+		// var rotateX = rotate(offZ.z, offZ.y, angleX);
 		// var offX = new Vector4(offZ.x, rotateX[1], rotateX[0]);
 
-		// var rotateY = Rotate(offX.x, offX.z, angleY);
+		// var rotateY = rotate(offX.x, offX.z, angleY);
 		// var offY = new Vector4(rotateY[0], offX.y, rotateY[1]);
 
-		var rotateZ = Rotate(vec.x, vec.y, angleZ);
+		var rotateZ = rotate(vec.x, vec.y, angleZ);
 		var offZ = new Vector4(rotateZ[0], rotateZ[1], vec.z);
 
-		var rotateY = Rotate(offZ.x, offZ.z, angleY);
+		var rotateY = rotate(offZ.x, offZ.z, angleY);
 		var offY = new Vector4(rotateY[0], offZ.y, rotateY[1]);
 
-		var rotateX = Rotate(offY.z, offY.y, angleX);
+		var rotateX = rotate(offY.z, offY.y, angleX);
 		var offX = new Vector4(offY.x, rotateX[1], rotateX[0]);
 
-		// var rotateX = Rotate(vec.z, vec.y, angleX);
+		// var rotateX = rotate(vec.z, vec.y, angleX);
 		// var offX = new Vector4(vec.x, rotateX[1], rotateX[0]);
 
-		// var rotateY = Rotate(offX.x, offX.z, angleY);
+		// var rotateY = rotate(offX.x, offX.z, angleY);
 		// var offY = new Vector4(rotateY[0], offX.y, rotateY[1]);
 
-		// var rotateZ = Rotate(offY.x, offY.y, angleZ);
+		// var rotateZ = rotate(offY.x, offY.y, angleZ);
 		// var offZ = new Vector4(rotateZ[0], rotateZ[1], offY.z);
 
 		return offX;
 	}
 
-	public static function Projection(pos:Vector4, pov:Float)
+	public static function projection(pos:Vector4, pov:Float)
 	{
 		var camfov = pov;
 		var fov = camfov * Math.PI / 2;
@@ -69,8 +69,8 @@ class Camera3DTransforms
 		if (perspectiveZ > 0)
 			perspectiveZ = 0; // To prevent coordinate overflow :/
 
-		var x = pos.x / FastTan(fov / 2);
-		var y = pos.y * screenRatio / FastTan(fov / 2);
+		var x = pos.x / fastTan(fov / 2);
+		var y = pos.y * screenRatio / fastTan(fov / 2);
 
 		var a = (near + far) / (near - far);
 		var b = 2 * near * far / (near - far);

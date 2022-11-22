@@ -255,7 +255,7 @@ class SchmovinInstance
 		tapNoteRenderer.preDraw();
 	}
 
-	public static function Create(state:PlayState, camHUD:FlxCamera, camGame:FlxCamera)
+	public static function create(state:PlayState, camHUD:FlxCamera, camGame:FlxCamera)
 	{
 		var instance = new SchmovinInstance();
 		instance.state = state;

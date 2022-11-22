@@ -14,7 +14,7 @@ using schmovin.SchmovinUtil;
 
 class NoteModTiny extends NoteModBase
 {
-	function GetScale(column:Int, playfield:SchmovinPlayfield)
+	private function getScale(column:Int, playfield:SchmovinPlayfield)
 	{
 		var playerColumn = column % 4;
 		var scale = new FlxPoint(1, 1);
@@ -35,7 +35,7 @@ class NoteModTiny extends NoteModBase
 	override function executeNoteVertex(currentBeat:Float, strumTime:Float, column:Int, player:Int, vert:Vector4, vertIndex:Int, pos:Vector4,
 			playfield:SchmovinPlayfield):Vector4
 	{
-		var scale = GetScale(column, playfield);
+		var scale = getScale(column, playfield);
 		var outVert = vert.clone();
 		outVert.x *= scale.x;
 		outVert.y *= scale.y;

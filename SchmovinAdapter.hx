@@ -53,7 +53,7 @@ class SchmovinAdapter
 	// For use by Groovin', no need to add anything here if used by other engines
 	public function forEveryMod(param:Array<Dynamic>) {}
 
-	public function Log(string:Dynamic)
+	public function log(string:Dynamic)
 	{
 		trace('[Schmovin\'] ${string}');
 	}

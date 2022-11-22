@@ -56,10 +56,10 @@ class ModSlider extends FlxBar
 		super(MARGIN, FlxG.height - HEIGHT * (index + 1) - MARGIN, LEFT_TO_RIGHT, WIDTH, HEIGHT, this, '', 0, 100);
 		scrollFactor.set();
 		createFilledBar(0xFFFF0000, 0xFF66FF33, true, FlxColor.BLACK);
-		InitializeDisplayName();
+		initializeDisplayName();
 	}
 
-	function InitializeDisplayName()
+	private function initializeDisplayName()
 	{
 		var ps = cast(FlxG.state, PlayState);
 		displayName = new FlxText(0, 0, 0, noteModName, 20);
@@ -97,10 +97,10 @@ class ModSlider extends FlxBar
 			if (player < 0)
 			{
 				for (p in 0...2)
-					_debugger.SetPercentPlayfield(noteModName, outPercent, p);
+					_debugger.setPercentPlayfield(noteModName, outPercent, p);
 				return;
 			}
-			_debugger.SetPercentPlayfield(noteModName, outPercent, player);
+			_debugger.setPercentPlayfield(noteModName, outPercent, player);
 		}
 	}
 }
@@ -123,10 +123,10 @@ class SchmovinDebugger extends Sprite
 		_client = client;
 		_timeline = timeline;
 		_displayEvents = displayEvents;
-		addEventListener(Event.ENTER_FRAME, OnEnterFrame);
-		InitializeSprites();
-		AddToDebugger();
-		InitializeSliders();
+		addEventListener(Event.ENTER_FRAME, onEnterFrame);
+		initializeSprites();
+		addToDebugger();
+		initializeSliders();
 	}
 
 	public function itgParseApplyModifiers(stringOptions:String, player:Int)
@@ -134,16 +134,16 @@ class SchmovinDebugger extends Sprite
 		_timeline._mods.itgParseApplyModifiers(stringOptions, player);
 	}
 
-	public function AddAllTheSliders(player:Int)
+	public function addAllTheSliders(player:Int)
 	{
 		@:privateAccess
 		for (mod in _timeline._mods._auxModsOrder)
 		{
-			AddSlider(mod, player);
+			addSlider(mod, player);
 		}
 	}
 
-	function InitializeSprites()
+	private function initializeSprites()
 	{
 		_eventsDisplay = new Sprite();
 		addChild(_eventsDisplay);
@@ -154,7 +154,7 @@ class SchmovinDebugger extends Sprite
 		removeChild(_eventsDisplay);
 	}
 
-	function AddToDebugger()
+	private function addToDebugger()
 	{
 		FlxG.console.registerObject('SchmovinDebugger', this);
 	}
@@ -165,7 +165,7 @@ class SchmovinDebugger extends Sprite
 		return _client.parseHScript(script);
 	}
 
-	public function AddDebugText()
+	public function addDebugText()
 	{
 		_modsDebugText = new FlxText(10, 10, 0);
 		_modsDebugText.scrollFactor.set();
@@ -176,19 +176,19 @@ class SchmovinDebugger extends Sprite
 		ps.add(_modsDebugText);
 	}
 
-	public function AddSlider(modName:String, player:Int = -1, min:Float = -1.0, max:Float = 1.0)
+	public function addSlider(modName:String, player:Int = -1, min:Float = -1.0, max:Float = 1.0)
 	{
 		SchmovinAdapter.getInstance().Log('Added slider ${modName} for player ${player}');
 		_sliders.add(new ModSlider(this, _sliders.length, player, modName, min, max));
 	}
 
-	public function AddSliders(modNames:Array<String>, player:Int = -1, min:Float = -1.0, max:Float = 1.0)
+	public function addSliders(modNames:Array<String>, player:Int = -1, min:Float = -1.0, max:Float = 1.0)
 	{
 		for (name in modNames)
-			AddSlider(name, player, min, max);
+			addSlider(name, player, min, max);
 	}
 
-	public function GetActiveMods(player:Int = 0)
+	public function getActiveMods(player:Int = 0)
 	{
 		// Ignore this lol
 		@:privateAccess
@@ -196,28 +196,28 @@ class SchmovinDebugger extends Sprite
 			FlxG.log.add(mod);
 	}
 
-	public function GetRegisteredMods()
+	public function getRegisteredMods()
 	{
 		@:privateAccess
 		for (mod in _timeline._mods._modsOrder)
 			FlxG.log.add(mod);
 	}
 
-	public function GetRegisteredMiscMods()
+	public function getRegisteredMiscMods()
 	{
 		@:privateAccess
 		for (mod in _timeline._mods._miscModsOrder)
 			FlxG.log.add(mod);
 	}
 
-	public function GetRegisteredAuxMods()
+	public function getRegisteredAuxMods()
 	{
 		@:privateAccess
 		for (mod in _timeline._mods._auxModsOrder)
 			FlxG.log.add(mod);
 	}
 
-	public function RemoveSlider(modName:String, player:Int)
+	public function removeSlider(modName:String, player:Int)
 	{
 		for (slider in _sliders)
 		{
@@ -229,14 +229,14 @@ class SchmovinDebugger extends Sprite
 		}
 	}
 
-	function InitializeSliders()
+	private function initializeSliders()
 	{
 		var ps = cast(FlxG.state, PlayState);
 		_sliders.cameras = [ps.camHUD];
 		FlxG.state.add(_sliders);
 	}
 
-	public function SetPercentPlayfield(modName:String, percent:Float, index:Int)
+	public function setPercentPlayfield(modName:String, percent:Float, index:Int)
 	{
 		_timeline._mods.setPercentPlayfieldIndex(modName, percent, index);
 	}
@@ -285,12 +285,12 @@ class SchmovinDebugger extends Sprite
 		}
 	}
 
-	function OnEnterFrame(_)
+	function onEnterFrame(_)
 	{
 		update();
 	}
 
-	function UpdateModsDebugText()
+	function updateModsDebugText()
 	{
 		var text = 'Mods Debug\n';
 		function NoPercent(mod:String)
@@ -321,7 +321,7 @@ class SchmovinDebugger extends Sprite
 
 	function update()
 	{
-		UpdateModsDebugText();
+		updateModsDebugText();
 		// addEventsDisplay();
 		// for (childIndex in 0..._eventsDisplay.numChildren)
 		// {

@@ -54,12 +54,12 @@ class NoteModReverse extends NoteModBase
 		return true;
 	}
 
-	function isSustainEnd(note:Note)
+	private function isSustainEnd(note:Note)
 	{
 		return note.animation.name.contains("end");
 	}
 
-	function PolishNote(reverse:Float, note:Note, strumLine:Float)
+	private function polishNote(reverse:Float, note:Note, strumLine:Float)
 	{
 		if (note.prevNote.exists && note.prevNote.isSustainNote && !isSustainEnd(note.prevNote))
 		{
@@ -149,6 +149,6 @@ class NoteModReverse extends NoteModBase
 		// else
 		// 	note.extraData.set('dirtyFrame', false);
 
-		PolishNote(getPercentReverse(note.getTotalColumn(), playfield), note, receptorPos.y);
+		polishNote(getPercentReverse(note.getTotalColumn(), playfield), note, receptorPos.y);
 	}
 }

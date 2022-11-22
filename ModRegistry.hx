@@ -54,7 +54,7 @@ class ModRegistry
 		addNoteMod(modName, new NoteModBase(), true, parent);
 	}
 
-	public function Register()
+	public function register()
 	{
 		addNoteAuxMod('xmod');
 		addNoteAuxMod('forcexmod');

@@ -20,19 +20,19 @@ class NoteModPerspective extends NoteModBase
 		return false;
 	}
 
-	function View(pos:Vector4, playfield:SchmovinPlayfield)
+	private function view(pos:Vector4, playfield:SchmovinPlayfield)
 	{
 		var props = new Map<String, Float>();
 		props.set('camx', getOtherPercent('camx', playfield));
 		props.set('camy', getOtherPercent('camy', playfield));
 		props.set('camz', getOtherPercent('camz', playfield));
-		return Camera3DTransforms.View(pos, props);
+		return Camera3DTransforms.view(pos, props);
 	}
 
-	function Projection(pos:Vector4, playfield:SchmovinPlayfield)
+	private function projection(pos:Vector4, playfield:SchmovinPlayfield)
 	{
 		var camfov = getOtherPercent('camfov', playfield);
-		return Camera3DTransforms.Projection(pos, camfov);
+		return Camera3DTransforms.projection(pos, camfov);
 	}
 
 	// https://www.youtube.com/watch?v=dul0mui292Q Quick mafs
@@ -44,9 +44,9 @@ class NoteModPerspective extends NoteModBase
 		var modelCoords = pos.subtract(halfScreenOffset); // Center to origin
 		modelCoords = Camera3DTransforms.RotateVector4(modelCoords, getOtherPercent('campitch', playfield), getOtherPercent('camyaw', playfield),
 			getOtherPercent('camroll', playfield));
-		var viewCoords = View(modelCoords, playfield);
+		var viewCoords = view(modelCoords, playfield);
 
-		var clipCoords = Projection(viewCoords, playfield);
+		var clipCoords = projection(viewCoords, playfield);
 
 		return clipCoords.add(halfScreenOffset); // Recenter to viewport
 	}
@@ -64,9 +64,9 @@ class NoteModPerspective extends NoteModBase
 		var modelCoords = vert.add(pos).subtract(halfScreenOffset); // Center to origin
 		modelCoords = Camera3DTransforms.RotateVector4(modelCoords, getOtherPercent('campitch', playfield), getOtherPercent('camyaw', playfield),
 			getOtherPercent('camroll', playfield));
-		var viewCoords = View(modelCoords, playfield);
+		var viewCoords = view(modelCoords, playfield);
 
-		var clipCoords = Projection(viewCoords, playfield);
+		var clipCoords = projection(viewCoords, playfield);
 
 		return clipCoords.subtract(pos).add(halfScreenOffset); // Recenter to viewport
 	}

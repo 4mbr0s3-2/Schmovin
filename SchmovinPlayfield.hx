@@ -13,7 +13,7 @@ class SchmovinPlayfield
 	public var activeMods:Array<String> = [];
 	public var cameras:Array<FlxCamera>;
 
-	public function CheckActiveMod(modName:String)
+	public function checkActiveMod(modName:String)
 	{
 		return activeMods.contains(modName);
 	}

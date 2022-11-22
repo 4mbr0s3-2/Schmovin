@@ -93,7 +93,7 @@ class SchmovinNoteModList
 
 	public function initializeNoteMods()
 	{
-		new ModRegistry(this, _state).Register();
+		new ModRegistry(this, _state).register();
 	}
 
 	public function addNoteMod(modName:String, mod:ISchmovinNoteMod, auxiliary:Bool = false, parent:String = '')

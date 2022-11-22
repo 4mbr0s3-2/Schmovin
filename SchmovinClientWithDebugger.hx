@@ -29,7 +29,7 @@ class SchmovinClientWithDebugger extends SchmovinClient
 		Lib.current.removeChild(_debugger);
 	}
 
-	public function PasteHScriptFromClipboard()
+	public function pasteHScriptFromClipboard()
 	{
 		var cb = null;
 		#if html5
