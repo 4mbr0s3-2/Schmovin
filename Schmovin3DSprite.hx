@@ -78,15 +78,15 @@ class Schmovin3DSprite extends FlxSprite
 
 			for (vertIndex in 0...relativeVerts.length)
 			{
-				var model = Camera3DTransforms.RotateVector4(relativeVerts[vertIndex], angleX, angleY, angleZ)
+				var model = Camera3DTransforms.rotateVector4(relativeVerts[vertIndex], angleX, angleY, angleZ)
 					.add(new Vector4(this.x, this.y, this.z))
 					.subtract(halfScreenOffset);
 				var props = new Map<String, Float>();
 				props.set('camx', camX);
 				props.set('camy', camY);
 				props.set('camz', camZ);
-				var view = Camera3DTransforms.View(model, props);
-				var proj = Camera3DTransforms.Projection(view, 1);
+				var view = Camera3DTransforms.view(model, props);
+				var proj = Camera3DTransforms.projection(view, 1);
 				outVerts.push(proj.add(halfScreenOffset));
 			}
 
@@ -132,7 +132,7 @@ class Schmovin3DSprite extends FlxSprite
 		#end
 	}
 
-	function getUV(flipY:Bool)
+	private function getUV(flipY:Bool)
 	{
 		var leftX = this.frame.frame.left / this.graphic.bitmap.width;
 		var topY = this.frame.frame.top / this.graphic.bitmap.height;

@@ -162,9 +162,10 @@ class SchmovinTapNoteRenderer extends SchmovinRenderer
 		draw();
 	}
 
-	function updateFramePixels(s:FlxSprite, alpha:Float)
+	private function updateFramePixels(s:FlxSprite, alpha:Float)
 	{
 		var data = s.frame.paint();
+
 		if (alpha < 1)
 			data.colorTransform(new Rectangle(0, 0, s.frameWidth, s.frameHeight), new ColorTransform(1, 1, 1, alpha));
 		return data;
@@ -209,18 +210,19 @@ class SchmovinTapNoteRenderer extends SchmovinRenderer
 		return receps;
 	}
 
+	private function getTapNotes()
+	{
+		return _playState.notes.members.filter((note) ->
+		{
+			if (note == null)
+				return false;
+			var onScreen = !note.isSustainNote && note.alive;
+			return onScreen;
+		});
+	}
+
 	private function draw()
 	{
-		function getTapNotes()
-		{
-			return _playState.notes.members.filter((note) ->
-			{
-				if (note == null)
-					return false;
-				var onScreen = !note.isSustainNote && note.alive;
-				return onScreen;
-			});
-		}
 		for (receptor in getReceptors())
 			render(receptor.wrappee, receptor.wrappee.alpha, 0, receptor.column, SchmovinUtil.getPlayerOfTotalColumn(receptor.column));
 
@@ -234,7 +236,7 @@ class SchmovinTapNoteRenderer extends SchmovinRenderer
 	// This is really laggy with OpenGL, but WebGL runs like it's nothing
 	// TODO: Figure out how to profile this on desktop??
 
-	function render(sprite:FlxSprite, alpha:Float, strumTime:Float, column:Int, player:Int)
+	private function render(sprite:FlxSprite, alpha:Float, strumTime:Float, column:Int, player:Int)
 	{
 		for (playfield in _instance.playfields.list)
 		{
@@ -304,7 +306,7 @@ class SchmovinTapNoteRenderer extends SchmovinRenderer
 		initialize();
 	}
 
-	function getUV(sprite:FlxSprite, flipY:Bool)
+	private function getUV(sprite:FlxSprite, flipY:Bool)
 	{
 		var leftX = sprite.frame.frame.left / sprite.graphic.bitmap.width;
 		var topY = sprite.frame.frame.top / sprite.graphic.bitmap.height;
@@ -414,21 +416,22 @@ class SchmovinHoldNoteRenderer extends SchmovinRenderer
 		return [perp1, perp2];
 	}
 
-	// TODO: Extract methods, make it a bit neater
-	function drawHoldNotes()
+	private function getHoldNotes(playfield:SchmovinPlayfield)
 	{
-		function getHoldNotes(playfield:SchmovinPlayfield)
+		return _playState.notes.members.filter((hold) ->
 		{
-			return _playState.notes.members.filter((hold) ->
-			{
-				var dist = hold.strumTime - Conductor.songPosition;
-				return SchmovinUtil.getPlayer(hold) == playfield.player
-					&& hold.isSustainNote
-					&& hold.alive
-					&& dist < 1500 + _timeline.getNoteMod('drawdistance').getPercent(playfield)
-					&& dist >= 0;
-			});
-		}
+			var dist = hold.strumTime - Conductor.songPosition;
+			return SchmovinUtil.getPlayer(hold) == playfield.player
+				&& hold.isSustainNote
+				&& hold.alive
+				&& dist < 1500 + _timeline.getNoteMod('drawdistance').getPercent(playfield)
+				&& dist >= 0;
+		});
+	}
+
+	// TODO: Extract methods, make it a bit neater
+	private function drawHoldNotes()
+	{
 		for (playfield in _instance.playfields.list)
 		{
 			var cameras = playfield.cameras != null ? playfield.cameras : _defaultCameras;
@@ -545,7 +548,7 @@ class SchmovinHoldNoteRenderer extends SchmovinRenderer
 		}
 	}
 
-	function getUV(sprite:FlxSprite, flipY:Bool, sub:Int, subdivisions:Int)
+	private function getUV(sprite:FlxSprite, flipY:Bool, sub:Int, subdivisions:Int)
 	{
 		var leftX = sprite.frame.frame.left / sprite.graphic.bitmap.width;
 		var topY = sprite.frame.frame.top / sprite.graphic.bitmap.height;

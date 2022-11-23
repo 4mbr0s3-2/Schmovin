@@ -35,8 +35,8 @@ import schmovin.note_mods.NoteModZigzag;
 
 class ModRegistry
 {
-	var _modList:SchmovinNoteModList;
-	var _state:PlayState;
+	private var _modList:SchmovinNoteModList;
+	private var _state:PlayState;
 
 	public function new(modList:SchmovinNoteModList, state:PlayState)
 	{
@@ -44,12 +44,12 @@ class ModRegistry
 		_state = state;
 	}
 
-	function addNoteMod(modName:String, mod:ISchmovinNoteMod, aux:Bool = false, parent:String = '')
+	private function addNoteMod(modName:String, mod:ISchmovinNoteMod, aux:Bool = false, parent:String = '')
 	{
 		_modList.addNoteMod(modName, mod, aux, parent);
 	}
 
-	function addNoteAuxMod(modName:String, parent:String = '')
+	private function addNoteAuxMod(modName:String, parent:String = '')
 	{
 		addNoteMod(modName, new NoteModBase(), true, parent);
 	}

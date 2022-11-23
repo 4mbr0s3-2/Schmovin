@@ -31,7 +31,7 @@ class SchmovinStandalone
 
 	public static var holdNoteSubdivisions:Int = 4;
 
-	function shouldRun():Bool
+	private function shouldRun():Bool
 	{
 		if (Std.is(FlxG.state.subState, PauseSubState))
 			return true;
@@ -65,7 +65,7 @@ class SchmovinStandalone
 		instance.initialize();
 	}
 
-	function initializeCamBelowGame()
+	private function initializeCamBelowGame()
 	{
 		instance.camBelowGame = new FlxCamera();
 		instance.camBelowGame.bgColor = FlxColor.TRANSPARENT;
@@ -84,7 +84,7 @@ class SchmovinStandalone
 		instance.destroy();
 	}
 
-	function initializeAboveHUD()
+	private function initializeAboveHUD()
 	{
 		instance.layerAboveHUD = new FlxTypedGroup<FlxBasic>();
 		instance.layerAboveHUD.cameras = [instance.camHUD];

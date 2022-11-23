@@ -21,12 +21,13 @@ using schmovin.SchmovinUtil;
 
 class SchmovinNoteModList
 {
-	var _state:PlayState;
+	private var _schmovinAdapter = SchmovinAdapter.getInstance();
+	private var _state:PlayState;
 	@:allow(schmovin.overlays.SchmovinDebugger)
 	/**
 	 * Names of mods that must execute before any other mod.
 	 */
-	var _mustExecuteModNames:Array<String>;
+	private var _mustExecuteModNames:Array<String>;
 
 	public function GetMustExecuteMods()
 	{
@@ -36,31 +37,31 @@ class SchmovinNoteModList
 	/**
 	 * Consists of all registered note mods.
 	 */
-	var _mods:Map<String, ISchmovinNoteMod>;
+	private var _mods:Map<String, ISchmovinNoteMod>;
 
-	var _modsOrder:Array<String> = [];
+	private var _modsOrder:Array<String> = [];
 
 	/**
 	 * Consists of all registered auxiliary (formerly sub) note mods.
 	 */
-	var _auxMods:Map<String, ISchmovinNoteMod>;
+	private var _auxMods:Map<String, ISchmovinNoteMod>;
 
-	var _auxModsOrder:Array<String> = [];
+	private var _auxModsOrder:Array<String> = [];
 
 	/**
 	 * Consists of all registered miscellaneous mods. They always run every frame (once).
 	 */
-	var _miscMods:Map<String, ISchmovinNoteMod>;
+	private var _miscMods:Map<String, ISchmovinNoteMod>;
 
-	var _miscModsOrder:Array<String> = [];
+	private var _miscModsOrder:Array<String> = [];
 
 	@:allow(schmovin.SchmovinClient, schmovin.ModRegistry)
-	var _playfields:SchmovinPlayfieldManager;
+	private var _playfields:SchmovinPlayfieldManager;
 
 	/**
 	 * Consists of mods to be updated.
 	 */
-	var _timeline:SchmovinTimeline;
+	private var _timeline:SchmovinTimeline;
 
 	public function getModIndex(modName:String)
 	{
@@ -81,7 +82,7 @@ class SchmovinNoteModList
 	}
 
 	@:allow(schmovin.note_mods.ISchmovinNoteMod, schmovin.ModRegistry)
-	function getSchmovinInstance()
+	private function getSchmovinInstance()
 	{
 		return _timeline._instance;
 	}
@@ -188,8 +189,8 @@ class SchmovinNoteModList
 
 	/**
 	 * Returns true if successful.
-	 * @param modName 
-	 * @param percent 
+	 * @param modName The mod name.
+	 * @param percent The percent (0.01 = 1%).
 	 * @return Bool
 	 */
 	public function setPercent(modName:String, percent:Float, player:Int, playfield:SchmovinPlayfield = null):Bool
@@ -225,7 +226,7 @@ class SchmovinNoteModList
 			if (Std.is(sprite, Note))
 			{
 				var note:Note = cast sprite;
-				var strumTimeDiff = SchmovinAdapter.getInstance().getSongPosition() - note.strumTime - SchmovinAdapter.getInstance().grabGlobalVisualOffset();
+				var strumTimeDiff = _schmovinAdapter.getSongPosition() - note.strumTime - _schmovinAdapter.grabGlobalVisualOffset();
 				pos = notemod.executePath(currentBeat, strumTimeDiff, note.getTotalColumn(), player, pos, playfield);
 			}
 			else
@@ -284,7 +285,7 @@ class SchmovinNoteModList
 			if (Std.is(sprite, Note))
 			{
 				var note:Note = cast sprite;
-				var strumTimeDiff = SchmovinAdapter.getInstance().getSongPosition() - note.strumTime - SchmovinAdapter.getInstance().grabGlobalVisualOffset();
+				var strumTimeDiff = _schmovinAdapter.getSongPosition() - note.strumTime - _schmovinAdapter.grabGlobalVisualOffset();
 				outVertex = notemod.executeNoteVertex(currentBeat, strumTimeDiff, note.getTotalColumn(), player, outVertex, vertexIndex, pos, playfield);
 			}
 			else

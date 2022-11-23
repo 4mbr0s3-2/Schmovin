@@ -18,89 +18,89 @@ class PlaneRaymarcher
 	public var cameraLookAtY(get, set):Float;
 	public var cameraLookAtZ(get, set):Float;
 
-	function get_pitch():Float
+	private function get_pitch():Float
 	{
 		return shader.pitch.value[0];
 	}
 
-	function get_cameraOffX():Float
+	private function get_cameraOffX():Float
 	{
 		return shader.cameraOff.value[0];
 	}
 
-	function get_cameraOffY():Float
+	private function get_cameraOffY():Float
 	{
 		return shader.cameraOff.value[1];
 	}
 
-	function get_cameraOffZ():Float
+	private function get_cameraOffZ():Float
 	{
 		return shader.cameraOff.value[2];
 	}
 
-	function get_cameraLookAtX():Float
+	private function get_cameraLookAtX():Float
 	{
 		return shader.cameraLookAt.value[0];
 	}
 
-	function get_cameraLookAtY():Float
+	private function get_cameraLookAtY():Float
 	{
 		return shader.cameraLookAt.value[1];
 	}
 
-	function get_cameraLookAtZ():Float
+	private function get_cameraLookAtZ():Float
 	{
 		return shader.cameraLookAt.value[2];
 	}
 
-	function set_pitch(value:Float):Float
+	private function set_pitch(value:Float):Float
 	{
 		shader.pitch.value = [value];
 		return value;
 	}
 
-	function set_cameraOffX(value:Float):Float
+	private function set_cameraOffX(value:Float):Float
 	{
 		shader.cameraOff.value[0] = value;
 		return value;
 	}
 
-	function set_cameraOffY(value:Float):Float
+	private function set_cameraOffY(value:Float):Float
 	{
 		shader.cameraOff.value[1] = value;
 		return value;
 	}
 
-	function set_cameraOffZ(value:Float):Float
+	private function set_cameraOffZ(value:Float):Float
 	{
 		shader.cameraOff.value[2] = value;
 		return value;
 	}
 
-	function set_cameraLookAtX(value:Float):Float
+	private function set_cameraLookAtX(value:Float):Float
 	{
 		shader.cameraLookAt.value[0] = value;
 		return value;
 	}
 
-	function set_cameraLookAtY(value:Float):Float
+	private function set_cameraLookAtY(value:Float):Float
 	{
 		shader.cameraLookAt.value[1] = value;
 		return value;
 	}
 
-	function set_cameraLookAtZ(value:Float):Float
+	private function set_cameraLookAtZ(value:Float):Float
 	{
 		shader.cameraLookAt.value[2] = value;
 		return value;
 	}
 
-	function get_yaw():Float
+	private function get_yaw():Float
 	{
 		return shader.yaw.value[0];
 	}
 
-	function set_yaw(value:Float):Float
+	private function set_yaw(value:Float):Float
 	{
 		shader.yaw.value = [value];
 		return value;

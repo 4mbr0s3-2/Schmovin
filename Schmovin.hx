@@ -61,7 +61,7 @@ class Schmovin extends Mod
 		instance.destroy();
 	}
 
-	function initializeGroovinSchmovinAdapter()
+	private function initializeGroovinSchmovinAdapter()
 	{
 		SchmovinAdapter.setInstance(new GroovinSchmovinAdapter());
 	}
@@ -70,7 +70,7 @@ class Schmovin extends Mod
 	{
 		initializeGroovinSchmovinAdapter();
 
-		instance = SchmovinInstance.Create(cast FlxG.state, camHUD, camGame);
+		instance = SchmovinInstance.create(cast FlxG.state, camHUD, camGame);
 		instance.initialize();
 	}
 
@@ -125,11 +125,6 @@ class Schmovin extends Mod
 	override function isVisibleOnModList():Bool
 	{
 		return false;
-	}
-
-	public static function getCurrentBeat()
-	{
-		return SchmovinAdapter.getInstance().getCurrentBeat();
 	}
 
 	override function registerModOptions():Array<GroovinModOption<Dynamic>>

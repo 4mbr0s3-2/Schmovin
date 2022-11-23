@@ -62,7 +62,7 @@ class NoteModNoteRotate extends NoteModBase
 		var angleZ = getOtherPercent('${_modPrefix}noterotatez', playfield)
 			+ getOtherPercent('${_modPrefix}othernoterotatez', playfield)
 			+ getOtherPercent('${_modPrefix}noterotatez${column}', playfield);
-		var out = Camera3DTransforms.RotateVector4(vert, angleX, angleY, angleZ);
+		var out = Camera3DTransforms.rotateVector4(vert, angleX, angleY, angleZ);
 		return out;
 	}
 }

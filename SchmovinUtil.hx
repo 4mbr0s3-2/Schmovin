@@ -22,52 +22,52 @@ class Receptor
 	public var scale(get, set):FlxPoint;
 	public var visible(get, set):Bool;
 
-	function get_x()
+	private function get_x()
 	{
 		return wrappee.x;
 	}
 
-	function set_x(v:Float)
+	private function set_x(v:Float)
 	{
 		return wrappee.x = v;
 	}
 
-	function get_y()
+	private function get_y()
 	{
 		return wrappee.y;
 	}
 
-	function set_y(v:Float)
+	private function set_y(v:Float)
 	{
 		return wrappee.y = v;
 	}
 
-	function get_angle()
+	private function get_angle()
 	{
 		return wrappee.angle;
 	}
 
-	function set_angle(v:Float)
+	private function set_angle(v:Float)
 	{
 		return wrappee.angle = v;
 	}
 
-	function set_visible(v:Bool)
+	private function set_visible(v:Bool)
 	{
 		return wrappee.visible = v;
 	}
 
-	function get_visible()
+	private function get_visible()
 	{
 		return wrappee.visible;
 	}
 
-	function get_scale()
+	private function get_scale()
 	{
 		return wrappee.scale;
 	}
 
-	function set_scale(v:FlxPoint)
+	private function set_scale(v:FlxPoint)
 	{
 		return wrappee.scale.set(v.x, v.y);
 	}

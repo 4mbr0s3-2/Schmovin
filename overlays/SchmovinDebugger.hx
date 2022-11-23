@@ -21,14 +21,11 @@ import openfl.events.Event;
 import schmovin.SchmovinTimeline;
 import schmovin.note_mods.ISchmovinNoteMod;
 
-/**
- * inb4 someone compares this to Thread of Fate Manipulator (midi would be cool tho)
- */
 class ModSlider extends FlxBar
 {
-	static inline var WIDTH = 200;
-	static inline var HEIGHT = 30;
-	static inline var MARGIN = 20;
+	private static inline var WIDTH = 200;
+	private static inline var HEIGHT = 30;
+	private static inline var MARGIN = 20;
 
 	private var _noteMod:ISchmovinNoteMod;
 	private var _index:Int;
@@ -76,17 +73,18 @@ class ModSlider extends FlxBar
 		super.destroy();
 	}
 
+	private function isHovering()
+	{
+		var posX = FlxG.mouse.cursorContainer.x;
+		var posY = FlxG.mouse.cursorContainer.y;
+		return posX > this.x - MARGIN && posX < this.x + this.frameWidth + MARGIN && posY > this.y && posY < this.y + this.frameHeight;
+	}
+
 	override function update(elapsed:Float)
 	{
 		FlxG.mouse.visible = true;
 		displayName.x = this.x + this.frameWidth / 2 - displayName.frameWidth / 2;
 		displayName.y = this.y + this.frameHeight / 2 - displayName.frameHeight / 2;
-		function isHovering()
-		{
-			var posX = FlxG.mouse.cursorContainer.x;
-			var posY = FlxG.mouse.cursorContainer.y;
-			return posX > this.x - MARGIN && posX < this.x + this.frameWidth + MARGIN && posY > this.y && posY < this.y + this.frameHeight;
-		}
 		super.update(elapsed);
 		this.percent = _percent * 50 + 50;
 		if (FlxG.mouse.pressed && isHovering())
@@ -107,6 +105,7 @@ class ModSlider extends FlxBar
 
 class SchmovinDebugger extends Sprite
 {
+	private var _schmovinAdapter = SchmovinAdapter.getInstance();
 	private var _client:SchmovinClient;
 	private var _timeline:SchmovinTimeline;
 	private var _eventsDisplay:Sprite;
@@ -161,7 +160,7 @@ class SchmovinDebugger extends Sprite
 
 	public function parseHScript(script:String)
 	{
-		SchmovinAdapter.getInstance().Log('Script: ${script}');
+		_schmovinAdapter.log('Script: ${script}');
 		return _client.parseHScript(script);
 	}
 
@@ -178,7 +177,7 @@ class SchmovinDebugger extends Sprite
 
 	public function addSlider(modName:String, player:Int = -1, min:Float = -1.0, max:Float = 1.0)
 	{
-		SchmovinAdapter.getInstance().Log('Added slider ${modName} for player ${player}');
+		_schmovinAdapter.log('Added slider ${modName} for player ${player}');
 		_sliders.add(new ModSlider(this, _sliders.length, player, modName, min, max));
 	}
 
@@ -251,19 +250,20 @@ class SchmovinDebugger extends Sprite
 		return _timeline._mods.getPercent(modName, player);
 	}
 
-	function addEventsDisplay()
+	private function noPercent(mod:String)
 	{
-		function NoPercent(mod:String)
-		{
-			return _timeline.getModList().getPercent(mod, 0) == 0.0 && _timeline.getModList().getPercent(mod, 1) == 0.0;
-		}
+		return _timeline.getModList().getPercent(mod, 0) == 0.0 && _timeline.getModList().getPercent(mod, 1) == 0.0;
+	}
+
+	private function addEventsDisplay()
+	{
 		var iterator = _timeline._events.keyValueIterator();
 		var row = 0;
 		_eventsDisplay.removeChildren();
 		while (iterator.hasNext())
 		{
 			var current = iterator.next();
-			if (NoPercent(current.key))
+			if (noPercent(current.key))
 				continue;
 			var mod = _timeline.getNoteMod(current.key);
 			if (mod == null)
@@ -279,54 +279,39 @@ class SchmovinDebugger extends Sprite
 			if (!_labels.exists(current.key))
 				_labels.set(current.key, new ModLabel(current.key, mod));
 			var child = _labels.get(current.key);
+
 			cast(child, ModLabel).row = row;
 			_eventsDisplay.addChild(child);
 			row++;
 		}
 	}
 
-	function onEnterFrame(_)
+	private function onEnterFrame(_)
 	{
 		update();
 	}
 
-	function updateModsDebugText()
+	private function updateModsDebugText()
 	{
 		var text = 'Mods Debug\n';
-		function NoPercent(mod:String)
-		{
-			return _timeline.getModList().getPercent(mod, 0) == 0.0 && _timeline.getModList().getPercent(mod, 1) == 0.0;
-		}
 		var iterator = _timeline._events.keyValueIterator();
 		var row = 0;
 		while (iterator.hasNext())
 		{
 			var current = iterator.next();
-			if (NoPercent(current.key))
+			if (noPercent(current.key))
 				continue;
 			var mod = _timeline.getNoteMod(current.key);
 			if (mod == null)
 				continue;
 			text += '${current.key}: [${mod.getLegacyPercent(0)}, ${mod.getLegacyPercent(1)}]\n';
-			// if (!_labels.exists(current.key))
-			// 	_labels.set(current.key, new ModLabel(current.key, mod));
-			// var child = _labels.get(current.key);
-			// cast(child, ModLabel).row = row;
-			// _eventsDisplay.addChild(child);
-			// row++;
 		}
 		if (_modsDebugText != null)
 			_modsDebugText.text = text;
 	}
 
-	function update()
+	private function update()
 	{
 		updateModsDebugText();
-		// addEventsDisplay();
-		// for (childIndex in 0..._eventsDisplay.numChildren)
-		// {
-		// 	var child = _eventsDisplay.getChildAt(childIndex);
-		// 	cast(child, IUpdateable).update([_zoomX, _zoomY]);
-		// }
 	}
 }

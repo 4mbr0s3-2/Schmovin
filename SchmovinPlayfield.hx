@@ -34,7 +34,7 @@ class SchmovinPlayfield
 		return 0.0;
 	}
 
-	function Sort()
+	private function Sort()
 	{
 		activeMods.sort((a, b) ->
 		{

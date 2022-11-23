@@ -42,7 +42,7 @@ class NoteModPerspective extends NoteModBase
 		var halfScreenOffset = new Vector4(FlxG.width / 2, FlxG.height / 2);
 
 		var modelCoords = pos.subtract(halfScreenOffset); // Center to origin
-		modelCoords = Camera3DTransforms.RotateVector4(modelCoords, getOtherPercent('campitch', playfield), getOtherPercent('camyaw', playfield),
+		modelCoords = Camera3DTransforms.rotateVector4(modelCoords, getOtherPercent('campitch', playfield), getOtherPercent('camyaw', playfield),
 			getOtherPercent('camroll', playfield));
 		var viewCoords = view(modelCoords, playfield);
 
@@ -62,7 +62,7 @@ class NoteModPerspective extends NoteModBase
 		var halfScreenOffset = new Vector4(FlxG.width / 2, FlxG.height / 2);
 
 		var modelCoords = vert.add(pos).subtract(halfScreenOffset); // Center to origin
-		modelCoords = Camera3DTransforms.RotateVector4(modelCoords, getOtherPercent('campitch', playfield), getOtherPercent('camyaw', playfield),
+		modelCoords = Camera3DTransforms.rotateVector4(modelCoords, getOtherPercent('campitch', playfield), getOtherPercent('camyaw', playfield),
 			getOtherPercent('camroll', playfield));
 		var viewCoords = view(modelCoords, playfield);
 

@@ -73,7 +73,7 @@ class SchmovinInstance
 	public function initializeFakeExplosionReceptors()
 	{
 		fakeExplosionReceptors = new FlxTypedGroup<FlxSprite>();
-		SchmovinAdapter.getInstance().Log('Initialized fake explosion receptors');
+		SchmovinAdapter.getInstance().log('Initialized fake explosion receptors');
 		fakeExplosionReceptors.cameras = [camNotes];
 		if (isPixelStage())
 			createPixelExplosionReceptors();
@@ -82,7 +82,7 @@ class SchmovinInstance
 		state.add(fakeExplosionReceptors);
 	}
 
-	function createPixelExplosionReceptors()
+	private function createPixelExplosionReceptors()
 	{
 		for (i in 0...state.strumLineNotes.length)
 		{
@@ -101,7 +101,7 @@ class SchmovinInstance
 		}
 	}
 
-	function createNormalExplosionReceptors()
+	private function createNormalExplosionReceptors()
 	{
 		for (i in 0...state.strumLineNotes.length)
 		{

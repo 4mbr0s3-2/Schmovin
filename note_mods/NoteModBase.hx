@@ -16,7 +16,7 @@ class NoteModBase implements ISchmovinNoteMod
 {
 	public var order:Int = 0;
 
-	function toString()
+	private function toString()
 	{
 		return '';
 	}
@@ -84,7 +84,7 @@ class NoteModBase implements ISchmovinNoteMod
 		return false;
 	}
 
-	function getDefaultPlayfieldFromPlayer(p:Int)
+	private function getDefaultPlayfieldFromPlayer(p:Int)
 	{
 		return _playfields.getPlayfieldAtIndex(p);
 	}

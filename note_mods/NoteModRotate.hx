@@ -44,7 +44,7 @@ class NoteModRotate extends NoteModBase
 		// Set center of rotation to origin
 		var diff = pos.subtract(origin);
 
-		var out = Camera3DTransforms.RotateVector4(diff, getOtherPercent('${_modPrefix}rotatex', playfield),
+		var out = Camera3DTransforms.rotateVector4(diff, getOtherPercent('${_modPrefix}rotatex', playfield),
 			getOtherPercent('${_modPrefix}rotatey', playfield), getOtherPercent('${_modPrefix}rotatez', playfield));
 
 		return origin.add(out);

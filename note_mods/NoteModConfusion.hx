@@ -32,7 +32,7 @@ class NoteModConfusion extends NoteModBase
 		var angleX = getTotalConfusion(currentBeat, playfield, column, 'x');
 		var angleY = getTotalConfusion(currentBeat, playfield, column, 'y');
 		var out = vert.clone();
-		out = Camera3DTransforms.RotateVector4(out, angleX, angleY, angleZ);
+		out = Camera3DTransforms.rotateVector4(out, angleX, angleY, angleZ);
 		return out;
 	}
 

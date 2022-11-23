@@ -83,7 +83,7 @@ class NoteModReverse extends NoteModBase
 		// GroovinInput.ClipRect(note, strumLine);
 	}
 
-	function GetNoteX(column:Int, player:Int)
+	private function getNoteX(column:Int, player:Int)
 	{
 		return SchmovinAdapter.getInstance().getDefaultNoteX(column, player);
 	}
@@ -94,7 +94,7 @@ class NoteModReverse extends NoteModBase
 		var reverse = getPercentReverse(column, playfield);
 
 		var strumLineY = FlxMath.lerp(50, FlxG.height - 165, reverse);
-		var outX = GetNoteX(column, player);
+		var outX = getNoteX(column, player);
 
 		var xmod = getOtherPercent('xmod', playfield) + getOtherPercent('xmod${playerColumn}', playfield) + 1;
 		var forced = getOtherPercent('forcexmod', playfield) + getOtherPercent('forcexmod${playerColumn}', playfield);
@@ -107,7 +107,7 @@ class NoteModReverse extends NoteModBase
 		return new Vector4(outX, outY, 0, 0);
 	}
 
-	function SetDefaultScale(s:FlxSprite)
+	private function setDefaultScale(s:FlxSprite)
 	{
 		if (SchmovinInstance.isPixelStage())
 			s.scale.set(PlayState.daPixelZoom, PlayState.daPixelZoom);
@@ -122,7 +122,7 @@ class NoteModReverse extends NoteModBase
 		// Hide for rendering
 		receptor.visible = false;
 
-		SetDefaultScale(receptor.wrappee);
+		setDefaultScale(receptor.wrappee);
 		super.executeReceptor(currentBeat, receptor, player, pos, playfield);
 	}
 
@@ -134,7 +134,7 @@ class NoteModReverse extends NoteModBase
 		var receptorPos = executePath(currentBeat, 0, note.noteData, player, pos, playfield).subtract(SchmovinUtil.posGetNoteWidthHalf());
 
 		note.angle = 0;
-		SetDefaultScale(note);
+		setDefaultScale(note);
 		super.executeNote(currentBeat, note, player, pos, playfield);
 
 		// Hide for rendering

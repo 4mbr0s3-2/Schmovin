@@ -29,7 +29,7 @@ class NoteModGantzGraf extends NoteModBase
 		var p = getPercent(playfield);
 		var angle = Math.random() * p;
 
-		vert = Camera3DTransforms.RotateVector4(vert, angle, angle, angle);
+		vert = Camera3DTransforms.rotateVector4(vert, angle, angle, angle);
 		return vert;
 	}
 }
