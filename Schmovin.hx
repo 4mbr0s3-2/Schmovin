@@ -84,6 +84,10 @@ class Schmovin extends Mod
 	{
 		state.strumLineNotes.cameras = [instance.camNotes];
 		state.notes.cameras = [instance.camNotes];
+		state.grpNoteSplashes.cameras = [instance.camNotes];
+
+		state.grpNoteSplashes.visible = false;
+
 		FlxCamera.defaultCameras = [instance.camGameCopy];
 
 		instance.initializeAboveHUD();

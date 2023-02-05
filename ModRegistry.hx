@@ -155,7 +155,7 @@ class ModRegistry
 		// Modifying the note camera directly is discouraged (since the scrollFactor for notes and receptors default to 0)
 		// Instead, use the note mod transformations.
 
-		addNoteMod('sine', new NoteModSine());
+		// addNoteMod('sine', new NoteModSine());
 
 		addNoteMod('blink', new NoteModBlink());
 

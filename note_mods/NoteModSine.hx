@@ -12,6 +12,9 @@ import lime.math.Vector4;
 
 using schmovin.SchmovinUtil;
 
+/**
+	Ignore this, this was a GitHub Copilot test lmao
+**/
 class NoteModSine extends NoteModBase
 {
 	override function executePath(currentBeat:Float, strumTime:Float, column:Int, player:Int, pos:Vector4, playfield:SchmovinPlayfield):Vector4

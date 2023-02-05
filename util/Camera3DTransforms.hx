@@ -36,6 +36,8 @@ class Camera3DTransforms
 		// var rotateY = rotate(offX.x, offX.z, angleY);
 		// var offY = new Vector4(rotateY[0], offX.y, rotateY[1]);
 
+		// This is VERY much subject to gimbal lock... and I don't think this is actually how it works.
+
 		var rotateZ = rotate(vec.x, vec.y, angleZ);
 		var offZ = new Vector4(rotateZ[0], rotateZ[1], vec.z);
 

@@ -51,14 +51,14 @@ class SchmovinClient
 	private function setInterpreterValues(interp:Interp)
 	{
 		interp.variables.set('FlxEase', FlxEase);
-		interp.variables.set('Alt', alt);
+		interp.variables.set('alt', alt);
 		interp.variables.set('Math', Math);
-		interp.variables.set('E', e);
-		interp.variables.set('S', s);
-		interp.variables.set('F', f);
+		interp.variables.set('e', e);
+		interp.variables.set('s', s);
+		interp.variables.set('f', f);
 		interp.variables.set('ease', ease);
 		interp.variables.set('set', set);
-		interp.variables.set('Func', func);
+		interp.variables.set('func', func);
 		interp.variables.set('SchmovinClient', this);
 		interp.variables.set('PlayState', _state);
 		interp.variables.set('Timeline', _timeline);

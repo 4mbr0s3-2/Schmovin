@@ -13,6 +13,7 @@ import flixel.FlxSprite;
 import flixel.graphics.FlxGraphic;
 import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.graphics.tile.FlxDrawTrianglesItem;
+import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.math.FlxMath;
 import flixel.system.FlxAssets.FlxShader;
 import flixel.util.FlxColor;
@@ -210,6 +211,11 @@ class SchmovinTapNoteRenderer extends SchmovinRenderer
 		return receps;
 	}
 
+	private function getSplashes():FlxTypedGroup<FlxSprite>
+	{
+		return SchmovinAdapter.getInstance().getNoteSplashes(_playState);
+	}
+
 	private function getTapNotes()
 	{
 		return _playState.notes.members.filter((note) ->
@@ -225,6 +231,17 @@ class SchmovinTapNoteRenderer extends SchmovinRenderer
 	{
 		for (receptor in getReceptors())
 			render(receptor.wrappee, receptor.wrappee.alpha, 0, receptor.column, SchmovinUtil.getPlayerOfTotalColumn(receptor.column));
+
+		getSplashes().forEachAlive((splashes) ->
+		{
+			// This is incredibly scuffed but we do NOT want to touch the original game's code
+			if (!splashes.alive)
+				return;
+
+			var column = Std.parseInt(splashes.animation.curAnim.name.charAt(4));
+
+			render(splashes, splashes.alpha, 0, column, 1);
+		});
 
 		for (tap in getTapNotes())
 		{

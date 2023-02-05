@@ -1,5 +1,8 @@
 package schmovin;
 
+import flixel.FlxSprite;
+import flixel.group.FlxGroup.FlxTypedGroup;
+
 /**
  * This class is important for defining some implementation that other engines may override for Schmovin'.
  * It decouples code from Groovin' and Groovin' Input.
@@ -86,6 +89,11 @@ class SchmovinAdapter
 	public function getArrowPathSubdivisions()
 	{
 		return 80;
+	}
+
+	public function getNoteSplashes(playState:PlayState):FlxTypedGroup<FlxSprite>
+	{
+		return null;
 	}
 
 	public function getOptimizeHoldNotes()

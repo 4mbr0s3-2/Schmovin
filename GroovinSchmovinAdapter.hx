@@ -1,6 +1,8 @@
 package schmovin;
 
 import flixel.FlxG;
+import flixel.FlxSprite;
+import flixel.group.FlxGroup.FlxTypedGroup;
 import groovin.mod.ModHooks;
 import groovin.util.GroovinConductor;
 import groovin_input.GroovinInput;
@@ -70,6 +72,12 @@ class GroovinSchmovinAdapter extends SchmovinAdapter
 	{
 		var playerColumn = column % 4;
 		return SchmovinUtil.getNoteWidthHalf() + 50 + playerColumn * Note.swagWidth + FlxG.width / 2 * player;
+	}
+
+	override function getNoteSplashes(playState:PlayState):FlxTypedGroup<FlxSprite>
+	{
+		// Perform upcast
+		return cast playState.grpNoteSplashes;
 	}
 
 	override function getOptimizeHoldNotes():Bool

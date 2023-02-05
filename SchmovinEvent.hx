@@ -164,12 +164,12 @@ class SchmovinEventEase implements ISchmovinEvent
 			_done = false;
 			var progress = (currentBeat - _beat) / _length;
 			var percent = FlxMath.lerp(lastPercent, _targetPercent, _easeFunction(progress));
-			_playfield.setPercent(_mod.getName(), percent);
+			_playfield.setPercent(_mod.getName(), percent, false);
 		}
 		else if (!_done && currentBeat > endBeat) // Reached the end
 		{
 			_done = true;
-			_playfield.setPercent(_mod.getName(), _targetPercent);
+			_playfield.setPercent(_mod.getName(), _targetPercent, true);
 		}
 	}
 }
@@ -256,7 +256,7 @@ class SchmovinEventSet implements ISchmovinEvent
 		}
 		else if (!_done)
 		{
-			_playfield.setPercent(_mod.getName(), _targetPercent);
+			_playfield.setPercent(_mod.getName(), _targetPercent, true);
 			_done = true;
 		}
 	}

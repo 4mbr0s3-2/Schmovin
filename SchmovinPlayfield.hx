@@ -42,7 +42,7 @@ class SchmovinPlayfield
 		});
 	}
 
-	public function setPercent(modName:String, f:Float)
+	public function setPercent(modName:String, f:Float, optimizing:Bool = false)
 	{
 		try
 		{
@@ -50,6 +50,7 @@ class SchmovinPlayfield
 			var mod = _modList.getModFromName(modName);
 			var parent = mod.getParent();
 			mod.onSetPercent(f, this);
+			var mustExecute = _modList.GetMustExecuteMods();
 			if (f != 0 && !activeMods.contains(modName))
 			{
 				if (parent != '' && !activeMods.contains(parent))
@@ -58,7 +59,7 @@ class SchmovinPlayfield
 					activeMods.push(modName);
 				Sort();
 			}
-			else if (f == 0 && !_modList.GetMustExecuteMods().contains(modName))
+			else if (optimizing && f == 0 && !mustExecute.contains(modName) && !mustExecute.contains(parent))
 			{
 				activeMods.remove(modName);
 				for (mod in activeMods)
