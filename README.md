@@ -24,8 +24,6 @@ I'm pretty sure this is the most up-to-date branch that works with Week 6 code. 
 
 Based heavily on <a href="https://notitg.heysora.net/">NotITG</a>
 
-## Note: Keep the code private until the documentation is done and the tutorial video is ready!
-
 Schmovin' is basically an attempt at recreating (and porting) some features of NotITG into Friday Night Funkin' while having its own original code structure. 
 
 If you're already familiar with making NotITG files, it's essentially an ease reader and playfield renderer for FNF that comes with a few debug features!
