@@ -17,7 +17,7 @@ There's also...
 
 In fact, a lot of this codebase was written while I was a junior in high school and probably reflects opinions that have changed since then or implements things differently than how I would implement things now, so keep that in mind when trying to browse through this repo's commit history...
 
-Also, since you're on this branch, don't try to put more than two playfields lol
+I'm pretty sure this is the most up-to-date branch that works with Week 6 code. Also, since you're on this branch, don't try to put more than two playfields lol
 
 ## Original, Not Up-to-Date README
 <h2 align="center">"Those arrows are schmovin'!"</p>
