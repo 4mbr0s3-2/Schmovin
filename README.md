@@ -3,11 +3,24 @@
 </p>
 
 # Schmovin' ([FNF](https://github.com/ninjamuffin99/Funkin) Modcharting Submodule)
+
+## Note: This project is no longer being maintained.
+I kind of lost the motivation to work on this project any further. I also forgot how to mod FNF.
+
+Initially, I was going to release this once I made a tutorial on how to use Schmovin' or how to design modcharts (lest people make unreadable modcharts), but I didn't really find the time to do that.
+
+Instead, I just waited until people stopped asking me about it. I'm silently releasing this now to see if anyone notices.
+
+There's also... 
+![NO DOCUMENTATION](https://github.com/4mbr0s3-2/Schmovin/assets/65193484/ea968dfa-2eab-4900-8732-9234cd6f229e)
+...so have fun!
+
+In fact, a lot of this codebase was written while I was a junior in high school and probably reflects opinions that have changed since then or implements things differently than how I would implement things now, so keep that in mind when trying to browse through this repo's commit history...
+
+## Original, Not Up-to-Date README
 <h2 align="center">"Those arrows are schmovin'!"</p>
 
 Based heavily on <a href="https://notitg.heysora.net/">NotITG</a>
-
-## Note: Keep the code private until the documentation is done and the tutorial video is ready!
 
 Schmovin' is basically an attempt at recreating (and porting) some features of NotITG into Friday Night Funkin' while having its own original code structure. 
 
@@ -38,11 +51,6 @@ Roxor Games, Inc. - In the Groove 2 creators who introduced more [arrow modifier
 [Shadowfi1385](https://twitter.com/Shadowfi1385) - Very epic
 
 [KadeDeveloper](https://twitter.com/kade0912) - Very epic
-
-### FAQ
-Q: Why recreate NotITG in FNF? Wouldn't it be better to just use NotITG due to its better performance and features?
-
-A: I just figured that it'd be neat to allow people to make simple modcharts in FNF with HaxeFlixel in a similar fashion to how NotITG modfiles are made. It's great low-level graphics programming practice, anyway, since HaxeFlixel is only meant to be a 2D game engine.
 
 ### The Gist
 There's a class called `SchmovinClient`. Subclasses of it should contain all the actual modchart implementation. 
