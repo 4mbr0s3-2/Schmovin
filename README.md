@@ -59,11 +59,6 @@ Roxor Games, Inc. - In the Groove 2 creators who introduced more [arrow modifier
 
 [KadeDeveloper](https://twitter.com/kade0912) - Very epic
 
-### FAQ
-Q: Why recreate NotITG in FNF? Wouldn't it be better to just use NotITG due to its better performance and features?
-
-A: I just figured that it'd be neat to allow people to make simple modcharts in FNF with HaxeFlixel in a similar fashion to how NotITG modfiles are made. It's great low-level graphics programming practice, anyway, since HaxeFlixel is only meant to be a 2D game engine.
-
 ### The Gist
 There's a class called `SchmovinClient`. Subclasses of it should contain all the actual modchart implementation. 
 To load in a modchart, pass an instance of a subclass of `SchmovinClient` into `SchmovinInstance` with `setClient(cli:SchmovinClient)`.
