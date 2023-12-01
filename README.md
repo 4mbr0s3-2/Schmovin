@@ -3,6 +3,23 @@
 </p>
 
 # Schmovin' ([FNF](https://github.com/ninjamuffin99/Funkin) Modcharting Submodule)
+
+## Note: This project is no longer being maintained.
+I kind of lost the motivation to work on this project any further. I also forgot how to mod FNF.
+
+Initially, I was going to release this once I made a tutorial on how to use Schmovin' or how to design modcharts (lest people make unreadable modcharts), but I didn't really find the time to do that.
+
+Instead, I just waited until people stopped asking me about it. I'm silently releasing this now to see if anyone notices.
+
+There's also... 
+![NO DOCUMENTATION](https://github.com/4mbr0s3-2/Schmovin/assets/65193484/ea968dfa-2eab-4900-8732-9234cd6f229e)
+...so have fun!
+
+In fact, a lot of this codebase was written while I was a junior in high school and probably reflects opinions that have changed since then or implements things differently than how I would implement things now, so keep that in mind when trying to browse through this repo's commit history...
+
+Also, since you're on this branch, don't try to put more than two playfields lol
+
+## Original, Not Up-to-Date README
 <h2 align="center">"Those arrows are schmovin'!"</p>
 
 Based heavily on <a href="https://notitg.heysora.net/">NotITG</a>
