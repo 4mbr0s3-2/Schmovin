@@ -29,7 +29,7 @@ Schmovin' is basically an attempt at recreating (and porting) some features of N
 If you're already familiar with making NotITG files, it's essentially an ease reader and playfield renderer for FNF that comes with a few debug features!
 
 ### Want to start making modfiles?
-I highly recommend reading the [Mods Design Notebook](https://docs.google.com/document/d/1XSSPSpIuE9S20lc3O3WfixzX_G6zYmLmlmJH1e43YN8/edit?usp=sharing) first! It covers plenty of aspects of modfile and game design and will hopefully let you make playable and not competely unreadable files that are... fun!
+I highly recommend reading the Mods Design Notebook (redacted) first! It covers plenty of aspects of modfile and game design and will hopefully let you make playable and not competely unreadable files that are... fun!
 
 This repository is also meant to be a Git submodule for Groovin' Mod Framework, but it can also be used in other engines! Just make sure to give appropriate credit.
 
